@@ -21,7 +21,6 @@ using System.Globalization;
 using System.Data.SqlClient;
 using System.Collections.Specialized;
 
-
 namespace LibCheck
 {
     public partial class LibChk
@@ -156,7 +155,7 @@ namespace LibCheck
             en +
             en + "-----------------------------------------------------------------------";
 
-        static XmlReport xmlReport;
+        //static XmlReport xmlReport;
 #if DOREPORTS
         public static StreamWriter errorWriter = null;
         public static StreamWriter reportWriter = null;
@@ -208,10 +207,10 @@ namespace LibCheck
         static bool allDetails = true; // false;
         static bool noLink = false;
         static bool addsOnly = false;
-        static bool noColor = false;
+        //static bool noColor = false;
         static bool sumColor = false;
         static bool suppress = true;
-        static bool showOwners = false;
+        //static bool showOwners = false;
         static bool byDll = false;   // true; //DEFAULT
         static bool fullSpec = true; // false;
 
@@ -223,7 +222,7 @@ namespace LibCheck
         static bool storeAsFile = false; //DEFAULT
         static bool makeComReport = true;
         static bool comOnly = false;
-        static bool GACload = true;
+        static bool GACload = false;
 
         //just for verification testing
         //robvi
@@ -234,7 +233,7 @@ namespace LibCheck
         public static StreamWriter obsoletewriter;
 
         // ** DB Item
-        static ReflectorDO rf;
+        //static ReflectorDO rf;
 
         // ** Properties
         public static string OldVer { get { return _oldBuild; } }
@@ -305,11 +304,11 @@ namespace LibCheck
             alSplitNamespaces = OpenFileList("reffiles\\splitNamespaces.txt");
             htGACdlls = OpenGACList("reffiles\\gacload.txt");
             GetSplitRanges();
-            GetIntfcAdds();
+            //GetIntfcAdds();
 
             //only make a new connection if we are working with the DB...
-            if (storeDB)
-                rf = new ReflectorDO();
+            //if (storeDB)
+            //    rf = new ReflectorDO();
 
             if (_runStore)
             {
@@ -347,8 +346,8 @@ namespace LibCheck
             Console.WriteLine("\r\nTotal Time = {0}\r\n", duration);
 
             //CLOSE THE RF
-            if (rf != null)
-                rf.Close();
+            //if (rf != null)
+            //    rf.Close();
 
             Console.ReadKey();
         }
@@ -358,10 +357,10 @@ namespace LibCheck
             if (_runCompare)
             {
 
-                if (makeComReport)
-                    // make the Com arraylist...
-                    //this is ALL dlls in the specified comparison location...
-                    MakeComList();
+                //if (makeComReport)
+                //    // make the Com arraylist...
+                //    //this is ALL dlls in the specified comparison location...
+                //    MakeComList();
 
                 if (comOnly == false)
                 {
@@ -373,7 +372,7 @@ namespace LibCheck
 
                 if (makeComReport)
                 {
-                    MakeComCompat();
+                    //MakeComCompat();
                 }
             }
 
@@ -484,10 +483,10 @@ namespace LibCheck
                     outputLoc = args[i + 1] + "/";
                     i++;
                 }
-                else if (arg.ToLower().StartsWith("-owners"))
-                {
-                    showOwners = true;
-                }
+                //else if (arg.ToLower().StartsWith("-owners"))
+                //{
+                //    showOwners = true;
+                //}
                 else if (arg.ToLower().StartsWith("-nochurn"))
                 {
                     showChurn = false;
@@ -527,16 +526,16 @@ namespace LibCheck
                 {
                     byDll = false;
                 }
-                else if (arg.ToLower().StartsWith("-db"))
-                {
-                    storeDB = true;
-                    storeAsFile = false;
-                }
-                else if (arg.ToLower().StartsWith("-soap"))
-                {
-                    storeSoap = true;
-                    storeAsFile = false;
-                }
+                //else if (arg.ToLower().StartsWith("-db"))
+                //{
+                //    storeDB = true;
+                //    storeAsFile = false;
+                //}
+                //else if (arg.ToLower().StartsWith("-soap"))
+                //{
+                //    storeSoap = true;
+                //    storeAsFile = false;
+                //}
                 else if (arg.ToLower().StartsWith("-file"))
                 {
                     storeAsFile = true;
@@ -549,10 +548,10 @@ namespace LibCheck
                 {
                     incHeader = true;
                 }
-                else if (arg.ToLower().StartsWith("-noclr"))
-                {
-                    noColor = true;
-                }
+                //else if (arg.ToLower().StartsWith("-noclr"))
+                //{
+                //    noColor = true;
+                //}
                 else if (arg.ToLower().StartsWith("-sumclr"))
                 {
                     sumColor = true;
@@ -635,8 +634,8 @@ namespace LibCheck
             if (args.Length == 0 || !(_runStore || _runCompare || _runCurrentCompare > (CurrentCompare)0))
                 throw new ArgumentException("Please use one or more of the available options.");
 
-            if ((storeDB && storeSoap) || (storeAsFile && (storeDB || storeSoap)))
-                storeAsFile = true;
+            //if ((storeDB && storeSoap) || (storeAsFile && (storeDB || storeSoap)))
+            //    storeAsFile = true;
             //throw new ArgumentException("You cannot specify to store by DB and Soap Format, " +
             //    "or by db or soap, and by file.");
 
@@ -651,6 +650,115 @@ namespace LibCheck
 
             return true;
         } // end ParseArgs()
+
+        static ArrayList OpenFileList(String filetoopen)
+        {
+
+            FileInfo f = new FileInfo(filetoopen);
+
+            StreamReader sr = new StreamReader(f.OpenRead());
+
+            ArrayList alSplitFiles = new ArrayList();
+
+            while (sr.Peek() > -1)
+            {
+                alSplitFiles.Add(sr.ReadLine());
+            }
+
+            sr.Close();
+
+            return alSplitFiles;
+        }
+
+        //ROBVI
+        //Reads in the textfile gacload.txt and loads these assemblies from the GAC into a Hashtable
+        //the hashtable is used to translate between .dll names and the names stored in the GAC.
+
+        static Hashtable OpenGACList(String filetoopen)
+        {
+            FileInfo f = new FileInfo(filetoopen);
+            StreamReader sr = new StreamReader(f.OpenRead());
+            Hashtable dllmap = new Hashtable();
+
+            while (sr.Peek() > -1)
+            {
+                String full = sr.ReadLine();
+                String key = full.Substring(0, full.IndexOf(":"));
+                key = key.ToLower();
+                String val = full.Substring(full.IndexOf(":") + 1);
+                dllmap.Add(key, val);
+            }
+            return (dllmap);
+        }
+
+
+
+        // allows personal control of the splitting of dlls
+        static void GetSplitRanges()
+        {
+
+            int found = -1;
+            string tempEntry = "";
+
+            StreamReader sr = new StreamReader("reffiles\\splitRanges.txt");
+
+            htRanges = new Hashtable();
+
+            while (sr.Peek() > -1)
+            {
+                string temp = sr.ReadLine().Trim().ToLower();
+
+                found = temp.IndexOf(",");
+
+                if (found < 0) //SHOULD NEVER HAPPEN
+                    continue; //ignore this item
+                else
+                {
+
+                    if (temp.Substring(0, found).Trim() == numSplits.ToString())
+                    {
+                        //organize by the next entry...
+                        string sub = temp.Substring(found + 1);
+
+                        int innerItem = sub.IndexOf(",");
+
+                        if (innerItem < 0) //SHOULD NEVER HAPPEN
+                            continue; //ignore this item
+                        else
+                        {
+                            string entry = sub.Substring(0, innerItem).Trim().ToLower();
+
+                            if (tempEntry != entry)
+                            {
+                                if (splitRanges != null)
+                                    htRanges[tempEntry] = splitRanges;
+
+                                splitRanges = new StringCollection();
+                                tempEntry = entry;
+                            }
+
+                            splitRanges.Add(sub.Substring(innerItem + 1));
+                        }
+                    }
+                }
+
+            }
+
+            //NOTE: the LAST stringcollection will not ahve been added in all probability
+            //even if it has, doing it again won't hurt
+            if (splitRanges != null)
+                htRanges[tempEntry] = splitRanges;
+        }
+
+        //this ASSUMES that a range for "all" always exists
+        static StringCollection GetCorrectSplit(Assembly a)
+        {
+
+            if (htRanges.Contains(Path.GetFileName(a.CodeBase).ToLower()))
+                return (StringCollection)htRanges[Path.GetFileName(a.CodeBase).ToLower()];
+            else
+                return (StringCollection)htRanges["all"];
+        }
 
     } // end LibChk
 }

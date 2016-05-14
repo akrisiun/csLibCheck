@@ -1,8 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libcheck", "src\libcheck.csproj", "{8D709D74-8118-4310-BFE6-E243778242F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibCheck", "src\LibCheck.csproj", "{8D709D74-8118-4310-BFE6-E243778242F7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{DA88EE90-478E-40B0-ABCB-9BD841255894}"
 EndProject

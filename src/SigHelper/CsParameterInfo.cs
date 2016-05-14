@@ -14,8 +14,10 @@ namespace SigHelper {
 		public new static string ToString(ParameterInfo pi) { return (new CsParameterInfo(pi)).ToString(); }
 		public override string ToString() {
 			string temp = ToString(_modifiers);
-			string result = (temp != String.Empty) ? temp + " " : String.Empty;								// Modifiers
-			result += SigHelper.CsParse(_type.Name, true);													// Type
+			string result = (temp != String.Empty) ? temp + " " : String.Empty;                             // Modifiers
+
+            var intName = CsTypeInfo.ParseInterface(_type);
+            result += SigHelper.CsParse(intName, true);													// Type
 			result += (_name != String.Empty) ? " " + _name : "";											// Name
 //			result += (_defaultvalue != null && (temp = _defaultvalue.ToString()) != String.Empty) ? " = " + temp : "";	// Default value TODO: fix.
 			return result;

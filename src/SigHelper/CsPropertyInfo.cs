@@ -21,13 +21,15 @@ namespace SigHelper {
 			string temp = null;
 			string result = "   "; // Property: ";																		// MemberType
 
-			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;				// Modifiers
-            if (_getaccess == AccessModifiers.ProtectedInternal)
-                result += " protected internal ";
             if (_getaccess != AccessModifiers.na)
                 result += _getaccess.ToString().ToLower() + " ";
 
-			result += SigHelper.CsTranslate(_propertytype.Name) + " ";											// Type
+            result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;				// Modifiers
+            if (_getaccess == AccessModifiers.ProtectedInternal)
+                result += " protected internal ";
+
+            var intName = CsTypeInfo.ParseInterface(_propertytype);
+            result += SigHelper.CsTranslate(intName) + " ";											// Type
 			temp = (_name == null || _name == String.Empty) ? "UnknownName" : _name;							// Name
 			result += (_propertykind == PropertyKinds.Indexer) ? "this " + ToString(_indexparams) : temp;
 			result += " { ";																					// Accessors

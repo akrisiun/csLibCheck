@@ -48,7 +48,7 @@
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile />
-    <DefineConstants>TRACE;DEBUG;DBUGTM;DOREPORTS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DONTDBUGTM;DONTDOREPORTS</DefineConstants>
     <DocumentationFile />
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
@@ -117,9 +117,6 @@
     <Compile Include="Program.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ReflectorDO.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SigHelper\CsConstructorInfo.cs" />
     <Compile Include="SigHelper\CsEventInfo.cs" />
     <Compile Include="SigHelper\CsFieldInfo.cs" />
@@ -140,9 +137,6 @@
     <Compile Include="SigHelper\TTable.cs" />
     <Compile Include="Store.cs" />
     <Compile Include="TypeMember.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlReport.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

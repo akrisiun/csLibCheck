@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Diagnostics;
 using System.Text;
 using SigHelper;
 
@@ -67,7 +67,7 @@ namespace LibCheck
 
         #endregion
 
-        public GenMemberInfo MemberInfo { get; protected set; }
+        public GenMemberInfo MemberInfo { [DebuggerStepThrough] get; protected set; }
 
         //** Constructor
         public TypeMember(MemberInfo member, Type type, bool perfSer, bool isEnum, bool addStruct, bool addStructMethod, StreamWriter obsoletewriter)

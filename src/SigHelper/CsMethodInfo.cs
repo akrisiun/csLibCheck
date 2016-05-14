@@ -28,10 +28,15 @@ namespace SigHelper {
                     : "";
 
             if (_returntype.FullName != null)
-			    result += SigHelper.CsParse(CsTypeInfo.ParseInterface(_returntype)) + " ";								// Type
+            {
+                var intName = CsTypeInfo.ParseInterface(_returntype);
+                result += SigHelper.CsParse(intName) + " ";                                         // Type
+            }
 			result += _name;																		// Name
-			result += " " + ToString(_parameters, _varargs)  										// Parameters
-                   +";";
+            //" " +
+            result += ToString(_parameters, _varargs);  										    // Parameters
+            result += result.Contains(" void ") ? " {}" :
+                      " { throw new NotImplementedException(); }";
             //	result += " - " + String.Format("0x{0:x}", _attributes);
 
 			return result;

@@ -21,8 +21,10 @@ namespace SigHelper {
 			string result = "//" + ToString(_eventkind) + ": \n";										// MemberType
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;			// Scope
 			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;		// Modifiers
-			result += "event ";																			// keyword
-            result += SigHelper.CsParse(_handlertype.Name, false) + " ";										// Type
+			result += "event ";                                                                         // keyword
+
+            var infName = CsTypeInfo.ParseInterface(_handlertype);
+            result += SigHelper.CsParse(infName, false) + " ";										    // Type
 			result += _name;																			// Name
             if (_eventkind == EventKinds.Property)
                 result += " { get; set; }";																// Accessors

@@ -20,8 +20,8 @@ namespace SigHelper {
 			string temp;
 			string result = "//" + ToString(_methodkind) + ": \n";									// MemberType
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;		// Scope
-			result += (_methodkind == MethodKinds.Ctor) ? _declaringtype.Name : _name;				// Name
-			result += " " + ToString(_parameters, _varargs);										// Parameters
+			result += (_methodkind == MethodKinds.Ctor) ? CsTypeInfo.ParseInterface(_declaringtype) : _name;				// Name
+			result += " " + ToString(_parameters, _varargs) + " {}";								// Parameters
 			return result;
 		}
 		public new static string ToHtml(ConstructorInfo ci) { return (new CsConstructorInfo(ci)).ToHtml(); }
@@ -29,7 +29,7 @@ namespace SigHelper {
 			string temp;
 			string result = ToHtml(_methodkind) + ": ";													// MemberType
 			result += ((temp = ToHtml(_access)) != String.Empty) ? temp + " " : String.Empty;			// Scope
-			result += "<b>" + ((_methodkind == MethodKinds.Ctor) ? _declaringtype.Name : _name) + "</b>";	// Name
+			result += "<b>" + ((_methodkind == MethodKinds.Ctor) ? CsTypeInfo.ParseInterface(_declaringtype) : _name) + "</b>";	// Name
 			result += " " + ToHtml(_parameters, _varargs);												// Parameters
 			return result;
 		}
@@ -88,8 +88,11 @@ namespace SigHelper {
 
 		protected new static string ToString(GenParameterInfo [] parameters, bool varargs) {
 			string result = "(";
-			for(int i = 0; i < parameters.Length; i++)
-				result += ((i > 0) ? ", " : "") + (new CsParameterInfo(parameters[i])).ToString();
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                var info = new CsParameterInfo(parameters[i]);
+                result += ((i > 0) ? ", " : "") + info.ToString();
+            }
 			result += (varargs) ? ", __arglist" : "";
 			result += ")";
 			return result;

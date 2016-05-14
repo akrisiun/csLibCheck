@@ -49,7 +49,7 @@ namespace SigHelper {
 			string result = ToString(_methodkind) + ": ";
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;
 			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;
-			result += (_methodkind == MethodKinds.CCtor) ? _name : _declaringtype.Name;
+			result += (_methodkind == MethodKinds.CCtor) ? _name : CsTypeInfo.ParseInterface(_declaringtype);
 			result += " " + ToString(_parameters, _varargs);
 			return result;
 		}

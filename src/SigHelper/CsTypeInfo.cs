@@ -113,37 +113,20 @@ namespace SigHelper {
 		}
 
 		public new static string ToString(AccessModifiers access) { 
-
-//MODIFIED, mod0080
-//#if BETA1
 			return SigHelper.CsTranslate(Enum.GetName(typeof(AccessModifiers), access));
-//#else
-//			return SigHelper.CsTranslate(((Enum)access).ToString());
-//#endif
 		}
 		
 		public new static string ToString(TypeModifiers [] modifiers) {
 			string result = String.Empty;
 			foreach (TypeModifiers tm in modifiers) {
-
-//MODIFIED, mod0081
-//#if BETA1
 				result += SigHelper.CsTranslate(Enum.GetName(typeof(TypeModifiers), tm)) + " ";
-//#else
-//				result += SigHelper.CsTranslate(((Enum)tm).ToString()) + " ";
-//#endif
 			}
 
 			return result.TrimEnd(new Char[] {' '});
 		}
 		
 		public new static string ToString(TypeKinds kind) {
-//MODIFIED, mod0082
-//#if BETA1
 			return SigHelper.CsTranslate(Enum.GetName(typeof(TypeKinds), kind));
-//#else
-//			return SigHelper.CsTranslate(((Enum)kind).ToString());
-//#endif
 		}
 
 		// Creates the base class and interfaces pop up text for the plain text signature
@@ -185,8 +168,39 @@ namespace SigHelper {
 
                     temp += WithNS(arg);
                 }
+
+                if (isFirst && inf.ContainsGenericParameters && inf is System.Reflection.TypeInfo)
+                {
+                    var inf2 = inf as System.Reflection.TypeInfo;
+                    foreach (var it in inf2.GenericTypeParameters)
+                    {
+                        if (isFirst) isFirst = false;
+                        else temp += ",";
+
+                        temp += it.Name;
+                    }
+                }
+                else if (isFirst)
+                    temp += "Object";
+
+                int pos = temp.IndexOf("`");
+                if (!isFirst && pos > 2)
+                {
+                    var temp2 = temp.Substring(0, pos) + temp.Substring(pos + 2, temp.Length - pos - 2);
+                    temp = temp2;
+                }
+
                 temp += ">";
                 return temp;
+            }
+
+            if (inf.IsAnsiClass && !inf.IsArray)
+            {
+                if (inf.Name.StartsWith("ArraySegment`")
+                    && inf.FullName.Contains("[[System.Byte")) // 1 &)
+                {
+                    return "ArraySegment<byte>";
+                }
             }
 
             return WithNS(inf);
