@@ -1,0 +1,1 @@
+libcheck.exe -store full net45 -full c:\bin
