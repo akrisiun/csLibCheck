@@ -164,8 +164,9 @@ namespace SigHelper {
 
         public static string WithNS(Type basetype)
         {
-            return basetype.Namespace + "." 
-                    + (basetype.Name.EndsWith("`1") ?  
+            return basetype.Namespace + "."
+                    + (basetype.Name.EndsWith("`1") || basetype.Name.EndsWith("`2") || basetype.Name.EndsWith("`3") 
+                       || basetype.Name.EndsWith("`4") ?  
                        basetype.Name.Substring(0, basetype.Name.Length - 2) :
                        basetype.Name);
         }

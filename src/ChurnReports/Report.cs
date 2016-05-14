@@ -89,143 +89,144 @@ FileMode.Create), FileAccess.Write, FileShare.Read)));
 		}
 
 		// ** Methods
-		public string MailTo(string typestr, string[] owners, bool showOwners) {
-			// expected items in owners: PM, Dev, Test, UE.
+//        public string MailTo(string typestr, string[] owners, bool showOwners) {
+//            // expected items in owners: PM, Dev, Test, UE.
 
-			//if we're not showing the owners, then don't!
-			if (showOwners == false)
-				return "";
+//            //if we're not showing the owners, then don't!
+//            if (showOwners == false)
+//                return "";
 
-			if (owners.Length != 4) throw new 
-					ArgumentException("The owners' array must contain exactly 4 elements.", "owners");
-//			return String.Format(_MailTo, new object[] { owners[0], owners[1], owners[2], owners[3], 
-//					typestr, _oldbuild, _newbuild } );
+//            if (owners.Length != 4) throw new 
+//                    ArgumentException("The owners' array must contain exactly 4 elements.", "owners");
 
-//_MailTo
-//@"<a //HREF=""mailto:{0}?CC={1};{2};{3}&Subject=Changes%20in%20{4}%20from%20{5}%20to%20{6}"">Contact Owners //({0},{1},{2},{3})</a>"
+////			return String.Format(_MailTo, new object[] { owners[0], owners[1], owners[2], owners[3], 
+////					typestr, _oldbuild, _newbuild } );
 
-		String sPM = owners[0];
-		String sDev = owners[1];
-		String sTest = owners[2];
-		String sUE = owners[3];
-		Boolean entryMade = false;
-		Boolean ccMade = false;
-		string mailto = "";
+////_MailTo
+////@"<a //HREF=""mailto:{0}?CC={1};{2};{3}&Subject=Changes%20in%20{4}%20from%20{5}%20to%20{6}"">Contact Owners //({0},{1},{2},{3})</a>"
 
-		string subject = String.Format("Changes%20in%20{0}%20from%20{1}%20to%20{2}", 
-				typestr, _oldbuild, _newbuild);
+//        String sPM = owners[0];
+//        String sDev = owners[1];
+//        String sTest = owners[2];
+//        String sUE = owners[3];
+//        Boolean entryMade = false;
+//        Boolean ccMade = false;
+//        string mailto = "";
 
-		sPM = (sPM == null ? "" : sPM);
-		sDev = (sDev == null ? "" : sDev);
-		sTest = (sTest == null ? "" : sTest);
-		sUE = (sUE == null ? "" : sUE);
+//        string subject = String.Format("Changes%20in%20{0}%20from%20{1}%20to%20{2}", 
+//                typestr, _oldbuild, _newbuild);
 
-		if ((sPM.Trim() == "" || sPM == "unknown") && 
-				(sDev.Trim() == "" || sDev.Trim() == "unknown") &&
-				(sTest.Trim() == "" || sTest.Trim() == "unknown") &&
-				(sUE.Trim() == "" || sUE.Trim() == "unknown")) {
+//        sPM = (sPM == null ? "" : sPM);
+//        sDev = (sDev == null ? "" : sDev);
+//        sTest = (sTest == null ? "" : sTest);
+//        sUE = (sUE == null ? "" : sUE);
 
-			mailto = "<font size=2 color=blue><i>No Contacts Available</i></font>";
-		}
-		else {
+//        if ((sPM.Trim() == "" || sPM == "unknown") && 
+//                (sDev.Trim() == "" || sDev.Trim() == "unknown") &&
+//                (sTest.Trim() == "" || sTest.Trim() == "unknown") &&
+//                (sUE.Trim() == "" || sUE.Trim() == "unknown")) {
 
-			mailto = String.Format("{0}", "<a //HREF=\"mailto:");
-//			mailto = String.Format("<a HREF=""mailto:");
+//            mailto = "<font size=2 color=blue><i>No Contacts Available</i></font>";
+//        }
+//        else {
 
-			if (sPM.Trim() != "" && sPM.Trim() != "unknown") {
-				mailto += String.Format("{0}", sPM);
-				entryMade = true;
+//            mailto = String.Format("{0}", "<a //HREF=\"mailto:");
+////			mailto = String.Format("<a HREF=""mailto:");
 
-				sPM += " (PM)";
-			}
+//            if (sPM.Trim() != "" && sPM.Trim() != "unknown") {
+//                mailto += String.Format("{0}", sPM);
+//                entryMade = true;
 
-			if (sDev.Trim() != "" && sDev.Trim() != "unknown") {
-				if (entryMade) {
-					mailto += String.Format("?CC={0}", sDev);
-					ccMade = true;
-				}
-				else {
-					mailto += String.Format("{0}", sDev);
-					entryMade = true;
-				}
+//                sPM += " (PM)";
+//            }
 
-				sDev += " (Dev)";
-			}
+//            if (sDev.Trim() != "" && sDev.Trim() != "unknown") {
+//                if (entryMade) {
+//                    mailto += String.Format("?CC={0}", sDev);
+//                    ccMade = true;
+//                }
+//                else {
+//                    mailto += String.Format("{0}", sDev);
+//                    entryMade = true;
+//                }
 
-			if (sTest.Trim() != "" && sTest.Trim() != "unknown") {
-				if (ccMade) {
-					mailto += String.Format(";{0}", sTest);
-				}
-				else if (entryMade) {
-					mailto += String.Format("?CC={0}", sTest);
-					ccMade = true;
-				}
-				else {
-					mailto += String.Format("{0}", sTest);
-					entryMade = true;
-				}
+//                sDev += " (Dev)";
+//            }
 
-				sTest += " (Test)";
-			}
+//            if (sTest.Trim() != "" && sTest.Trim() != "unknown") {
+//                if (ccMade) {
+//                    mailto += String.Format(";{0}", sTest);
+//                }
+//                else if (entryMade) {
+//                    mailto += String.Format("?CC={0}", sTest);
+//                    ccMade = true;
+//                }
+//                else {
+//                    mailto += String.Format("{0}", sTest);
+//                    entryMade = true;
+//                }
 
-			if (sUE.Trim() != "" && sUE.Trim() != "unknown") {
-				if (ccMade) {
-					mailto += String.Format(";{0}", sUE);
-				}
-				else if (entryMade) {
-					mailto += String.Format("?CC={0}", sUE);
-					ccMade = true;
-				}
-				else {
-					mailto += String.Format("{0}", sUE);
-					entryMade = true;
-				}
+//                sTest += " (Test)";
+//            }
 
-				sUE += " (UE)";
-			}
+//            if (sUE.Trim() != "" && sUE.Trim() != "unknown") {
+//                if (ccMade) {
+//                    mailto += String.Format(";{0}", sUE);
+//                }
+//                else if (entryMade) {
+//                    mailto += String.Format("?CC={0}", sUE);
+//                    ccMade = true;
+//                }
+//                else {
+//                    mailto += String.Format("{0}", sUE);
+//                    entryMade = true;
+//                }
 
-			mailto += String.Format("&Subject={0}\">Contact Owners (", subject);
+//                sUE += " (UE)";
+//            }
 
-			entryMade = false;
+//            mailto += String.Format("&Subject={0}\">Contact Owners (", subject);
 
-			if (sPM.Trim() != "" && sPM.Trim() != "unknown") {
-				mailto += sPM.Trim();
-				entryMade = true;
-			}
+//            entryMade = false;
 
-			if (sDev.Trim() != "" && sDev.Trim() != "unknown") {
-				if (entryMade)
-					mailto += ", ";
+//            if (sPM.Trim() != "" && sPM.Trim() != "unknown") {
+//                mailto += sPM.Trim();
+//                entryMade = true;
+//            }
 
-				mailto += sDev.Trim();
-				entryMade = true;			
-			}
+//            if (sDev.Trim() != "" && sDev.Trim() != "unknown") {
+//                if (entryMade)
+//                    mailto += ", ";
 
-			if (sTest.Trim() != "" && sTest.Trim() != "unknown") {
-				if (entryMade)
-					mailto += ", ";
+//                mailto += sDev.Trim();
+//                entryMade = true;			
+//            }
 
-				mailto += sTest.Trim();
-				entryMade = true;			
-			}
+//            if (sTest.Trim() != "" && sTest.Trim() != "unknown") {
+//                if (entryMade)
+//                    mailto += ", ";
 
-			if (sUE.Trim() != "" && sUE.Trim() != "unknown") {
-				if (entryMade)
-					mailto += ", ";
+//                mailto += sTest.Trim();
+//                entryMade = true;			
+//            }
 
-				mailto += sUE.Trim();
-				entryMade = true;			
-			}
+//            if (sUE.Trim() != "" && sUE.Trim() != "unknown") {
+//                if (entryMade)
+//                    mailto += ", ";
 
-			mailto += ")</a>";
+//                mailto += sUE.Trim();
+//                entryMade = true;			
+//            }
 
-		}
+//            mailto += ")</a>";
 
-//		return _typestring + "(" + mailto + ")";
-//		mailto = @ + mailto;
-		return @mailto;
+//        }
 
-		}
+////		return _typestring + "(" + mailto + ")";
+////		mailto = @ + mailto;
+//        return @mailto;
+
+//        }
 	} // End GenericReport
 
 	public class DetailReport : GenericReport {

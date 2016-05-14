@@ -17,6 +17,9 @@ node_modules/
 slnx.sqlite 
 *.zip
 *.txt
+*.store
+*.Report
+*.Err
 
 websrc*/
 reffiles/

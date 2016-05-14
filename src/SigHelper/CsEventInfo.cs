@@ -18,14 +18,17 @@ namespace SigHelper {
 		public new static string ToString(EventInfo ev) { return (new CsEventInfo(ev)).ToString(); }
 		public override string ToString() {
 			string temp = null;
-			string result = ToString(_eventkind) + ": ";												// MemberType
+			string result = "//" + ToString(_eventkind) + ": \n";										// MemberType
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;			// Scope
 			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;		// Modifiers
 			result += "event ";																			// keyword
-			result += SigHelper.CsParse(_handlertype.Name) + " ";										// Type
+            result += SigHelper.CsParse(_handlertype.Name, false) + " ";										// Type
 			result += _name;																			// Name
-			if (_eventkind == EventKinds.Property)
-				result += " { get; set; }";																// Accessors
+            if (_eventkind == EventKinds.Property)
+                result += " { get; set; }";																// Accessors
+            else if (_eventkind == EventKinds.Field)
+                result += ";"; //  { add; remove; }";
+
 			return result;
 		}
 		public new static string ToHtml(EventInfo ev) { return (new CsEventInfo(ev)).ToHtml(); }
@@ -36,7 +39,7 @@ namespace SigHelper {
 			result += ((temp = ToHtml(_modifiers)) != String.Empty) ? temp + " " : String.Empty;		// Modifiers
 			result += "event ";																			// keyword
 			result += "<span title=\"" + _handlertype.Namespace + "\">";								// Type
-			result += SigHelper.CsParse(_handlertype.Name) + "</span> ";
+            result += SigHelper.CsParse(_handlertype.Name, false) + "</span> ";
 			result += "<b>" + _name + "</b>";															// Name
 			if (_eventkind == EventKinds.Property)
 				result += " { get; set; }";																// Accessors

@@ -18,14 +18,22 @@ namespace SigHelper {
 		public new static string ToString(FieldInfo fi) { return (new CsFieldInfo(fi)).ToString(); }
 		public override string ToString() {
 			string temp = null;
-			string result = "Field: ";																// MemberType
+			string result = "// Field: \n";														
+                                                                                                    // MemberType
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;		// Scope
 			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;	// Modifiers
 			result += (_fieldkind == FieldKinds.Constant) ? "const " : "";							// const
-			result += SigHelper.CsParse(_fieldtype.Name, true) + " ";								// Type
+            
+            var nameType = CsTypeInfo.ParseInterface(_fieldtype);
+			result += SigHelper.CsParse(nameType, true) + " ";								// Type
 			result += _name;																		// Name
-//			if (_value != null)																		// ? Value
-//				result += " = " + _value.ToString();
+            if (_value != null && _value.ToString() != "_._")											        // ? Value
+                result += " = " + _value.ToString();
+
+            result += ";";
+            if (_fieldtype.IsGenericType)
+            {
+            }
 			return result;
 		}
 		public new static string ToHtml(FieldInfo fi) { return (new CsFieldInfo(fi)).ToHtml(); }

@@ -67,6 +67,8 @@ namespace LibCheck
 
         #endregion
 
+        public GenMemberInfo MemberInfo { get; protected set; }
+
         //** Constructor
         public TypeMember(MemberInfo member, Type type, bool perfSer, bool isEnum, bool addStruct, bool addStructMethod, StreamWriter obsoletewriter)
         {
@@ -106,16 +108,11 @@ namespace LibCheck
             _isenum = isEnum;
             GetEnum(member);
 
-//#if DBUGTM
-//            var temp = ti.ToString(TypeFormats.IncludeBaseClass | TypeFormats.IncludeInheritFlag);
-//            temp = temp.Replace("`1[[", "<") + " {";
-
-//            Console.WriteLine(temp);
-//#endif
-
             ParseMember(ref mi, member);
 
             GetMember(mi, member);
+
+            MemberInfo = mi;
 
             // Rest
             #region Rest code
@@ -126,7 +123,6 @@ namespace LibCheck
             if (mi.IsObsolete && (!ObsoleteHT.Contains(mi._declaringtype + "." + mi.Name)))
             {
                 ObsoleteHT.Add(mi._declaringtype + "." + mi.Name, null);
-                //Console.WriteLine(mi._declaringtype +"."+mi.Name);
                 obsoletewriter.WriteLine(mi._declaringtype + "." + mi.Name);
 
             }
@@ -176,9 +172,6 @@ namespace LibCheck
             }
             #endregion
 
-//#if DBUGTM
-//            Console.WriteLine(" }  // eof of " + this.FullName);
-//#endif
         }
 
 
@@ -191,7 +184,7 @@ namespace LibCheck
                     mi = new CsTypeInfo((Type)member);
 
 #if DBUGTM
-                    Console.WriteLine(mi.ToString());
+                    //Console.WriteLine(mi.ToString());
 #endif
                     break;
 
@@ -200,36 +193,38 @@ namespace LibCheck
                     mi = new CsConstructorInfo((ConstructorInfo)member);
 
 #if DBUGTM
-                    Console.WriteLine(mi.ToString());
+                    //Console.WriteLine(mi.ToString());
 #endif
                     break;
                 case MemberTypes.Method:
                     // Console.WriteLine(" % TypeMember .ctor: Method      - " + member.Name);
                     mi = new CsMethodInfo((MethodInfo)member);
 #if DBUGTM
-                    Console.WriteLine(mi.ToString());
+                    //Console.WriteLine(mi.ToString());
 #endif
 
                     break;
                 case MemberTypes.Event:
                     //Console.WriteLine(" % TypeMember .ctor: Event       - " + member.Name);
                     mi = new CsEventInfo((EventInfo)member);
-#if DBUGTM
-                    Console.WriteLine(mi.ToString());
-#endif
+//#if DBUGTM
+//                    Console.WriteLine(mi.ToString());
+//#endif
                     break;
+
                 case MemberTypes.Field:
                     //Console.WriteLine(" % TypeMember .ctor: Field       - " + member.Name);
+                    
                     mi = new CsFieldInfo((FieldInfo)member);
 #if DBUGTM
-                    Console.WriteLine(mi.ToString());
+                    //Console.WriteLine(mi.ToString());
 #endif
                     break;
                 case MemberTypes.Property:
                     //Console.WriteLine(" % TypeMember .ctor: Property    - " + member.Name);
                     mi = new CsPropertyInfo((PropertyInfo)member, false);
 #if DBUGTM
-                    Console.WriteLine(mi.ToString());
+                    //Console.WriteLine(mi.ToString());
 #endif
                     break;
                 default:
@@ -237,7 +232,7 @@ namespace LibCheck
                     mi = new GenMemberInfo(member);
 
 #if DBUGTM
-                    Console.WriteLine(mi.ToString());
+                    //Console.WriteLine(mi.ToString());
 #endif
 
                     //MODIFIED, mod5002
@@ -444,8 +439,8 @@ namespace LibCheck
                             tempName += ",";
 
                         //					tempName+=items;
-                        tempName += items[1];
-
+                        if (items.Length > 0)
+                            tempName += items.Length < 2 ? items[0] : items[1];
                     }
 
                     if (tempName.EndsWith("params=") == false)
@@ -468,54 +463,66 @@ namespace LibCheck
             }
 
             //saving custom attributes...
-            object[] attribs =
-                member.GetCustomAttributes(false); //false says NOT get inherited attribs
+            //object[] attribs =
+            //    member.GetCustomAttributes(false); //false says NOT get inherited attribs
 
-            /* */
-            foreach (object o in attribs)
-            {
-                Type t = o.GetType();
-                string typeName = CsTypeInfo.ParseInterface(t);
-                if (typeName != "System.Security.SecuritySafeCriticalAttribute"
-                    && typeName != ".__DynamicallyInvokableAttribute"
-                    && typeName != "DocumentFormat.OpenXml.SchemaAttrAttribute")
-                {
+            ///* */
+            ////foreach (object o in attribs)
+            ////{
+            ////    Type t = o.GetType();
+            ////    string typeName = CsTypeInfo.ParseInterface(t);
+            ////    if (typeName != "System.Security.SecuritySafeCriticalAttribute"
+            ////        && typeName != ".__DynamicallyInvokableAttribute"
+            ////        && typeName != "DocumentFormat.OpenXml.SchemaAttrAttribute"
+            ////        && typeName != "System.Runtime.InteropServices.DispIdAttribute"
+            ////        && typeName != "System.ComponentModel.DesignerSerializationVisibilityAttribute"
+            ////        && typeName != "System.ComponentModel.CategoryAttribute"
+            ////        && typeName != "System.Security.Permissions.HostProtectionAttribute"
+            ////        && typeName != "System.Runtime.ConstrainedExecution.ReliabilityContractAttribute"
+            ////        && typeName != "System.Runtime.Versioning.NonVersionableAttribute"
+            ////        && typeName != "System.ComponentModel.DefaultValueAttribute"
+            ////        && typeName != "System.Windows.LocalizabilityAttribute"
+            ////        && typeName != "System.ComponentModel.EditorBrowsableAttribute"
+            ////        && typeName != "System.ComponentModel.BindableAttribute"
+            ////        && typeName != "System.ComponentModel.TypeConverterAttribute"
+            ////        )
+            ////    {
 
-                    PropertyInfo[] pi = t.GetProperties();
+            ////        PropertyInfo[] pi = t.GetProperties();
 
-                    foreach (PropertyInfo p in pi)
-                    {
-                        string value = null;
-                        try
-                        {
-                            value = p.GetValue(p.Name, null) as string;
-                            Console.WriteLine(p.Name + "=" + value);
-                        }
-                        catch (System.Reflection.TargetException) { }
-                        catch (Exception e)
-                        {
-                            // Console.WriteLine(e.ToString());
-                            //	Console.WriteLine(p.Name + "=" + p.GetValue(p.Name,new object[] {0}));
-                        }
-                    }
-                }
-            }
-            //*/
+            ////        foreach (PropertyInfo p in pi)
+            ////        {
+            ////            string value = null;
+            ////            try
+            ////            {
+            ////                value = p.GetValue(p.Name, null) as string;
+            ////                // Console.WriteLine(p.Name + "=" + value);
+            ////            }
+            ////            catch (System.Reflection.TargetException) { }
+            ////            catch (Exception e)
+            ////            {
+            ////                // Console.WriteLine(e.ToString());
+            ////                //	Console.WriteLine(p.Name + "=" + p.GetValue(p.Name,new object[] {0}));
+            ////            }
+            ////        }
+            ////    }
+            ////}
+            ////*/
 
-            if (attribs != null && attribs.Length > 0)
-            {
-                string stringAttribs = "";
+            //if (attribs != null && attribs.Length > 0)
+            //{
+            //    string stringAttribs = "";
 
-                foreach (object obj in attribs)
-                {
-                    if (stringAttribs != "")
-                        stringAttribs += ",";
-                    stringAttribs += obj.ToString();
-                }
+            //    foreach (object obj in attribs)
+            //    {
+            //        if (stringAttribs != "")
+            //            stringAttribs += ",";
+            //        stringAttribs += obj.ToString();
+            //    }
 
-                // _misc += ";attribs=" + stringAttribs;
-                _misc += "[" + stringAttribs + "]\n" + _misc;
-            }
+            //    // _misc += ";attribs=" + stringAttribs;
+            //    _misc += "[" + stringAttribs + "]\n" + _misc;
+            //}
 
         }
 
@@ -742,11 +749,11 @@ namespace LibCheck
         {
             get
             {
-                if (Owners2.dbNotAvailable)
-                    return new string[4] { "unknown", "unknown", "unknown", "unknown" };
-                else
-                    return new string[4] { GetPMOwner(TypeFullName), GetDevOwner(TypeFullName),
-						GetTestOwner(TypeFullName), GetUEOwner(TypeFullName) };
+                //if (Owners2.dbNotAvailable)
+                     return new string[4] { "unknown", "unknown", "unknown", "unknown" };
+                //else
+                    //return new string[4] { GetPMOwner(TypeFullName), GetDevOwner(TypeFullName),
+                    //    GetTestOwner(TypeFullName), GetUEOwner(TypeFullName) };
 
             }
         }
@@ -1325,13 +1332,13 @@ namespace LibCheck
             string subject = String.Format("Changes%20in%20{0}%20from%20{1}%20to%20{2}",
                     TypeFullName, LibChk.OldVer, LibChk.NewVer);
 
-            if (Owners2.dbNotAvailable == false)
-            {
-                sPM = GetPMOwner(TypeFullName);
-                sDev = GetDevOwner(TypeFullName);
-                sTest = GetTestOwner(TypeFullName);
-                sUE = GetUEOwner(TypeFullName);
-            }
+            //if (Owners2.dbNotAvailable == false)
+            //{
+            //    sPM = GetPMOwner(TypeFullName);
+            //    sDev = GetDevOwner(TypeFullName);
+            //    sTest = GetTestOwner(TypeFullName);
+            //    sUE = GetUEOwner(TypeFullName);
+            //}
 
             sPM = (sPM == null ? "" : sPM);
             sDev = (sDev == null ? "" : sDev);
@@ -1530,60 +1537,62 @@ namespace LibCheck
             // convert space between namespace and type to a dot.
             string name = (new StringBuilder(typeName)).Replace(" ", ".").ToString();
 
-            Owners2 o = new Owners2();
+//            Owners2 o = new Owners2();
 
-            string s = "pmowners";
-            try
-            {
-#if DBUGTM
-                Console.Write("o.GetPMOwner('{0}').Trim() = ", name);
-#endif
+//            string s = "pmowners";
+//            try
+//            {
+//#if DBUGTM
+//                Console.Write("o.GetPMOwner('{0}').Trim() = ", name);
+//#endif
 
-                s = o.GetPMOwner(name).Trim();
+//                s = o.GetPMOwner(name).Trim();
 
-#if DBUGTM
-                Console.WriteLine("'{0}'", s);
-#endif
+//#if DBUGTM
+//                Console.WriteLine("'{0}'", s);
+//#endif
 
-                return (s == "pmowners") ? "" : s;
-            }
-#if DBUGTM
-            catch (Exception e)
-            {
-                Console.WriteLine("** Exception Caught **\r\n" + e.ToString());
-                return s;
-            }
-#else
-            catch { return s; }
-#endif
+//                return (s == "pmowners") ? "" : s;
+//            }
+//#if DBUGTM
+//            catch (Exception e)
+//            {
+//                Console.WriteLine("** Exception Caught **\r\n" + e.ToString());
+//                return s;
+//            }
+//#else
+//            catch { return s; }
+//#endif
+
+            return String.Empty;
         }
 
-        public static string GetDevOwner(string typeName)
-        {
-            string name = (new StringBuilder(typeName)).Replace(" ", ".").ToString();		// convert space between namespace and type to a dot.
-            Owners2 o = new Owners2();
-            string s = "devowner";
-            try { return (((s = o.GetDevOwner(name).Trim()) == "unknown") ? "" : s); }
-            catch { return s; }
-        }
+        //public static string GetDevOwner(string typeName)
+        //{
+        //    string name = (new StringBuilder(typeName)).Replace(" ", ".").ToString();		// convert space between namespace and type to a dot.
+        //    Owners2 o = new Owners2();
+        //    string s = "devowner";
+        //    try { return (((s = o.GetDevOwner(name).Trim()) == "unknown") ? "" : s); }
+        //    catch { return s; }
+        //}
 
-        public static string GetTestOwner(string typeName)
-        {
-            string name = (new StringBuilder(typeName)).Replace(" ", ".").ToString();		// convert space between namespace and type to a dot.
-            Owners2 o = new Owners2();
-            string s = "testowner";
-            try { return (((s = o.GetTestOwner(name).Trim()) == "unknown") ? "" : s); }
-            catch { return s; }
-        }
+        //public static string GetTestOwner(string typeName)
+        //{
+        //    string name = (new StringBuilder(typeName)).Replace(" ", ".").ToString();		// convert space between namespace and type to a dot.
+        //    Owners2 o = new Owners2();
+        //    string s = "testowner";
+        //    try { return (((s = o.GetTestOwner(name).Trim()) == "unknown") ? "" : s); }
+        //    catch { return s; }
+        //}
 
-        public static string GetUEOwner(string typeName)
-        {
-            Owners2 o = new Owners2();
-            string name = (new StringBuilder(typeName)).Replace(" ", ".").ToString();		// convert space between namespace and type to a dot.
-            string s = "ueowner";
-            try { return (((s = o.GetUEOwner(name).Trim()) == "unknown") ? "" : s); }
-            catch { return s; }
-        }
+        //public static string GetUEOwner(string typeName)
+        //{
+        //    Owners2 o = new Owners2();
+        //    string name = (new StringBuilder(typeName)).Replace(" ", ".").ToString();		// convert space between namespace and type to a dot.
+        //    string s = "ueowner";
+        //    try { return (((s = o.GetUEOwner(name).Trim()) == "unknown") ? "" : s); }
+        //    catch { return s; }
+        //}
 
         //this routine sets all the variables for the TypeMember, being all the variables necessary to use a TypeMember...
         //you can pass null for many of these...

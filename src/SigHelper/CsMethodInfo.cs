@@ -24,11 +24,11 @@ namespace SigHelper {
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;		// Scope
 			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;	// Modifiers
 
-            result += (_inherited) ? " override " // + InheritedString() 
+            result += (_inherited) ? "override " // + InheritedString() 
                     : "";
 
             if (_returntype.FullName != null)
-			    result += SigHelper.CsParse(_returntype.FullName) + " ";								// Type
+			    result += SigHelper.CsParse(CsTypeInfo.ParseInterface(_returntype)) + " ";								// Type
 			result += _name;																		// Name
 			result += " " + ToString(_parameters, _varargs)  										// Parameters
                    +";";
@@ -118,8 +118,11 @@ namespace SigHelper {
 
 		protected new static string ToString(GenParameterInfo [] parameters, bool varargs) {
 			string result = "(";
-			for(int i = 0; i < parameters.Length; i++)
-				result += ((i > 0) ? ", " : String.Empty) + (new CsParameterInfo(parameters[i])).ToString();
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                var info = new CsParameterInfo(parameters[i]);
+                result += ((i > 0) ? ", " : String.Empty) + info.ToString();
+            }
 			if (varargs)
 				result += ", __arglist";
 			result += ")";

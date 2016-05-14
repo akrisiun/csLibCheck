@@ -7,151 +7,170 @@ using System.Data;
 
 using System.Data.SqlClient;
 
-namespace LibCheck {
+namespace LibCheck
+{
 
-public class Owners2 {
+    public class Owners2
+    {
 
-	static DataSet ds;
-	public static Boolean dbNotAvailable = false;
+        static DataSet ds;
+        public static Boolean dbNotAvailable = false;
 
-	public Owners2 ()
-	{
-		try {
+        public Owners2()
+        {
+            try
+            {
 
-			Reload ();
-		} catch {
+                Reload();
+            }
+            catch
+            {
 
-			dbNotAvailable = true;
-		}
-         }
-    
-
-	[WebMethod]
-	public void Reload () {
-
-		SqlConnection myConnection;
-	        myConnection = new SqlConnection("server=chriskg1;uid=sam;pwd=peanut~01;database=pubs");
-
-        	myConnection.Open();
-	        ds = new DataSet();
-
-		SqlDataAdapter tAdapt = new SqlDataAdapter();
-
-		tAdapt.SelectCommand = new SqlCommand("SELECT * FROM Owners",myConnection);
-		tAdapt.Fill(ds, "Owners");
-
-        	myConnection.Close();
-	}
-
-	[WebMethod]
-	public string GetPMOwner(string namespaceName) {
-
-		string name = null;
-
-		while (name == null)
-		{
-
-			foreach(DataRow dr in ds.Tables["Owners"].Rows) {
-
-				if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper() )
-					return Convert.ToString(dr["PMOwner"]);
-			}
-		     
-			int index = namespaceName.LastIndexOf (".");
-
-			if (index == -1) {
-				name = "unknown";
-				break;
-			}
-
-			namespaceName = namespaceName.Remove (index, namespaceName.Length - index);
-		}
-
-		return name;
-	}
+                dbNotAvailable = true;
+            }
+        }
 
 
-	[WebMethod]
-	public string GetDevOwner(string namespaceName) {        
+        [WebMethod]
+        public void Reload()
+        {
 
-		string name = null;
+            SqlConnection myConnection;
+            myConnection = new SqlConnection("server=chriskg1;uid=sam;pwd=peanut~01;database=pubs");
 
-		while (name == null)
-		{
-			foreach(DataRow dr in ds.Tables["Owners"].Rows) {
-		     
-				if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper() )
-					return Convert.ToString(dr["DevOwner"]);
+            myConnection.Open();
+            ds = new DataSet();
 
-			}		     
-			
-			int index = namespaceName.LastIndexOf (".");
+            SqlDataAdapter tAdapt = new SqlDataAdapter();
 
-			if (index == -1)
-			{
-				name = "unknown";
-				break;
-			}
+            tAdapt.SelectCommand = new SqlCommand("SELECT * FROM Owners", myConnection);
+            tAdapt.Fill(ds, "Owners");
 
-			namespaceName = namespaceName.Remove (index, namespaceName.Length - index);	
-		}
+            myConnection.Close();
+        }
 
-		return name;
-	}
+        [WebMethod]
+        public string GetPMOwner(string namespaceName)
+        {
+
+            string name = null;
+
+            while (name == null)
+            {
+
+                foreach (DataRow dr in ds.Tables["Owners"].Rows)
+                {
+
+                    if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper())
+                        return Convert.ToString(dr["PMOwner"]);
+                }
+
+                int index = namespaceName.LastIndexOf(".");
+
+                if (index == -1)
+                {
+                    name = "unknown";
+                    break;
+                }
+
+                namespaceName = namespaceName.Remove(index, namespaceName.Length - index);
+            }
+
+            return name;
+        }
 
 
-	[WebMethod]
-	public string GetUEOwner(string namespaceName) {
+        [WebMethod]
+        public string GetDevOwner(string namespaceName)
+        {
 
-		string name = null;
+            string name = null;
 
-		while (name == null) {
+            while (name == null)
+            {
+                foreach (DataRow dr in ds.Tables["Owners"].Rows)
+                {
 
-			foreach(DataRow dr in ds.Tables["Owners"].Rows) {
+                    if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper())
+                        return Convert.ToString(dr["DevOwner"]);
 
-				if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper() )
-					return Convert.ToString(dr["UEOwner"]);
+                }
 
-			}
-		     
-			int index = namespaceName.LastIndexOf (".");
+                int index = namespaceName.LastIndexOf(".");
 
-			if (index == -1) {
-				name = "unknown";
-				break;
-			}
+                if (index == -1)
+                {
+                    name = "unknown";
+                    break;
+                }
 
-			namespaceName = namespaceName.Remove (index, namespaceName.Length - index);		
-		}
+                namespaceName = namespaceName.Remove(index, namespaceName.Length - index);
+            }
 
-		return name;	
-	}
+            return name;
+        }
 
-	[WebMethod]
-	public string GetTestOwner(string namespaceName) {    
 
-		string name = null;
+        [WebMethod]
+        public string GetUEOwner(string namespaceName)
+        {
 
-		while (name == null) {
+            string name = null;
 
-			foreach(DataRow dr in ds.Tables["Owners"].Rows) {
-				if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper() )
-					return Convert.ToString(dr["TestOwner"]);
+            while (name == null)
+            {
 
-			}		     
-			
-			int index = namespaceName.LastIndexOf (".");
+                foreach (DataRow dr in ds.Tables["Owners"].Rows)
+                {
 
-			if (index == -1) {
-				name = "unknown";
-				break;
-			}
+                    if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper())
+                        return Convert.ToString(dr["UEOwner"]);
 
-			namespaceName = namespaceName.Remove (index, namespaceName.Length - index);			
-		}
+                }
 
-		return name;	
-	}
+                int index = namespaceName.LastIndexOf(".");
 
-}
+                if (index == -1)
+                {
+                    name = "unknown";
+                    break;
+                }
+
+                namespaceName = namespaceName.Remove(index, namespaceName.Length - index);
+            }
+
+            return name;
+        }
+
+        [WebMethod]
+        public string GetTestOwner(string namespaceName)
+        {
+
+            string name = null;
+
+            while (name == null)
+            {
+
+                foreach (DataRow dr in ds.Tables["Owners"].Rows)
+                {
+                    if (Convert.ToString(dr["NamespaceElement"]).ToUpper() == namespaceName.ToUpper())
+                        return Convert.ToString(dr["TestOwner"]);
+
+                }
+
+                int index = namespaceName.LastIndexOf(".");
+
+                if (index == -1)
+                {
+                    name = "unknown";
+                    break;
+                }
+
+                namespaceName = namespaceName.Remove(index, namespaceName.Length - index);
+            }
+
+            return name;
+        }
+
+    }
 }

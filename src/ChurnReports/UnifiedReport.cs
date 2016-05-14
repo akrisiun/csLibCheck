@@ -107,7 +107,9 @@ namespace ChurnReports {
 		public void WriteTypeRow(string typesig, string typestr, 
 					string extraStr, string[] owners, bool showOwners) {
 
-			WriteLine(String.Format(_UnifiedTypeRow, typesig, MailTo(typestr, owners, showOwners), typestr,
+			WriteLine(String.Format(_UnifiedTypeRow, typesig, 
+                    "", // MailTo(typestr, owners, showOwners), 
+                    typestr,
 					extraStr));
 			Flush();
 			_stuffAdded = _stuffRemoved = false;

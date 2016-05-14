@@ -69,10 +69,10 @@ namespace ChurnReports {
 
 		// ** Methods
 		public void AddedType(string typesig, string typestr, string[] owners, bool showOwners) {
-			_added.WriteLine(String.Format(_SplitType, typesig, MailTo(typestr, owners, showOwners)));
+            _added.WriteLine(String.Format(_SplitType, typesig, "")); // MailTo(typestr, owners, showOwners)));
 		}
 		public void RemovedType(string typesig, string typestr, string[] owners, bool showOwners) {
-			_removed.WriteLine(String.Format(_SplitType, typesig, MailTo(typestr, owners, showOwners)));
+            _removed.WriteLine(String.Format(_SplitType, typesig, "")); // MailTo(typestr, owners, showOwners)));
 		}
 
 		public void AddedMember(string membersig, bool ignoreInherit) {

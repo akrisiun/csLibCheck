@@ -21,8 +21,9 @@ namespace ChurnReports {
 ";
 
 		private const string _AllType = @"
-<h4>Type: {0} ({1})</h4>
+<h4>Type: {0} </h4>
 ";
+        //({1})
 
 		private const string _AllChangeStart = @"
 <dl><dt>{0} Members<dt>
@@ -48,7 +49,7 @@ namespace ChurnReports {
 		public void WriteAssembly(string assembly) { WriteLine(String.Format(_AllAssembly, assembly)); }
 
 		public void WriteType(string typesig, string[] owners, bool showOwners) {
-			WriteLine(String.Format(_AllType, typesig, MailTo(typesig, owners, showOwners)));
+			WriteLine(String.Format(_AllType, typesig, "")); //, MailTo(typesig, owners, showOwners)));
 		}
 
 		public void WriteAddedLine()              { WriteLine(String.Format(_AllChangeStart, "Added")); }

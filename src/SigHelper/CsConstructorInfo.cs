@@ -38,7 +38,7 @@ namespace SigHelper {
 		protected new static string ToString(MethodKinds kind) {
 			MethodKinds temp = kind & MethodKinds.CtorMask;
 			if (temp != 0 && temp != MethodKinds.UnknownCtor)
-				return "Constructor";
+				return "ctor";
 			else
 				return "UnknownConstructorType";
 		}

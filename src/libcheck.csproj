@@ -114,10 +114,7 @@
     <Compile Include="DataObject.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibCheck.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Owners2.cs">
+    <Compile Include="Program.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ReflectorDO.cs">
@@ -141,6 +138,7 @@
     <Compile Include="SigHelper\GenTypeInfo.cs" />
     <Compile Include="SigHelper\SigHelper.cs" />
     <Compile Include="SigHelper\TTable.cs" />
+    <Compile Include="Store.cs" />
     <Compile Include="TypeMember.cs">
       <SubType>Code</SubType>
     </Compile>
