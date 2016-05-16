@@ -1,53 +1,54 @@
 
+using System;
 namespace System.Data
 {  
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("5b6711b4-d415-3fd8-8d0a-ad3b6896db71")]
-  public sealed enum CommandBehavior : System.Enum
+  public sealed enum CommandBehavior // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("c0d78e71-d37f-305d-a90b-57a09437da1e")]
-  public sealed enum CommandType : System.Enum
+  public sealed enum CommandType // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("ea4bbf61-06a6-3f8e-a81c-a4c4000e9e6c")]
-  public sealed enum ConnectionState : System.Enum
+  public sealed enum ConnectionState // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("3fb13d62-d5d6-385a-aa95-6bba6e2d76d2")]
-  public sealed enum DbType : System.Enum
+  public sealed enum DbType // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("0fa899a2-3d46-3923-ba25-5fbbc92f03c0")]
-  public sealed enum IsolationLevel : System.Enum
+  public sealed enum IsolationLevel // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("6bafd43b-78e5-3b56-b97f-cb3e254c6472")]
-  public sealed enum ParameterDirection : System.Enum
+  public sealed enum ParameterDirection // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
@@ -73,61 +74,63 @@ public static readonly EventArgs Empty;
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
-[Guid("da44e687-a685-37ec-8cdc-d06ce8b18d35")]
-  public sealed delegate StateChangeEventHandler : System.MulticastDelegate
-{
-    public virtual void Invoke(object sender, StateChangeEventArgs e) {}
-    public virtual IAsyncResult BeginInvoke(object sender, StateChangeEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
-    public virtual void EndInvoke(IAsyncResult result) {}
-    public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {}
-    public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
-    protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
-    protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
-    public virtual override delegate[] GetInvocationList() { throw new NotImplementedException(); }
-    public virtual override int GetHashCode() { throw new NotImplementedException(); }
-    protected virtual override System.Reflection.MethodInfo GetMethodImpl() { throw new NotImplementedException(); }
-    public override object DynamicInvoke(object[] args) { throw new NotImplementedException(); }
-    protected virtual override object DynamicInvokeImpl(object[] args) { throw new NotImplementedException(); }
-    public static override delegate Combine(delegate a, delegate b) { throw new NotImplementedException(); }
-    public static override delegate Combine(delegate[] delegates) { throw new NotImplementedException(); }
-    public static override delegate Remove(delegate source, delegate value) { throw new NotImplementedException(); }
-    public static override delegate RemoveAll(delegate source, delegate value) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
-    public virtual override string ToString() { throw new NotImplementedException(); }
-    public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
-    public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
-    public override Type GetType() { throw new NotImplementedException(); }
-    protected virtual override void Finalize() {}
-    protected override object MemberwiseClone() { throw new NotImplementedException(); }
-//ctor: 
-public StateChangeEventHandler (object object, IntPtr method) {}
-   public System.Reflection.MethodInfo Method { get; }
-   public object Target { get; }
-  }
+//[Guid("da44e687-a685-37ec-8cdc-d06ce8b18d35")]
+  public sealed delegate StateChangeEventHandler; // : System.MulticastDelegate
+
+//{
+//    public virtual void Invoke(object sender, StateChangeEventArgs e) {}
+//    public virtual IAsyncResult BeginInvoke(object sender, StateChangeEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
+//    public virtual void EndInvoke(IAsyncResult result) {}
+//    // public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {}
+//    // public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
+//    //protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
+//    //protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
+
+//    //public virtual override delegate[] GetInvocationList() { throw new NotImplementedException(); }
+//    public virtual override int GetHashCode() { throw new NotImplementedException(); }
+//    protected virtual override System.Reflection.MethodInfo GetMethodImpl() { throw new NotImplementedException(); }
+//    public override object DynamicInvoke(object[] args) { throw new NotImplementedException(); }
+//    protected virtual override object DynamicInvokeImpl(object[] args) { throw new NotImplementedException(); }
+//    public static override delegate Combine(delegate a, delegate b) { throw new NotImplementedException(); }
+//    public static override delegate Combine(delegate[] delegates) { throw new NotImplementedException(); }
+//    public static override delegate Remove(delegate source, delegate value) { throw new NotImplementedException(); }
+//    public static override delegate RemoveAll(delegate source, delegate value) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
+//    public virtual override string ToString() { throw new NotImplementedException(); }
+//    public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
+//    public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
+//    public override Type GetType() { throw new NotImplementedException(); }
+//    protected virtual override void Finalize() {}
+//    protected override object MemberwiseClone() { throw new NotImplementedException(); }
+////ctor: 
+//public StateChangeEventHandler (object object, IntPtr method) {}
+//   public System.Reflection.MethodInfo Method { get; }
+//   public object Target { get; }
+//  }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("22b21535-cb12-3c02-b4bb-0e3a58ee6fda")]
-  public sealed enum UpdateRowSource : System.Enum
+  public sealed enum UpdateRowSource // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("3ec27e46-f875-30dc-83cf-084e76e80cea")]
-  public sealed enum DataRowVersion : System.Enum
+  public sealed enum DataRowVersion // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
@@ -150,13 +153,13 @@ public StateChangeEventHandler (object object, IntPtr method) {}
 [Guid("dbae8a91-bb4e-3e18-b45f-233c65fbda2b")]
   public interface IDataParameter
 {
-   public DbType DbType { get; set; }
-   public ParameterDirection Direction { get; set; }
-   public bool IsNullable { get; }
-   public string ParameterName { get; set; }
-   public string SourceColumn { get; set; }
-   public DataRowVersion SourceVersion { get; set; }
-   public object Value { get; set; }
+   DbType DbType { get; set; }
+   ParameterDirection Direction { get; set; }
+   bool IsNullable { get; }
+   string ParameterName { get; set; }
+   string SourceColumn { get; set; }
+   DataRowVersion SourceVersion { get; set; }
+   object Value { get; set; }
   }
 
 
@@ -164,10 +167,10 @@ public StateChangeEventHandler (object object, IntPtr method) {}
 [Guid("b490f13c-7e82-3a54-a31e-dfa010a1affe")]
   public interface IDataParameterCollection : System.Collections.IList
 {
-    bool Contains(string parameterName) { throw new NotImplementedException(); }
-    int IndexOf(string parameterName) { throw new NotImplementedException(); }
+    bool Contains(string parameterName);
+    int IndexOf(string parameterName);
     void RemoveAt(string parameterName) {}
-   public object this [string parameterName] { get; set; }
+    object this [string parameterName] { get; set; }
   }
 
 
@@ -176,12 +179,12 @@ public StateChangeEventHandler (object object, IntPtr method) {}
   public interface IDataReader : System.IDisposable, IDataRecord
 {
     void Close() {}
-    DataTable GetSchemaTable() { throw new NotImplementedException(); }
-    bool NextResult() { throw new NotImplementedException(); }
-    bool Read() { throw new NotImplementedException(); }
-   public int Depth { get; }
-   public bool IsClosed { get; }
-   public int RecordsAffected { get; }
+    DataTable GetSchemaTable();
+    bool NextResult();
+    bool Read();
+   int Depth { get; }
+   bool IsClosed { get; }
+   int RecordsAffected { get; }
   }
 
 
@@ -189,31 +192,31 @@ public StateChangeEventHandler (object object, IntPtr method) {}
 [Guid("6daa5a9d-4eac-3c24-b85c-794b4e65604d")]
   public interface IDataRecord
 {
-    string GetName(int i) { throw new NotImplementedException(); }
-    string GetDataTypeName(int i) { throw new NotImplementedException(); }
-    Type GetFieldType(int i) { throw new NotImplementedException(); }
-    object GetValue(int i) { throw new NotImplementedException(); }
-    int GetValues(object[] values) { throw new NotImplementedException(); }
-    int GetOrdinal(string name) { throw new NotImplementedException(); }
-    bool GetBoolean(int i) { throw new NotImplementedException(); }
-    byte GetByte(int i) { throw new NotImplementedException(); }
-    long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length) { throw new NotImplementedException(); }
-    char GetChar(int i) { throw new NotImplementedException(); }
-    long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length) { throw new NotImplementedException(); }
-    Guid GetGuid(int i) { throw new NotImplementedException(); }
-    short GetInt16(int i) { throw new NotImplementedException(); }
-    int GetInt32(int i) { throw new NotImplementedException(); }
-    long GetInt64(int i) { throw new NotImplementedException(); }
-    float GetFloat(int i) { throw new NotImplementedException(); }
-    double GetDouble(int i) { throw new NotImplementedException(); }
-    string GetString(int i) { throw new NotImplementedException(); }
-    decimal GetDecimal(int i) { throw new NotImplementedException(); }
-    DateTime GetDateTime(int i) { throw new NotImplementedException(); }
-    IDataReader GetData(int i) { throw new NotImplementedException(); }
-    bool IsDBNull(int i) { throw new NotImplementedException(); }
-   public int FieldCount { get; }
-   public object this [int i] { get; }
-   public object this [string name] { get; }
+    string GetName(int i);
+    string GetDataTypeName(int i);
+    Type GetFieldType(int i);
+    object GetValue(int i);
+    int GetValues(object[] values);
+    int GetOrdinal(string name);
+    bool GetBoolean(int i);
+    byte GetByte(int i);
+    long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length);
+    char GetChar(int i);
+    long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length);
+    Guid GetGuid(int i);
+    short GetInt16(int i);
+    int GetInt32(int i);
+    long GetInt64(int i);
+    float GetFloat(int i);
+    double GetDouble(int i);
+    string GetString(int i);
+    decimal GetDecimal(int i);
+    DateTime GetDateTime(int i);
+    IDataReader GetData(int i);
+    bool IsDBNull(int i);
+   int FieldCount { get; }
+   object this [int i] { get; }
+   object this [string name] { get; }
   }
 
 
@@ -223,11 +226,11 @@ public StateChangeEventHandler (object object, IntPtr method) {}
 {
     void Prepare() {}
     void Cancel() {}
-    IDbDataParameter CreateParameter() { throw new NotImplementedException(); }
-    int ExecuteNonQuery() { throw new NotImplementedException(); }
-    IDataReader ExecuteReader() { throw new NotImplementedException(); }
-    IDataReader ExecuteReader(System.Data.CommandBehavior behavior) { throw new NotImplementedException(); }
-    object ExecuteScalar() { throw new NotImplementedException(); }
+    IDbDataParameter CreateParameter();
+    int ExecuteNonQuery();
+    IDataReader ExecuteReader();
+    IDataReader ExecuteReader(System.Data.CommandBehavior behavior);
+    object ExecuteScalar();
    public IDbConnection Connection { get; set; }
    public IDbTransaction Transaction { get; set; }
    public string CommandText { get; set; }
@@ -242,11 +245,11 @@ public StateChangeEventHandler (object object, IntPtr method) {}
 [Guid("9bb226f4-2af3-37e7-b91d-3bb936fc0a7e")]
   public interface IDbConnection : System.IDisposable
 {
-    IDbTransaction BeginTransaction() { throw new NotImplementedException(); }
-    IDbTransaction BeginTransaction(System.Data.IsolationLevel il) { throw new NotImplementedException(); }
+    IDbTransaction BeginTransaction();
+    IDbTransaction BeginTransaction(System.Data.IsolationLevel il);
     void Close() {}
     void ChangeDatabase(string databaseName) {}
-    IDbCommand CreateCommand() { throw new NotImplementedException(); }
+    IDbCommand CreateCommand();
     void Open() {}
    public string ConnectionString { get; set; }
    public int ConnectionTimeout { get; }
@@ -369,7 +372,9 @@ public StatementCompletedEventHandler (object object, IntPtr method) {}
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("b24be752-9edd-3cc4-bdc7-98e33cb0683b")]
-  public sealed enum SqlDbType : System.Enum
+  public sealed enum SqlDbType // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
+
+}

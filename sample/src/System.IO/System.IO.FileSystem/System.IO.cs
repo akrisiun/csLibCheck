@@ -1,4 +1,5 @@
-}
+namespace System.IO
+{
 
 
 // Source:  d:/Beta/dotData/System.IO.FileSystem.dll  Build 4.6.24027.00
@@ -111,9 +112,9 @@
 
 // Source:  d:/Beta/dotData/System.IO.FileSystem.dll  Build 4.6.24027.00
 [Guid("e0edda71-2f5d-3b10-aa7a-e50105ca0c64")]
-  public sealed enum FileOptions : System.Enum
+  public sealed enum FileOptions // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
@@ -181,7 +182,9 @@ public static readonly Stream Null;
 
 // Source:  d:/Beta/dotData/System.IO.FileSystem.dll  Build 4.6.24027.00
 [Guid("0ceefb60-bfb5-3c13-af9d-bdfe122f5016")]
-  public sealed enum SearchOption : System.Enum
+  public sealed enum SearchOption // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
+
+}

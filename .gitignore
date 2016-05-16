@@ -24,3 +24,5 @@ slnx.sqlite
 websrc*/
 reffiles/
 net*/
+*.v12.suo
+*.suo

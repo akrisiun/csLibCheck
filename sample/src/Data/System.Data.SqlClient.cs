@@ -2,12 +2,11 @@
 namespace System.Data.SqlClient
 {  
 
-
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("c020380f-998c-3cfa-ae78-3ec74002d4fa")]
-  public sealed enum ApplicationIntent : System.Enum
+  public sealed enum ApplicationIntent // // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
@@ -33,59 +32,60 @@ public static readonly EventArgs Empty;
 
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
-[Guid("7e1ad45f-ddab-343c-9574-0a8f3be30c56")]
-  public sealed delegate SqlRowsCopiedEventHandler : System.MulticastDelegate
-{
-    public virtual void Invoke(object sender, SqlRowsCopiedEventArgs e) {}
-    public virtual IAsyncResult BeginInvoke(object sender, SqlRowsCopiedEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
-    public virtual void EndInvoke(IAsyncResult result) {}
-    public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {}
-    public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
-    protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
-    protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
-    public virtual override delegate[] GetInvocationList() { throw new NotImplementedException(); }
-    public virtual override int GetHashCode() { throw new NotImplementedException(); }
-    protected virtual override System.Reflection.MethodInfo GetMethodImpl() { throw new NotImplementedException(); }
-    public override object DynamicInvoke(object[] args) { throw new NotImplementedException(); }
-    protected virtual override object DynamicInvokeImpl(object[] args) { throw new NotImplementedException(); }
-    public static override delegate Combine(delegate a, delegate b) { throw new NotImplementedException(); }
-    public static override delegate Combine(delegate[] delegates) { throw new NotImplementedException(); }
-    public static override delegate Remove(delegate source, delegate value) { throw new NotImplementedException(); }
-    public static override delegate RemoveAll(delegate source, delegate value) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
-    public virtual override string ToString() { throw new NotImplementedException(); }
-    public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
-    public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
-    public override Type GetType() { throw new NotImplementedException(); }
-    protected virtual override void Finalize() {}
-    protected override object MemberwiseClone() { throw new NotImplementedException(); }
-//ctor: 
-public SqlRowsCopiedEventHandler (object object, IntPtr method) {}
-   public System.Reflection.MethodInfo Method { get; }
-   public object Target { get; }
-  }
+//[Guid("7e1ad45f-ddab-343c-9574-0a8f3be30c56")]
+  public sealed delegate SqlRowsCopiedEventHandler(object o, EventArgs e); // : System.MulticastDelegate
+
+//{
+//    //public virtual void Invoke(object sender, SqlRowsCopiedEventArgs e) {}
+//    //public virtual IAsyncResult BeginInvoke(object sender, SqlRowsCopiedEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
+//    //public virtual void EndInvoke(IAsyncResult result) {}
+//    public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {}
+//    public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
+//    protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
+//    protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
+//    public virtual override delegate[] GetInvocationList() { throw new NotImplementedException(); }
+//    public virtual override int GetHashCode() { throw new NotImplementedException(); }
+//    protected virtual override System.Reflection.MethodInfo GetMethodImpl() { throw new NotImplementedException(); }
+//    public override object DynamicInvoke(object[] args) { throw new NotImplementedException(); }
+//    protected virtual override object DynamicInvokeImpl(object[] args) { throw new NotImplementedException(); }
+//    public static override delegate Combine(delegate a, delegate b) { throw new NotImplementedException(); }
+//    public static override delegate Combine(delegate[] delegates) { throw new NotImplementedException(); }
+//    public static override delegate Remove(delegate source, delegate value) { throw new NotImplementedException(); }
+//    public static override delegate RemoveAll(delegate source, delegate value) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object firstArgument, System.Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, System.Reflection.MethodInfo method) { throw new NotImplementedException(); }
+//    public virtual override string ToString() { throw new NotImplementedException(); }
+//    public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
+//    public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
+//    public override Type GetType() { throw new NotImplementedException(); }
+//    protected virtual override void Finalize() {}
+//    protected override object MemberwiseClone() { throw new NotImplementedException(); }
+////ctor: 
+//public SqlRowsCopiedEventHandler (object object, IntPtr method) {}
+//   public System.Reflection.MethodInfo Method { get; }
+//   public object Target { get; }
+//  }
 
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("8eb9ae38-4438-351a-9e64-242a080a8dba")]
-  public sealed enum SortOrder : System.Enum
+  public sealed enum SortOrder // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("da4bac51-82ce-38b2-91e5-f89294114020")]
-  public sealed class SqlBulkCopy : System.Object System.IDisposable
+  public sealed class SqlBulkCopy : System.IDisposable
 {
     public void Close() {}
     public void WriteToServer(System.Data.Common.DbDataReader reader) {}
@@ -120,7 +120,7 @@ public event SqlRowsCopiedEventHandler SqlRowsCopied;
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("2bce9a6f-1c4b-3aef-b67d-ca1dec0cf255")]
-  public sealed class SqlBulkCopyColumnMapping : System.Object
+  public sealed class SqlBulkCopyColumnMapping 
 {
     public virtual override string ToString() { throw new NotImplementedException(); }
     public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
@@ -149,7 +149,7 @@ public SqlBulkCopyColumnMapping (int sourceColumnOrdinal, int destinationOrdinal
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("6bacddc2-5db8-3339-80f2-82d8db47db36")]
-  public sealed class SqlBulkCopyColumnMappingCollection : System.Object System.Collections.IList
+  public sealed class SqlBulkCopyColumnMappingCollection : System.Collections.IList
 {
     public SqlBulkCopyColumnMapping Add(System.Data.SqlClient.SqlBulkCopyColumnMapping bulkCopyColumnMapping) { throw new NotImplementedException(); }
     public SqlBulkCopyColumnMapping Add(string sourceColumn, string destinationColumn) { throw new NotImplementedException(); }
@@ -179,9 +179,9 @@ public SqlBulkCopyColumnMapping (int sourceColumnOrdinal, int destinationOrdinal
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("a337617a-ad4b-3881-b3b6-738570980918")]
-  public sealed enum SqlBulkCopyOptions : System.Enum
+  public sealed enum SqlBulkCopyOptions // : System.Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
@@ -382,7 +382,7 @@ public SqlConnectionStringBuilder (string connectionString) {}
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("f9aa3fa1-09cd-3162-8599-486cb6a0b5a6")]
-  public class SqlDataReader : System.Data.Common.DbDataReader System.Data.Common.IDbColumnSchemaGenerator
+  public class SqlDataReader : System.Data.Common.DbDataReader, System.Data.Common.IDbColumnSchemaGenerator
 {
     protected override void Dispose(bool disposing) {}
     public override string GetDataTypeName(int i) { throw new NotImplementedException(); }
@@ -448,7 +448,8 @@ public SqlConnectionStringBuilder (string connectionString) {}
     public override System.Threading.Tasks.Task<bool> IsDBNullAsync(int ordinal) { throw new NotImplementedException(); }
     public override System.Threading.Tasks.Task<bool> ReadAsync() { throw new NotImplementedException(); }
     public override System.Threading.Tasks.Task<bool> NextResultAsync() { throw new NotImplementedException(); }
-    public virtual override System.Data.DataTable GetSchemaTable() { throw new NotImplementedException(); }
+    //public virtual override System.Data.DataTable GetSchemaTable() { throw new NotImplementedException(); }
+
     public virtual override string ToString() { throw new NotImplementedException(); }
     public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
     public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
@@ -471,7 +472,7 @@ public SqlConnectionStringBuilder (string connectionString) {}
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("4d0fce6f-7312-38c0-9b82-ee6c1ddd65a9")]
-  public sealed class SqlError : System.Object
+  public sealed class SqlError 
 {
     public override string ToString() { throw new NotImplementedException(); }
     public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
@@ -494,7 +495,7 @@ public SqlConnectionStringBuilder (string connectionString) {}
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("fca78adc-a8a0-321a-b067-7826b0af7d01")]
-  public sealed class SqlErrorCollection : System.Object System.Collections.ICollection
+  public sealed class SqlErrorCollection : System.Collections.ICollection
 {
     public virtual void CopyTo(Array array, int index) {}
     public void CopyTo(System.Data.SqlClient.SqlError[] array, int index) {}
@@ -571,13 +572,13 @@ public static readonly EventArgs Empty;
 [Guid("4367dd93-5d4c-30b4-9fda-d642eb92466e")]
   public sealed delegate SqlInfoMessageEventHandler : System.MulticastDelegate
 {
-    public virtual void Invoke(object sender, SqlInfoMessageEventArgs e) {}
-    public virtual IAsyncResult BeginInvoke(object sender, SqlInfoMessageEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
-    public virtual void EndInvoke(IAsyncResult result) {}
-    public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {}
-    public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
-    protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
-    protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
+    //public virtual void Invoke(object sender, SqlInfoMessageEventArgs e) {}
+    //public virtual IAsyncResult BeginInvoke(object sender, SqlInfoMessageEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
+    //public virtual void EndInvoke(IAsyncResult result) {}
+    //public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {}
+    //public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
+    //protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
+    //protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
     public virtual override delegate[] GetInvocationList() { throw new NotImplementedException(); }
     public virtual override int GetHashCode() { throw new NotImplementedException(); }
     protected virtual override System.Reflection.MethodInfo GetMethodImpl() { throw new NotImplementedException(); }
@@ -728,3 +729,5 @@ public SqlParameter (string parameterName, System.Data.SqlDbType dbType, int siz
    protected override System.Data.Common.DbConnection DbConnection { }
    public override System.Data.IsolationLevel IsolationLevel { get; }
   }
+
+}

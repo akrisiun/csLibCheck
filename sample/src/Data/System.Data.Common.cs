@@ -1,11 +1,18 @@
 
+namespace System
+{
+    public class GuidAttribute : Attribute 
+    {
+        public GuidAttribute(string guid) {}
+    }
+}
+
 namespace System.Data.Common
 {  
 
-
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("54e76ba8-fdad-397c-9525-69db30dd815f")]
-  public abstract class DbCommand : System.Object System.Data.IDbCommand
+  public abstract class DbCommand : System.Data.IDbCommand
 {
     protected override void Finalize() {}
     public abstract void Cancel() {}
@@ -53,7 +60,7 @@ protected DbCommand () {}
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("bf466bea-eacb-301f-a6f3-d552589dd3cd")]
-  public abstract class DbConnection : System.Object System.Data.IDbConnection
+  public abstract class DbConnection : System.Data.IDbConnection
 {
     protected override void Finalize() {}
     protected abstract DbTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel) { throw new NotImplementedException(); }
@@ -85,13 +92,13 @@ protected DbConnection () {}
    public abstract string ServerVersion { get; }
    public abstract System.Data.ConnectionState State { get; }
 //Event: 
-public event System.Data.StateChangeEventHandler StateChange;
+public event System.Data.StateChangeEventHandler StateChange { add; remove; }
   }
 
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("fac3ccf3-aae3-3f77-b9b2-8faa667bc813")]
-  public class DbConnectionStringBuilder : System.Object System.Collections.IDictionary
+  public class DbConnectionStringBuilder : System.Collections.IDictionary
 {
     public void Add(string keyword, object value) {}
     public static void AppendKeyValuePair(System.Text.StringBuilder builder, string keyword, string value) {}
@@ -123,7 +130,7 @@ public DbConnectionStringBuilder () {}
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("4f6e6dba-cd87-33bc-81a1-6a8d24b81303")]
-  public abstract class DbDataReader : System.Object System.Data.IDataReader, System.Collections.IEnumerable
+  public abstract class DbDataReader : System.Data.IDataReader, System.Collections.IEnumerable
 {
     public virtual void Dispose() {}
     protected virtual void Dispose(bool disposing) {}
@@ -225,7 +232,7 @@ protected event EventHandler<System.Runtime.Serialization.SafeSerializationEvent
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("d5dd8047-b6f2-3773-95b1-f76c195a37a6")]
-  public abstract class DbParameter : System.Object System.Data.IDbDataParameter
+  public abstract class DbParameter : System.Data.IDbDataParameter
 {
     public abstract void ResetDbType() {}
     public virtual override string ToString() { throw new NotImplementedException(); }
@@ -254,7 +261,7 @@ protected DbParameter () {}
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("c05eb7ff-deab-3b7c-89c9-efcc27e348af")]
-  public abstract class DbParameterCollection : System.Object System.Data.IDataParameterCollection
+  public abstract class DbParameterCollection : System.Data.IDataParameterCollection
 {
     public abstract int Add(object value) { throw new NotImplementedException(); }
     public abstract void AddRange(Array values) {}
@@ -315,7 +322,7 @@ protected DbProviderFactory () {}
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("4a00f704-97ec-37f2-948e-5fe24414bf10")]
-  public abstract class DbTransaction : System.Object System.Data.IDbTransaction
+  public abstract class DbTransaction : System.Data.IDbTransaction
 {
     public abstract void Commit() {}
     public virtual void Dispose() {}
@@ -356,7 +363,7 @@ protected DbTransaction () {}
 
 // Source:  d:/Beta/dotData/System.Data.Common.dll  Build 4.6.23911.00
 [Guid("0f041571-135f-336b-81e9-f4218301209d")]
-  public abstract class DbDataRecord : System.Object System.Data.IDataRecord
+  public abstract class DbDataRecord : System.Data.IDataRecord
 {
     public abstract bool GetBoolean(int i) { throw new NotImplementedException(); }
     public abstract byte GetByte(int i) { throw new NotImplementedException(); }
@@ -449,7 +456,7 @@ protected DbColumn () {}
 
 // Source:  d:/Beta/dotData/System.Data.SqlClient.dll  Build 4.6.24013.00
 [Guid("41296ce6-89cc-354a-9315-91f7a1fe9a41")]
-  public class DbEnumerator : System.Object System.Collections.IEnumerator
+  public class DbEnumerator : System.Collections.IEnumerator
 {
     public virtual bool MoveNext() { throw new NotImplementedException(); }
     public virtual void Reset() {}
@@ -465,3 +472,5 @@ protected DbColumn () {}
 public DbEnumerator (System.Data.Common.DbDataReader reader, bool closeReader) {}
    public virtual object Current { get; }
   }
+
+}

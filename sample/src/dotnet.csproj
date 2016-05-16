@@ -52,9 +52,9 @@
     <Compile Include="Data\System.Data.SqlClient.cs" />
     <Compile Include="Data\System.Data.SqlTypes.cs" />
     <Compile Include="System.Console\System.cs" />
-    <Compile Include="System.Data.Common\System.cs" />
-    <Compile Include="System.IO.FileSystem\Microsoft.Win32.SafeHandles.cs" />
-    <Compile Include="System.IO.FileSystem\System.IO.cs" />
+    <Compile Include="Data\System.Data.Common\System.cs" />
+    <Compile Include="System.IO\System.IO.FileSystem\Microsoft.Win32.SafeHandles.cs" />
+    <Compile Include="System.IO\System.IO.FileSystem\System.IO.cs" />
     <Compile Include="System.IO\System.IO.cs" />
     <Compile Include="Threading.Tasks.Dataflow\System.Threading.Tasks.Dataflow.cs" />
   </ItemGroup>

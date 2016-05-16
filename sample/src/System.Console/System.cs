@@ -104,45 +104,45 @@ public event ConsoleCancelEventHandler CancelKeyPress;
 
 // Source:  d:/Beta/dotData/System.Console.dll  Build 4.6.24027.00
 [Guid("360e52ca-ee62-31dc-8177-c3a7829b4f5e")]
-  public sealed delegate ConsoleCancelEventHandler : MulticastDelegate
-{
-    public virtual void Invoke(object sender, ConsoleCancelEventArgs e) {}
-    public virtual IAsyncResult BeginInvoke(object sender, ConsoleCancelEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
-    public virtual void EndInvoke(IAsyncResult result) {}
-    public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, Runtime.Serialization.StreamingContext context) {}
-    public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
-    protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
-    protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
-    public virtual override delegate[] GetInvocationList() { throw new NotImplementedException(); }
-    public virtual override int GetHashCode() { throw new NotImplementedException(); }
-    protected virtual override Reflection.MethodInfo GetMethodImpl() { throw new NotImplementedException(); }
-    public override object DynamicInvoke(object[] args) { throw new NotImplementedException(); }
-    protected virtual override object DynamicInvokeImpl(object[] args) { throw new NotImplementedException(); }
-    public static override delegate Combine(delegate a, delegate b) { throw new NotImplementedException(); }
-    public static override delegate Combine(delegate[] delegates) { throw new NotImplementedException(); }
-    public static override delegate Remove(delegate source, delegate value) { throw new NotImplementedException(); }
-    public static override delegate RemoveAll(delegate source, delegate value) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object firstArgument, Reflection.MethodInfo method) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, object firstArgument, Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
-    public static override delegate CreateDelegate(Type type, Reflection.MethodInfo method) { throw new NotImplementedException(); }
-    public virtual override string ToString() { throw new NotImplementedException(); }
-    public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
-    public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
-    public override Type GetType() { throw new NotImplementedException(); }
-    protected virtual override void Finalize() {}
-    protected override object MemberwiseClone() { throw new NotImplementedException(); }
-//ctor: 
-public ConsoleCancelEventHandler (object object, IntPtr method) {}
-   public Reflection.MethodInfo Method { get; }
-   public object Target { get; }
-  }
+  public sealed delegate ConsoleCancelEventHandler; // : MulticastDelegate
+//{
+//    public virtual void Invoke(object sender, ConsoleCancelEventArgs e) {}
+//    public virtual IAsyncResult BeginInvoke(object sender, ConsoleCancelEventArgs e, AsyncCallback callback, object object) { throw new NotImplementedException(); }
+//    public virtual void EndInvoke(IAsyncResult result) {}
+//    public virtual override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, Runtime.Serialization.StreamingContext context) {}
+//    public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
+//    protected virtual override delegate CombineImpl(delegate follow) { throw new NotImplementedException(); }
+//    protected virtual override delegate RemoveImpl(delegate value) { throw new NotImplementedException(); }
+//    public virtual override delegate[] GetInvocationList() { throw new NotImplementedException(); }
+//    public virtual override int GetHashCode() { throw new NotImplementedException(); }
+//    protected virtual override Reflection.MethodInfo GetMethodImpl() { throw new NotImplementedException(); }
+//    public override object DynamicInvoke(object[] args) { throw new NotImplementedException(); }
+//    protected virtual override object DynamicInvokeImpl(object[] args) { throw new NotImplementedException(); }
+//    public static override delegate Combine(delegate a, delegate b) { throw new NotImplementedException(); }
+//    public static override delegate Combine(delegate[] delegates) { throw new NotImplementedException(); }
+//    public static override delegate Remove(delegate source, delegate value) { throw new NotImplementedException(); }
+//    public static override delegate RemoveAll(delegate source, delegate value) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Type target, string method, bool ignoreCase, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object firstArgument, Reflection.MethodInfo method) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, object firstArgument, Reflection.MethodInfo method, bool throwOnBindFailure) { throw new NotImplementedException(); }
+//    public static override delegate CreateDelegate(Type type, Reflection.MethodInfo method) { throw new NotImplementedException(); }
+//    public virtual override string ToString() { throw new NotImplementedException(); }
+//    public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
+//    public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
+//    public override Type GetType() { throw new NotImplementedException(); }
+//    protected virtual override void Finalize() {}
+//    protected override object MemberwiseClone() { throw new NotImplementedException(); }
+////ctor: 
+//public ConsoleCancelEventHandler (object object, IntPtr method) {}
+//   public Reflection.MethodInfo Method { get; }
+//   public object Target { get; }
+//  }
 
 
 // Source:  d:/Beta/dotData/System.Console.dll  Build 4.6.24027.00
@@ -166,25 +166,25 @@ public static readonly EventArgs Empty;
 
 // Source:  d:/Beta/dotData/System.Console.dll  Build 4.6.24027.00
 [Guid("5946f667-6faa-3b49-abe8-5be28ad20638")]
-  public sealed enum ConsoleColor : Enum
+  public sealed enum ConsoleColor // : Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Console.dll  Build 4.6.24027.00
 [Guid("beecb933-8672-3711-9204-37aad5f6020c")]
-  public sealed enum ConsoleSpecialKey : Enum
+  public sealed enum ConsoleSpecialKey // : Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
 // Source:  d:/Beta/dotData/System.Console.dll  Build 4.6.24027.00
 [Guid("a3b0af7d-d234-306c-aeec-e6483bf4b98b")]
-  public sealed enum ConsoleKey : Enum
+  public sealed enum ConsoleKey // : Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
 
 
@@ -211,7 +211,9 @@ public ConsoleKeyInfo (char keyChar, ConsoleKey key, bool shift, bool alt, bool 
 
 // Source:  d:/Beta/dotData/System.Console.dll  Build 4.6.24027.00
 [Guid("3bec1b45-3e9a-3e62-8d28-2421e4f3aa96")]
-  public sealed enum ConsoleModifiers : Enum
+  public sealed enum ConsoleModifiers // : Enum
 {
-    public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
+    // public static override bool TryParse(string value, out TEnum result) { throw new NotImplementedException(); }
   }
+
+}
