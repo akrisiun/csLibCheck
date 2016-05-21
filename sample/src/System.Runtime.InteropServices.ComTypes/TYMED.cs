@@ -7,7 +7,7 @@ namespace System.Runtime.InteropServices.ComTypes
 {  
 
    [Guid("7da175d7-bc8a-3e62-a145-6721c9a03445")]
-   public sealed enum TYMED 
+   public enum TYMED 
    {
        // Field: 
     TYMED_HGLOBAL = 1,

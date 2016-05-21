@@ -18,7 +18,8 @@ namespace SigHelper {
 		public new static string ToString(EventInfo ev) { return (new CsEventInfo(ev)).ToString(); }
 		public override string ToString() {
 			string temp = null;
-			string result = "//" + ToString(_eventkind) + ": \n";										// MemberType
+			string result = "//" + ToString(_eventkind) + ": "
+                + "\n          ";										                                // MemberType
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;			// Scope
 			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;		// Modifiers
 			result += "event ";                                                                         // keyword

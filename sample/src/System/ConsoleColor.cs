@@ -1,6 +1,13 @@
 
+// Source:  D:/webstack/WPF/LibCheck/dnx/System.Console.dll  Build 4.6.24027.00
+using System;
+using System.Runtime.InteropServices;
+
+namespace System
+{  
+
    [Guid("5946f667-6faa-3b49-abe8-5be28ad20638")]
-   public sealed enum ConsoleColor : Enum
+   public enum ConsoleColor 
    {
        // Field: 
     Black = 0,

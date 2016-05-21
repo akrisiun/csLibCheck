@@ -7,16 +7,8 @@ namespace System.Runtime.InteropServices.ComTypes
 {  
 
    [Guid("5d74c2cc-5637-3943-9ebe-d87e15bb68f2")]
-   public sealed struct FORMATETC : System.ValueType
+   public struct FORMATETC 
    {
-       public virtual override bool Equals(object obj);
-       public virtual override int GetHashCode();
-       public virtual override string ToString();
-       public static override bool Equals(object objA, object objB);
-       public static override bool ReferenceEquals(object objA, object objB);
-       public override Type GetType();
-       protected virtual override void Finalize();
-       protected override object MemberwiseClone();
        // Field: 
     public short cfFormat;
        // Field: 

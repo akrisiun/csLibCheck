@@ -7,7 +7,7 @@ namespace Newtonsoft.Json
 {  
 
    [Guid("9ba4d8c3-e0b5-30bb-9417-d11a106eb34e")]
-   public sealed enum JsonToken 
+   public enum JsonToken 
    {
        // Field: 
     None = 0,

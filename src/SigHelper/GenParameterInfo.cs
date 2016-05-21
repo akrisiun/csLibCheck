@@ -43,9 +43,12 @@ namespace SigHelper {
 		public virtual string Sig { get { return ToString(); } }
 		public virtual string Key { get { return ToKey(); } }
 
-		//** Methods
-		// Modifier retrieval for constructor
-		protected static ParameterModifiers [] GetModifiers(ParameterInfo parameter) {
+        public virtual Type Type { get { return _type; } }
+        public virtual Type ParentType { get; set; }
+
+        //** Methods
+        // Modifier retrieval for constructor
+        protected static ParameterModifiers [] GetModifiers(ParameterInfo parameter) {
 			ArrayList result = new ArrayList(1);
 
 

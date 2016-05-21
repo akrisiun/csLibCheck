@@ -47,8 +47,12 @@ namespace SigHelper {
 		protected bool _obsolete = false;
 		protected string _obsMessage = "";
 
-		// ** Constructors
-		public GenMemberInfo (MemberInfo member) : this(member, false) {}
+        public virtual Type ParentType { get; set; }
+        public virtual Type ReflectedType { get { return _reflectedtype; } }
+        public virtual Type DeclaringType { get { return _declaringtype; } }
+
+        // ** Constructors
+        public GenMemberInfo (MemberInfo member) : this(member, false) {}
 		public GenMemberInfo (MemberInfo member, bool flag) {
 
 			_dbug = flag;
@@ -115,6 +119,7 @@ namespace SigHelper {
 		public bool IsInherited { get { return _inherited; } }
 		public bool IsAbstract { get { return _abstract; } }
 		public MemberTypes MemberType { get { return _membertype; } }
+
 		public virtual string Name { get { return _name; } }
 		public virtual string Key { get { return ToKey(); } }
 		public virtual string ShortKey { get { return ToShortKey(); } }		// overriden only by type, method, constructor and property

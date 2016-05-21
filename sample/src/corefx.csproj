@@ -26,7 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>Newtonsoft.Json.ruleset</CodeAnalysisRuleSet>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -134,6 +134,38 @@
     <Compile Include="System.ComponentModel\DefaultValueAttribute.cs" />
     <Compile Include="System.ComponentModel\EditorBrowsableAttribute.cs" />
     <Compile Include="System.ComponentModel\EditorBrowsableState.cs" />
+    <Compile Include="System.Data.Common\DbColumn.cs" />
+    <Compile Include="System.Data.Common\DbCommand.cs" />
+    <Compile Include="System.Data.Common\DbConnection.cs" />
+    <Compile Include="System.Data.Common\DbConnectionStringBuilder.cs" />
+    <Compile Include="System.Data.Common\DbDataReader.cs" />
+    <Compile Include="System.Data.Common\DbDataReaderExtensions.cs" />
+    <Compile Include="System.Data.Common\DbDataRecord.cs" />
+    <Compile Include="System.Data.Common\DbException.cs" />
+    <Compile Include="System.Data.Common\DbParameter.cs" />
+    <Compile Include="System.Data.Common\DbParameterCollection.cs" />
+    <Compile Include="System.Data.Common\DbProviderFactory.cs" />
+    <Compile Include="System.Data.Common\DbTransaction.cs" />
+    <Compile Include="System.Data.Common\IDbColumnSchemaGenerator.cs" />
+    <Compile Include="System.Data\CommandBehavior.cs" />
+    <Compile Include="System.Data\CommandType.cs" />
+    <Compile Include="System.Data\ConnectionState.cs" />
+    <Compile Include="System.Data\DataRowVersion.cs" />
+    <Compile Include="System.Data\DataTable.cs" />
+    <Compile Include="System.Data\DbType.cs" />
+    <Compile Include="System.Data\IDataParameter.cs" />
+    <Compile Include="System.Data\IDataParameterCollection.cs" />
+    <Compile Include="System.Data\IDataReader.cs" />
+    <Compile Include="System.Data\IDataRecord.cs" />
+    <Compile Include="System.Data\IDbCommand.cs" />
+    <Compile Include="System.Data\IDbConnection.cs" />
+    <Compile Include="System.Data\IDbDataParameter.cs" />
+    <Compile Include="System.Data\IDbTransaction.cs" />
+    <Compile Include="System.Data\IsolationLevel.cs" />
+    <Compile Include="System.Data\ParameterDirection.cs" />
+    <Compile Include="System.Data\StateChangeEventArgs.cs" />
+    <Compile Include="System.Data\StateChangeEventHandler.cs" />
+    <Compile Include="System.Data\UpdateRowSource.cs" />
     <Compile Include="System.IO\BufferedStream.cs" />
     <Compile Include="System.IO\Directory.cs" />
     <Compile Include="System.IO\File.cs" />
@@ -230,7 +262,6 @@
     <Compile Include="System.Threading.Tasks.Dataflow\TransformBlock`2.cs" />
     <Compile Include="System.Threading.Tasks.Dataflow\TransformManyBlock`2.cs" />
     <Compile Include="System.Threading.Tasks.Dataflow\WriteOnceBlock`1.cs" />
-    <Compile Include="System\Action`10.cs" />
     <Compile Include="System\Console.cs" />
     <Compile Include="System\ConsoleCancelEventArgs.cs" />
     <Compile Include="System\ConsoleCancelEventHandler.cs" />
@@ -239,19 +270,12 @@
     <Compile Include="System\ConsoleKeyInfo.cs" />
     <Compile Include="System\ConsoleModifiers.cs" />
     <Compile Include="System\ConsoleSpecialKey.cs" />
+    <Compile Include="System\DBNull.cs" />
     <Compile Include="System\Func`10.cs" />
     <Compile Include="System\Lazy`2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Data.Common">
-      <HintPath>..\..\dnx\4.0.1-rc3-24013-00\System.Data.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SqlClient">
-      <HintPath>..\..\dnx\4.0.1-rc3-24013-00\System.Data.SqlClient.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

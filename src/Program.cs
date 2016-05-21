@@ -11,6 +11,7 @@ using System.Globalization;
 //for example, StringCOllection moved from System.Collections to System.Collections.Specialized
 
 using System.Collections.Specialized;
+using System.Collections.Generic;
 
 namespace LibCheck
 {
@@ -233,14 +234,22 @@ namespace LibCheck
 
         #endregion
 
+        public static List<ClassInfo> ClassList;
+        public static List<Assembly> AsmList;
+        public static Exception LastError { get; set; }
         // ** Methods
         public static void Main(String[] args)
         {
+            #region Parse args
+
             IsPrepared = false;
             Console.WriteLine("start time = " + DateTime.Now);
 
-            if (args.Length >= 1 && args[0] != "-debug")
-                obsoletewriter = File.CreateText("obsolete.txt");
+            try
+            {
+                if (args.Length >= 1 && args[0] != "-debug")
+                    obsoletewriter = File.CreateText("obsolete.txt");
+            } catch (Exception ex) { LastError = ex; }
             long startTicks = DateTime.Now.Ticks;
 
             //ALWAYS FORCE THE CULTURE TO en-US
@@ -269,6 +278,7 @@ namespace LibCheck
             }
             catch (ArgumentException e)
             {
+                LastError = e;
                 err = e;
                 // if (!suppress)
 
@@ -283,6 +293,7 @@ namespace LibCheck
             }
             catch (Exception e)
             {
+                LastError = e;
                 err = e;
 
                 foreach (string item in Environment.GetCommandLineArgs())
@@ -295,13 +306,13 @@ namespace LibCheck
                     Console.WriteLine(usageOptions);
                 }
             }
-
+            
+            #endregion
             if (!goodToGo)
                 return;
 
             //find out WHICH files are to be split up
             //first thing is to check if this is a split file
-
             Prepare();
 
             if (_runStore)
@@ -322,6 +333,8 @@ namespace LibCheck
                         _assembly = "full";
                     }
 
+                    ClassInfo.Reset();
+
                     DirectoryInfo di = new DirectoryInfo(fileDir);
 
                     foreach (FileInfo f in di.GetFiles(filter))
@@ -336,10 +349,12 @@ namespace LibCheck
                 }
                 else
                 {
+                    ClassInfo.Reset();
                     MakeStoreFiles(_assembly);
                 }
             }
 
+            ClassInfo.Reset();
             // PostProcess();
 
             if (!suppress && obsoletewriter != null)
@@ -358,12 +373,17 @@ namespace LibCheck
             Console.ReadLine();
         }
 
+        #region Prepare methods
+
         public static void Prepare()
         { 
             alSplitF = OpenFileList("reffiles\\splitfiles.txt");
             alSplitNamespaces = OpenFileList("reffiles\\splitNamespaces.txt");
             htGACdlls = OpenGACList("reffiles\\gacload.txt");
             GetSplitRanges();
+
+            ClassList = new List<ClassInfo>();
+            AsmList = new List<Assembly>();
 
             IsPrepared = true;
         }
@@ -508,7 +528,9 @@ namespace LibCheck
                 }
                 else if (arg.ToLower().StartsWith("-out"))
                 {
-                    outputLoc = args[i + 1] + "/";
+                    outputLoc = args[i + 1];
+                    if (!outputLoc.EndsWith(@"\"))
+                        outputLoc += @"\";
                     i++;
                 }
                 //else if (arg.ToLower().StartsWith("-owners"))
@@ -794,6 +816,8 @@ namespace LibCheck
             else
                 return (StringCollection)htRanges["all"];
         }
+
+        #endregion
 
     } // end LibChk
 }

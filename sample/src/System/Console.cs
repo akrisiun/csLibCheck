@@ -18,8 +18,7 @@ namespace System
        public static void Beep() {}
        public static void Beep(int frequency, int duration) {}
        public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop) {}
-       public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop,
-           char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor) {}
+       public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor) {}
        public static void Clear() {}
        public static void SetCursorPosition(int left, int top) {}
        public static IO.Stream OpenStandardInput() { throw new NotImplementedException(); }
@@ -65,15 +64,6 @@ namespace System
        public static void Write(ulong value) {}
        public static void Write(object value) {}
        public static void Write(string value) {}
-       //public virtual override string ToString() { throw new NotImplementedException(); }
-       //public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
-       //public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
-       //public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
-       //public virtual override int GetHashCode() { throw new NotImplementedException(); }
-       //public override Type GetType() { throw new NotImplementedException(); }
-       //protected virtual override void Finalize() {}
-       //protected override object MemberwiseClone() { throw new NotImplementedException(); }
-
       public static IO.TextReader In { get; }
       public static Text.Encoding InputEncoding { get; set; }
       public static Text.Encoding OutputEncoding { get; set; }
@@ -101,8 +91,7 @@ namespace System
       public static int CursorTop { get; set; }
       public static string Title { get; set; }
       public static bool TreatControlCAsInput { get; set; }
-   
-        //Event: 
-        //public event ConsoleCancelEventHandler CancelKeyPress;
+      // Event: 
+   // public event ConsoleCancelEventHandler CancelKeyPress;
    }
 }

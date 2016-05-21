@@ -1,6 +1,13 @@
 
+// Source:  D:/webstack/WPF/LibCheck/dnx/System.Console.dll  Build 4.6.24027.00
+using System;
+using System.Runtime.InteropServices;
+
+namespace System
+{  
+
    [Guid("a3b0af7d-d234-306c-aeec-e6483bf4b98b")]
-   public sealed enum ConsoleKey : Enum
+   public enum ConsoleKey 
    {
        // Field: 
     Backspace = 8,

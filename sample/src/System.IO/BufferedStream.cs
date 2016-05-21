@@ -1,11 +1,4 @@
 
-// Source:  D:/webstack/WPF/LibCheck/dnx/System.IO.dll  Build 4.6.24027.00
-using System;
-using System.Runtime.InteropServices;
-
-namespace System.IO
-{  
-
    [Guid("6af9dc84-ec85-33d6-a998-50de517295bb")]
    public sealed class BufferedStream : Stream
    {
@@ -41,18 +34,10 @@ namespace System.IO
        public virtual override object GetLifetimeService() { throw new NotImplementedException(); }
        public virtual override object InitializeLifetimeService() { throw new NotImplementedException(); }
        public virtual override System.Runtime.Remoting.ObjRef CreateObjRef(Type requestedType) { throw new NotImplementedException(); }
-       public virtual override string ToString() { throw new NotImplementedException(); }
-       public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
-       public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
-       public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
-       public virtual override int GetHashCode() { throw new NotImplementedException(); }
-       public override Type GetType() { throw new NotImplementedException(); }
-       protected virtual override void Finalize() {}
-       protected override object MemberwiseClone() { throw new NotImplementedException(); }
       //ctor: 
-   public BufferedStream (System.IO.Stream stream) {}
+      public BufferedStream (System.IO.Stream stream) {}
       //ctor: 
-   public BufferedStream (System.IO.Stream stream, int bufferSize) {}
+      public BufferedStream (System.IO.Stream stream, int bufferSize) {}
       public override bool CanRead { get; }
       public override bool CanWrite { get; }
       public override bool CanSeek { get; }

@@ -7,7 +7,7 @@ namespace System.Runtime.InteropServices.ComTypes
 {  
 
    [Guid("0ae121e1-a06e-3a02-9b15-fe4f9d577243")]
-   public sealed enum DVASPECT 
+   public enum DVASPECT 
    {
        // Field: 
     DVASPECT_CONTENT = 1,

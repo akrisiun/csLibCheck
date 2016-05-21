@@ -7,7 +7,7 @@ namespace System.Runtime.InteropServices.ComTypes
 {  
 
    [Guid("4cea3886-3cd1-3cf8-a3a5-a3822913a77f")]
-   public sealed enum ADVF 
+   public enum ADVF 
    {
        // Field: 
     ADVF_NODATA = 1,
