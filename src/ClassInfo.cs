@@ -17,6 +17,8 @@ namespace LibCheck
         public Hashtable TypeMemberList { [DebuggerStepThrough] get; set; }
 
         static StringCollection nsList = new StringCollection();
+        static StringCollection typesList = new StringCollection();
+
         static string lastFile = "";
 
         public override string ToString()
@@ -27,6 +29,14 @@ namespace LibCheck
         public static void Reset()
         {
             nsList = new StringCollection();
+            typesList = new StringCollection();
+
+            if (!String.IsNullOrWhiteSpace(lastFile) && File.Exists(lastFile))
+            {
+                var wr1 = new StreamWriter(lastFile, append: true);
+                wr1.WriteLine("}");
+                wr1.Close();
+            }
             lastFile = "";
         }
 
@@ -65,12 +75,17 @@ namespace LibCheck
 
             var asm = this.Type.Assembly;
 
-            bool isNewFile = false;
-            if (!nsList.Contains(nsName))
+            bool isNewFile = true;
+            if (!nsList.Contains(dll + @"\" + nsList))
             {
-                nsList.Add(nsName);
+                nsList.Add(dll + @"\" + nsList);
                 isNewFile = true;
             }
+            else
+                isNewFile = !File.Exists(reportFile);
+
+            if (!typesList.Contains(Type.FullName))
+                typesList.Add(Type.FullName);
 
             var wr = new StreamWriter(reportFile, append: false);
             if (isNewFile)
@@ -89,7 +104,19 @@ namespace LibCheck
                 wr.WriteLine("");
             }
 
-            const string indent = "  ";
+            string[] ignoreStarting = new string[] {
+                "public virtual override string ToString()"
+                , "public virtual override bool Equals(object obj)"
+                , "public static override bool Equals(object objA, object objB)"
+                , "public static override bool ReferenceEquals(object objA, object objB)"
+                , "public virtual override int GetHashCode()"
+                , "public override Type GetType()"
+                , "protected virtual override void Finalize()"
+                , "protected override object MemberwiseClone()"
+                , "public static override bool TryParse(string value, out TEnum result)"
+            };
+
+            const string indent = "   ";
             CsTypeInfo info = null;
             var allForm = TypeFormats.IncludeBaseClass | TypeFormats.IncludeInheritFlag;
             Exception LastError = null;
@@ -99,18 +126,25 @@ namespace LibCheck
                 info = new CsTypeInfo(this.Type);
 
                 string temp = info.ToString(allForm);
-                if (temp.Contains(" : System.Object "))
-                    temp.Replace(" : System.Object ", "");
+                //if (temp.Contains(" : System.Object "))
+                //    temp.Replace(" : System.Object ", "");
                 if (temp.Contains(" " + nsName + "."))
                     temp = temp.Replace(" " + nsName + ".", " ");
+                if (Type.IsEnum)
+                {
+                    temp = temp.Replace(": System.Enum", "");
+                }
+                else if (Type.IsAbstract && Type.IsSealed)
+                {
+                    // static
+                }
 
-                wr.WriteLine("[Guid(\"" + this.Type.GUID.ToString() + "\")]");
+                wr.WriteLine(indent + "[Guid(\"" + this.Type.GUID.ToString() + "\")]");
                 wr.WriteLine(indent + temp);
 
                 Console.WriteLine(temp);
 
-                wr.WriteLine("{");
-
+                wr.WriteLine(indent + "{");
 
                 foreach (TypeMember mem in this.Members)
                 {
@@ -120,14 +154,17 @@ namespace LibCheck
                     var temp2 = mem.MemberInfo.ToString();
                     if (temp2.Contains(" " + nsName + "."))
                         temp2 = temp2.Replace(" " + nsName + ".", " ");
-                    if (temp2.Contains(" override object Clone() {")
-                        )
+
+                    bool isIgnore = false;
+                    foreach (string ign in ignoreStarting)
+                        if (temp2.StartsWith(ign)) { isIgnore = true; break; }
+                    if (isIgnore)
                         continue;
 
-                    //if (temp2.Contains("`"))
-                    //    { } // breakpoint
+                    if (temp2.Contains("`"))
+                        { } // breakpoint
 
-                    wr.WriteLine(temp2);
+                    wr.WriteLine(indent + temp2);
                 }
 
                 wr.WriteLine(indent + "}");

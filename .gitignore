@@ -28,3 +28,4 @@ net*/
 *.suo
 sample/dotnet/
 sample/System.Data/
+sample/src/

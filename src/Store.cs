@@ -179,7 +179,13 @@ namespace LibCheck
                 if (!suppress)
                     Console.WriteLine();
 
-                OneAssembly(fileDir + @"\" + _assembly, fullSpec);
+                if (_assembly[1] == ':')
+                {
+                    fileDir = Path.GetDirectoryName(_assembly);
+                    _assembly = Path.GetFileName(_assembly);
+                }
+
+                OneAssembly(fileDir + @"\" + _assembly, true);
 
             }
 
@@ -203,6 +209,7 @@ namespace LibCheck
             StringCollection splitStoreFiles = new StringCollection();
 
             _assembly = dllFullName;
+            global::LibCheck.LibChk.fullSpec = fullSpec;
             if (!GoodAssemblyName(_assembly))
                 return;
             _assembly = Path.GetFileName(dllFullName);
@@ -832,6 +839,13 @@ namespace LibCheck
 #endif
 
                 var t = typeData.Type;
+
+                //if (t.IsEnum)  // debug
+                //{
+                //    // Retry
+                //    ClassInfo? info2 = ClassInfoType(a, t);
+                //}
+
                 var memberList = typeData.Members;
                 if (memberList.Count > 0)
                 {   // Add member to hashtable by type.
@@ -896,20 +910,9 @@ namespace LibCheck
             foreach (Type t in ta)
             {   // types loop
 
-                // static
-                namespaceExists = false;
-
-                #region Class Data
-
-                #region Types cycle
-
-                bool isEnum = t.IsEnum;
-
-                bool spaceIsSplit = false;
-                int outputNumber = 0;
-                nameComp = t.Namespace == null ? "generic" : t.Namespace.ToLower();
-
                 //figure out if we need to change the name, in order to be split
+                bool spaceIsSplit = false;
+                nameComp = t.Namespace == null ? "generic" : t.Namespace.ToLower();
                 if (byDll)
                 {
                     foreach (string s in alSplitF)
@@ -932,6 +935,8 @@ namespace LibCheck
                         }
                     }
                 }
+
+                int outputNumber = 0;
 
                 //if this is a split file, figure out which split file this type belongs to...
                 if (spaceIsSplit)
@@ -988,6 +993,25 @@ namespace LibCheck
                     nameComp = nameComp + "." + String.Format("{0:00}", outputNumber + 1);
                 }
 
+
+                ClassInfo? info = ClassInfoType(a, t, problems);
+                if (info.HasValue)
+                    yield return info.Value;
+
+            } // end types loop
+        }
+
+        public static ClassInfo? ClassInfoType(Assembly a, Type t, Hashtable problems = null)
+        {
+            // static
+            namespaceExists = false;
+            nameComp = t.Namespace == null ? "generic" : t.Namespace.ToLower();
+
+            #region Types cycle
+
+            bool isEnum = t.IsEnum;
+            if (htNamespaces != null)
+            {
                 foreach (string s in htNamespaces.Keys)
                 {
                     if (s.ToLower() == nameComp)
@@ -996,79 +1020,81 @@ namespace LibCheck
                         break;
                     }
                 }
-
                 if (!namespaceExists)
                     htNamespaces.Add(nameComp, new Hashtable());
+            }
+            // P1: works well, have a good set of namespaces at this point...
+            //now, have to make a separate hashtable for EACH ONE, in the process below.
+            //this is where we need to modify our arraylist to, instead, a hashtable, storing a namespacename, and the hashtable value!
+            //for each NEW entry, add the new element to our hashtable, and ensure we instantiate the hashtable entry for it. The key //is the namespace of course!
 
-                // P1: works well, have a good set of namespaces at this point...
-                //now, have to make a separate hashtable for EACH ONE, in the process below.
-                //this is where we need to modify our arraylist to, instead, a hashtable, storing a namespacename, and the hashtable value!
-                //for each NEW entry, add the new element to our hashtable, and ensure we instantiate the hashtable entry for it. The key //is the namespace of course!
+            // this if statement, and the switch inside it, ensures that only 
+            // types in certain alphabetical
+            //ranges are included in a windforms output file...
+            //this is done because the file is otherwise, WAY too huge!
+            if (winformsFile > 0)
+            {
+                //retrieve the entry from the splitRanges collection
+                //which corresponds to the winformsFIle specified
+                string tempString = splitRanges[winformsFile - 1];
 
-                // this if statement, and the switch inside it, ensures that only 
-                // types in certain alphabetical
-                //ranges are included in a windforms output file...
-                //this is done because the file is otherwise, WAY too huge!
-                if (winformsFile > 0)
+                string startPoint = "";
+                string endPoint = "";
+
+                if (tempString.IndexOf(",") > 0)
                 {
+                    startPoint = (tempString.Substring(0, tempString.IndexOf(",")).Trim());
 
-                    //retrieve the entry from the splitRanges collection
-                    //which corresponds to the winformsFIle specified
-                    string tempString = splitRanges[winformsFile - 1];
-
-                    string startPoint = "";
-                    string endPoint = "";
-
-                    if (tempString.IndexOf(",") > 0)
-                    {
-                        startPoint = (tempString.Substring(0, tempString.IndexOf(",")).Trim());
-
-                        endPoint = (tempString.Substring(tempString.IndexOf(",") + 1).Trim());
-                    }
-                    else
-                    {
-                        startPoint = tempString;
-                    }
-
-                    int compareStart = t.Name.Length < startPoint.Length ?
-                        t.Name.Length : startPoint.Length;
-                    int compareEnd = t.Name.Length < endPoint.Length ?
-                        t.Name.Length : endPoint.Length;
-
-                    //these are the different comparisons for the different ranges...
-                    if (winformsFile == 1)
-                    {
-                        if (String.Compare(t.Name.ToLower().Substring(0,
-                            compareStart), startPoint) > 0)
-                            continue;
-                    }
-                    else if (winformsFile == numSplits)
-                    {
-                        if (String.Compare(t.Name.ToLower().Substring(0,
-                            compareStart), startPoint) < 0)
-                            continue;
-                    }
-                    else
-                    {
-                        if (String.Compare(t.Name.ToLower().Substring(0,
-                            compareStart), startPoint) < 0 ||
-                            String.Compare(t.Name.ToLower().Substring(0,
-                            compareEnd), endPoint) > 0)
-                            continue;
-                    }
-
+                    endPoint = (tempString.Substring(tempString.IndexOf(",") + 1).Trim());
+                }
+                else
+                {
+                    startPoint = tempString;
                 }
 
-                if (t == null)
+                int compareStart = t.Name.Length < startPoint.Length ?
+                    t.Name.Length : startPoint.Length;
+                int compareEnd = t.Name.Length < endPoint.Length ?
+                    t.Name.Length : endPoint.Length;
+
+                //these are the different comparisons for the different ranges...
+                if (winformsFile == 1)
                 {
+                    if (String.Compare(t.Name.ToLower().Substring(0,
+                        compareStart), startPoint) > 0)
+                        return null;
+                }
+                else if (winformsFile == numSplits)
+                {
+                    if (String.Compare(t.Name.ToLower().Substring(0,
+                        compareStart), startPoint) < 0)
+                        return null;
+                }
+                else
+                {
+                    if (String.Compare(t.Name.ToLower().Substring(0,
+                        compareStart), startPoint) < 0 ||
+                        String.Compare(t.Name.ToLower().Substring(0,
+                        compareEnd), endPoint) > 0)
+                        return null; // continue;
+                }
+
+            }
+
+            if (t == null)
+            {
 #if DOREPORTS
                     errorWriter.WriteLine("Null type encountered in " + assemblyname);
 #endif
-                    errorCount++;
-                    continue;
-                }
+                errorCount++;
+                return null;
+            }
 
-                try { if (!t.IsPublic) continue; }
+            try
+            {
+                if (!t.IsPublic)
+                    return null;
+            }
 #if DOREPORTS
                 catch (Exception e)
                 {
@@ -1076,29 +1102,29 @@ namespace LibCheck
                     errorWriter.WriteLine(t.FullName);
                     errorWriter.WriteLine(e.ToString());
 #else
-                catch (Exception)
-                {
+            catch (Exception)
+            {
 #endif
-                    errorCount++;
-                    continue;
-                }
+                errorCount++;
+                return null;
+            }
 
-                MemberInfo[] ma = null;
-                var name = t.FullName;
+            MemberInfo[] ma = null;
+            var name = t.FullName;
 
-                // FileNotFoundException members black list
-                if (name == "Microsoft.DotNet.Tools.Restore.RestoreCommand"
-                    || name.StartsWith("Microsoft.DotNet.Tools.Restore.")
-                    || name.StartsWith("Microsoft.DotNet.Tools.Publish.") // PublishCommand
-                    || name.StartsWith("Microsoft.DotNet.Tools.Compiler.PackageGenerator")
-                    || name.StartsWith("Microsoft.DotNet.ProjectModel.Resolution.PackageDependencyProvider")
-                   )
-                {
-                    continue;
-                }
+            // FileNotFoundException members black list
+            if (name == "Microsoft.DotNet.Tools.Restore.RestoreCommand"
+                || name.StartsWith("Microsoft.DotNet.Tools.Restore.")
+                || name.StartsWith("Microsoft.DotNet.Tools.Publish.") // PublishCommand
+                || name.StartsWith("Microsoft.DotNet.Tools.Compiler.PackageGenerator")
+                || name.StartsWith("Microsoft.DotNet.ProjectModel.Resolution.PackageDependencyProvider")
+               )
+            {
+                return null;
+            }
 
-                // Retrieve all members of each "class"
-                try { ma = t.GetMembers(allBindingsLookup | System.Reflection.BindingFlags.FlattenHierarchy); }
+            // Retrieve all members of each "class"
+            try { ma = t.GetMembers(allBindingsLookup | System.Reflection.BindingFlags.FlattenHierarchy); }
 #if DOREPORTS
                 catch (System.IO.FileNotFoundException e) { errorWriter.WriteLine(e.ToString()); }
                 catch (Exception e)
@@ -1107,151 +1133,169 @@ namespace LibCheck
                     errorWriter.WriteLine(t.FullName);
                     errorWriter.WriteLine(e.ToString());
 #else
-                catch (Exception)
-                {
+            catch (Exception)
+            {
 #endif
-                    errorCount++;
-                    continue;
-                }
+                errorCount++;
+                return null;
+            }
 
 #if DOREPORTS
                 if (_dbug > 0) errorWriter.WriteLine("  - Type: {0,-48} - {1:000} members", t.FullName, ma.Length);
 #endif
-                #endregion
+            #endregion
 
-                ArrayList memberList = new ArrayList(ma.Length);
+            #region Class Data
 
-                foreach (MemberInfo mi in ma)
-                {   // members loop
+            ArrayList memberList = new ArrayList(ma.Length);
 
-                    if (problems.ContainsKey(t.FullName) && ((ArrayList)problems[t.FullName]).Contains(mi.Name))
-                    {
+            int miIndex = -1;
+            for(miIndex = 0; miIndex < ma.Length; miIndex++)
+            {   // members loop
+
+                MemberInfo mi = ma[miIndex];
+
+                if (problems != null && problems.ContainsKey(t.FullName) && ((ArrayList)problems[t.FullName]).Contains(mi.Name))
+                {
 #if DOREPORTS
                         if (_dbug > 0) errorWriter.WriteLine("    -- Skipping member " + mi.Name);
 #endif
-                        continue;
-                    }
+                    continue;
+                }
 #if DOREPORTS
                     if (_dbug > 0) errorWriter.WriteLine("    -- Member: {0}", mi.Name);
 #endif
+                if (isEnum)
+                {
+                    if (!(mi is FieldInfo))
+                        continue;
+                }
 
-                    try
+                try
+                {
+                    #region Parse Member
+
+                    // Ignore non-public, non-family methods and constructors. Also ignore property accessors, event methods and cctor's.
+                    if (mi is MethodBase)
                     {
-                        #region Parse Member
-
-                        // Ignore non-public, non-family methods and constructors. Also ignore property accessors, event methods and cctor's.
-                        if (mi is MethodBase)
-                        {
-                            if (!((MethodBase)mi).IsPublic && !((MethodBase)mi).IsFamily)
-                                continue;
-                            if (((MethodBase)mi).IsSpecialName && (
-                                mi.Name.StartsWith("get_")
-                                || mi.Name.StartsWith("set_")
-                                || mi.Name.StartsWith("add_")
-                                || mi.Name.StartsWith("remove_")
-                                || mi.Name.StartsWith("op_")    // TODO: Add operators back in once GenMemberInfo can compare operators.
-                                ))
-                                continue;
-                            if ((mi is ConstructorInfo) && (mi.Name == ".cctor"))
-                                continue;
-                        }
-
-                        // Ignore non-public, non-family fields
-                        if (mi is FieldInfo && !(((FieldInfo)mi).IsPublic || ((FieldInfo)mi).IsFamily))
+                        if (!((MethodBase)mi).IsPublic && !((MethodBase)mi).IsFamily)
                             continue;
-
-                        // Ignore non-public, non-family events (add/remove method is non-public, non-family)
-                        if (mi is EventInfo && !(((EventInfo)mi).GetAddMethod(true).IsPublic || ((EventInfo)mi).GetAddMethod(true).IsFamily))
-                            continue;
-
-                        // Ignore non-public, non-family properties (both getter and setter are non-public, non-family)
-                        if (mi is PropertyInfo && !(
-                            (((PropertyInfo)mi).GetGetMethod(true) != null &&
-                            (((PropertyInfo)mi).GetGetMethod(true).IsPublic || ((PropertyInfo)mi).GetGetMethod(true).IsFamily)) ||
-                            (((PropertyInfo)mi).GetSetMethod(true) != null &&
-                            (((PropertyInfo)mi).GetSetMethod(true).IsPublic || ((PropertyInfo)mi).GetSetMethod(true).IsFamily))
+                        if (((MethodBase)mi).IsSpecialName && (
+                            mi.Name.StartsWith("get_")
+                            || mi.Name.StartsWith("set_")
+                            || mi.Name.StartsWith("add_")
+                            || mi.Name.StartsWith("remove_")
+                            || mi.Name.StartsWith("op_")    // TODO: Add operators back in once GenMemberInfo can compare operators.
                             ))
                             continue;
-
-                        // Ignore non-public, non-family nested types
-                        if (mi is Type && !(((Type)mi).IsNestedPublic || ((Type)mi).IsNestedFamily))
+                        if ((mi is ConstructorInfo) && (mi.Name == ".cctor"))
                             continue;
+                    }
 
-                        // For inherited members, only report ones that are not otherwise hidden
-                        if (mi.DeclaringType != mi.ReflectedType)
+                    // Ignore non-public, non-family fields
+                    if (mi is FieldInfo)
+                    {
+                        if (!(((FieldInfo)mi).IsPublic || ((FieldInfo)mi).IsFamily))
+                            continue;
+                    }
+
+                    // Ignore non-public, non-family events (add/remove method is non-public, non-family)
+                    if (mi is EventInfo && !(((EventInfo)mi).GetAddMethod(true).IsPublic || ((EventInfo)mi).GetAddMethod(true).IsFamily))
+                        continue;
+
+                    // Ignore non-public, non-family properties (both getter and setter are non-public, non-family)
+                    if (mi is PropertyInfo && !(
+                        (((PropertyInfo)mi).GetGetMethod(true) != null &&
+                        (((PropertyInfo)mi).GetGetMethod(true).IsPublic || ((PropertyInfo)mi).GetGetMethod(true).IsFamily)) ||
+                        (((PropertyInfo)mi).GetSetMethod(true) != null &&
+                        (((PropertyInfo)mi).GetSetMethod(true).IsPublic || ((PropertyInfo)mi).GetSetMethod(true).IsFamily))
+                        ))
+                        continue;
+
+                    // Ignore non-public, non-family nested types
+                    if (mi is Type && !(((Type)mi).IsNestedPublic || ((Type)mi).IsNestedFamily))
+                        continue;
+
+                    // For inherited members, only report ones that are not otherwise hidden
+                    if (mi.DeclaringType != mi.ReflectedType)
+                    {
+                        #region othersMembers
+
+                        MemberInfo[] others = t.GetMember(mi.Name, mi.MemberType,
+                            allBindingsLookup);
+
+                        if (others.Length == 0)
                         {
-                            #region othersMembers
-
-                            MemberInfo[] others = t.GetMember(mi.Name, mi.MemberType,
-                                allBindingsLookup);
-
-                            if (others.Length == 0)
-                            {
-                                //                                Console.WriteLine("Reflection error on {0} {1}.", t.FullName, mi.Name);
-                                //#if DOREPORTS
-                                //                                errorWriter.WriteLine("Type.GetMember({0}, {1}, BindingFlags.LookupAll) returned an empty list for {2}",
-                                //                                mi.Name, mi.MemberType, t.FullName);
-                                //#endif
-                            }
-                            else if (others.Length == 1 && others[0] != mi)
-                            {
-                                //                                Console.WriteLine("Reflection error on {0} {1}.", t.FullName, mi.Name);
-                                //#if DOREPORTS
-                                //                                errorWriter.WriteLine("Type.GetMember({0}, {1}, BindingFlags.LookupAll) returned a single, non-matching member for {2}",
-                                //                                    mi.Name, mi.MemberType, t.FullName);
-                                //#endif
-                            }
-                            else
-                            {
-                                bool good = true;
-                                foreach (MemberInfo other in others)
-                                {
-                                    // Filter loop
-                                    if (mi.DeclaringType.IsAssignableFrom(other.DeclaringType) && other != mi)
-                                    {
-                                        switch (mi.MemberType)
-                                        {
-                                            case MemberTypes.Constructor:
-                                            case MemberTypes.Method:
-                                                if (GenParameterInfo.PSig((MethodBase)mi) == GenParameterInfo.PSig((MethodBase)other))
-                                                    good = false;
-                                                break;
-                                            case MemberTypes.Property:
-                                                if (GenParameterInfo.PSig(((PropertyInfo)mi).GetIndexParameters())
-                                                    == GenParameterInfo.PSig(((PropertyInfo)mi).GetIndexParameters()))
-                                                    good = false;
-                                                break;
-                                            case MemberTypes.Event:
-                                            case MemberTypes.Field:
-                                            case MemberTypes.NestedType:
-                                                good = false;
-                                                break;
-                                            default:
-                                                //#if DOREPORTS
-                                                //                                                errorWriter.WriteLine("Error MemberInfo.MemberType = '{0}' for {1}.{2}",
-                                                //                                                           ((Enum)mi.MemberType).ToString(), t.FullName, mi.Name);
-                                                //#endif
-
-                                                break;
-                                        }
-                                        if (!good) break;                   // if member unwanted, exit Filter loop
-                                    }
-                                }
-
-                                // ignore "hidden" members, skip to next member info.
-                                if (!good) continue;
-                            }
-
-                            #endregion
+                            //                                Console.WriteLine("Reflection error on {0} {1}.", t.FullName, mi.Name);
+                            //#if DOREPORTS
+                            //                                errorWriter.WriteLine("Type.GetMember({0}, {1}, BindingFlags.LookupAll) returned an empty list for {2}",
+                            //                                mi.Name, mi.MemberType, t.FullName);
+                            //#endif
                         }
+                        else if (others.Length == 1 && others[0] != mi)
+                        {
+                            //                                Console.WriteLine("Reflection error on {0} {1}.", t.FullName, mi.Name);
+                            //#if DOREPORTS
+                            //                                errorWriter.WriteLine("Type.GetMember({0}, {1}, BindingFlags.LookupAll) returned a single, non-matching member for {2}",
+                            //                                    mi.Name, mi.MemberType, t.FullName);
+                            //#endif
+                        }
+                        else
+                        {
+                            bool good = true;
+                            foreach (MemberInfo other in others)
+                            {
+                                // Filter loop
+                                if (mi.DeclaringType.IsAssignableFrom(other.DeclaringType) && other != mi)
+                                {
+                                    switch (mi.MemberType)
+                                    {
+                                        case MemberTypes.Constructor:
+                                        case MemberTypes.Method:
+                                            if (GenParameterInfo.PSig((MethodBase)mi) == GenParameterInfo.PSig((MethodBase)other))
+                                                good = false;
+                                            break;
+                                        case MemberTypes.Property:
+                                            if (GenParameterInfo.PSig(((PropertyInfo)mi).GetIndexParameters())
+                                                == GenParameterInfo.PSig(((PropertyInfo)mi).GetIndexParameters()))
+                                                good = false;
+                                            break;
+                                        case MemberTypes.Event:
+                                        case MemberTypes.Field:
+                                        case MemberTypes.NestedType:
+                                            good = false;
+                                            break;
+                                        default:
+                                            //#if DOREPORTS
+                                            //                                                errorWriter.WriteLine("Error MemberInfo.MemberType = '{0}' for {1}.{2}",
+                                            //                                                           ((Enum)mi.MemberType).ToString(), t.FullName, mi.Name);
+                                            //#endif
 
-                        // ignore the value__ field on Enum's
-                        if (mi.Name == "value__" && (t.Equals(Type.GetType("System.Enum")) ||
-                            t.IsSubclassOf(Type.GetType("System.Enum"))))
-                            continue;
+                                            break;
+                                    }
+                                    if (!good) break;                   // if member unwanted, exit Filter loop
+                                }
+                            }
+
+                            // ignore "hidden" members, skip to next member info.
+                            if (!good) continue;
+                        }
 
                         #endregion
                     }
+
+                    // ignore the value__ field on Enum's
+                    var fieldInfo = mi as FieldInfo;
+                    if (fieldInfo != null && fieldInfo.Name != "value__")
+                    {
+                        // Ok
+                    }
+                    else if (mi.Name == "value__" && (t.Equals(Type.GetType("System.Enum")) ||
+                        t.IsSubclassOf(Type.GetType("System.Enum"))))
+                        continue;
+
+                    #endregion
+                }
 #if DOREPORTS
                     catch (Exception eA)
                     {
@@ -1260,27 +1304,27 @@ namespace LibCheck
                         errorWriter.WriteLine(mi.ToString());
                         errorWriter.WriteLine(eA.ToString());
 #else
-                    catch (Exception)
-                    {
+                catch (Exception)
+                {
 #endif
-                        errorCount++;
-                        continue;
-                    }
+                    errorCount++;
+                    continue;
+                }
 
-                    // convert memberinfos to typemembers
-                    TypeMember tm = null;
-                    Exception lastError = null;
+                // convert memberinfos to typemembers
+                TypeMember tm = null;
+                Exception lastError = null;
 
-                    try
-                    {
+                try
+                {
 #if DOREPORTS
                         if (mi == null) errorWriter.WriteLine("mi == null");
 #endif
 
-                        // Generate new TypeMember
-                        tm = new TypeMember(mi, t, addSer, isEnum, addStruct, addStructMethod, obsoletewriter);
+                    // Generate new TypeMember
+                    tm = new TypeMember(mi, t, addSer, isEnum, addStruct, addStructMethod);
 
-                    }
+                }
 #if DOREPORTS
                     catch (Exception e)
                     {
@@ -1291,41 +1335,39 @@ namespace LibCheck
                         errorWriter.WriteLine(e.ToString());
                         lastError = e;
 #else
-                    catch (Exception)
-                    {
-#endif
-                        errorCount++;
-                    }
-
-                    if (lastError != null)
-                        continue;
-
-                    // Add member to list for this type
-                    memberList.Add(tm);
-
-                    //P12 Added
-                    //if this is an enum, then we only add ONE entry
-                    if (isEnum)
-                        break;
-
-
-                } // end members loop
-
-                memberList.TrimToSize();
-
-                #endregion
-
-                var typeData = new ClassInfo
+                catch (Exception)
                 {
-                    Name = t.Namespace + "." + t.Name,
-                    Type = t,
-                    Members = memberList,
-                    TypeMemberList = null
-                };
+#endif
+                    errorCount++;
+                }
 
-                yield return typeData;
+                if (lastError != null)
+                    continue;
 
-            } // end types loop
+                // Add member to list for this type
+                memberList.Add(tm);
+
+                //P12 Added
+                //if this is an enum, then we only add ONE entry
+                //if (isEnum)
+                //    break;
+
+
+            } // end members loop
+
+            memberList.TrimToSize();
+
+            #endregion
+
+            var typeData = new ClassInfo
+            {
+                Name = t.Namespace + "." + t.Name,
+                Type = t,
+                Members = memberList,
+                TypeMemberList = null
+            };
+
+            return typeData;
         }
 
         // Create list of members for the store. Weed out non-public information.
@@ -1685,7 +1727,7 @@ namespace LibCheck
 #endif
                             // Generate new TypeMember
 
-                            tm = new TypeMember(mi, t, addSer, isEnum, addStruct, addStructMethod, obsoletewriter);
+                            tm = new TypeMember(mi, t, addSer, isEnum, addStruct, addStructMethod);
 
                             //robvi:check if we have one a single private constructor with no parameters
                             //add this to the shortkey, the reason for doing this here is that this is the
@@ -1783,6 +1825,7 @@ namespace LibCheck
 
                 htNamespaces = new Hashtable();
                 htNamespaces.Add(output, typememberList);
+
                 //PART OF THE MOD
                 //we want to ADD these changes if the hashtable already existed... 
 
@@ -2879,6 +2922,7 @@ namespace LibCheck
             _assembly = space + ".dll";
 
             MakeCurrentStoreFiles(num);
+            
             //Console.WriteLine("p2");
             //Console.ReadLine();
             fullSpec = prevSpec;
@@ -2890,8 +2934,6 @@ namespace LibCheck
             else
                 return (Hashtable)(htNamespaces[(space + "." +
                     String.Format("{0:00}", num)).ToLower()]);
-
-            //	return (Hashtable)(htNamespaces[(space + "." + num).ToLower()]);
         }
 
         // load a store given a file name (predictive, can request one that doesn't exist)

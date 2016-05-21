@@ -40,10 +40,21 @@ namespace SigHelper {
 			if (field.IsPublic && field.IsLiteral) {
 //if (field.Name != (string)(field.GetValue(field).ToString()))
 //Console.WriteLine("Name = {0}, Value = {1}", field.Name, field.GetValue(field));
-				_value = field.GetValue(field);
-			}
 
-		}
+				_value = field.GetValue(field);
+
+                var enumVal = _value as Enum;
+                if (enumVal != null)
+                {
+                    string numValue = enumVal.ToString("D");
+                    int intvalue = Int32.MinValue;
+                    if (!String.IsNullOrWhiteSpace(numValue) 
+                        && Int32.TryParse(numValue, out intvalue))
+                        _value = intvalue;
+                }
+            }
+
+        }
 
 		public GenFieldInfo (GenFieldInfo fi) : base ((GenMemberInfo)fi) {
 			_fieldtype = fi._fieldtype;

@@ -28,17 +28,35 @@ namespace SigHelper {
 			
 			if (ShortSig(format)) 
 				return result + ((_namespace != String.Empty) ? _namespace + "." + _name : _name);
-			
-			string temp = String.Empty;
-			result += (NamespaceSeparate(format) && _namespace != String.Empty) ? result += _namespace + ": " : "";
-			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : "";
-			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : "";
-			result += ToString(_typekind) + " ";
-			result += (!NamespaceSeparate(format) && _namespace != String.Empty) ? _namespace + "." : "";
 
+            bool IsStatic = false;
             if (_reflectedtype != null && _reflectedtype.IsSealed)
             {
             }
+            else if (IsAbstract && IsSealed && this._basetype == typeof(Object))
+            {
+                IsStatic = true;
+            }
+
+            string temp = String.Empty;
+			result += (NamespaceSeparate(format) && _namespace != String.Empty) ? result += _namespace + ": " : "";
+			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : "";
+
+            temp = ToString(_modifiers);
+            if (IsStatic && temp == "abstract sealed")
+                temp = "static";
+            if (temp != String.Empty)
+                result += temp + " ";
+
+            temp = ToString(_typekind);
+            if (temp.Contains("`") && _reflectedtype != null)
+            {
+                // <T> type
+                var ctor2 = _reflectedtype.GetConstructors();
+            }
+
+            result += temp + " ";
+			result += (!NamespaceSeparate(format) && _namespace != String.Empty) ? _namespace + "." : "";
 
 			result += _name;
 

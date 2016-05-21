@@ -239,8 +239,8 @@ namespace LibCheck
             IsPrepared = false;
             Console.WriteLine("start time = " + DateTime.Now);
 
-
-            obsoletewriter = File.CreateText("obsolete.txt");
+            if (args.Length >= 1 && args[0] != "-debug")
+                obsoletewriter = File.CreateText("obsolete.txt");
             long startTicks = DateTime.Now.Ticks;
 
             //ALWAYS FORCE THE CULTURE TO en-US
@@ -309,13 +309,22 @@ namespace LibCheck
                 if (!PassDirectory())
                     return;
 
-                if (_assembly.ToLower() == "full")
+                if (_assembly.ToLower() == "full" || _assembly.Contains("*"))
                 {
                     var ignFile = Path.GetFullPath("reffiles\\ignorefiles.txt");
                     ArrayList ignoreFiles = OpenFileList(ignFile);
+
+                    _assembly = Path.GetFileNameWithoutExtension(_assembly);
+                    string filter = "*.dll";
+                    if (_assembly.Contains("*"))
+                    {
+                        filter = _assembly + ".dll";
+                        _assembly = "full";
+                    }
+
                     DirectoryInfo di = new DirectoryInfo(fileDir);
 
-                    foreach (FileInfo f in di.GetFiles("*.dll"))
+                    foreach (FileInfo f in di.GetFiles(filter))
                     {
                         Console.WriteLine(Path.Combine(fileDir, f.Name));
 
@@ -327,13 +336,13 @@ namespace LibCheck
                 }
                 else
                 {
-                    MakeStoreFiles();
+                    MakeStoreFiles(_assembly);
                 }
             }
 
             // PostProcess();
 
-            if (!suppress)
+            if (!suppress && obsoletewriter != null)
                 obsoletewriter.Close();
             Console.WriteLine("\r\nLibCheck Done.\r\n");
 
@@ -346,7 +355,7 @@ namespace LibCheck
             //if (rf != null)
             //    rf.Close();
 
-            Console.ReadKey();
+            Console.ReadLine();
         }
 
         public static void Prepare()
@@ -439,6 +448,14 @@ namespace LibCheck
             {
                 string arg = args[i].ToLower();
 
+                if (arg == "-debug")
+                {
+                    Console.WriteLine("Press any key");
+                    Console.ReadLine();     // for debugger attach
+                    suppress = false;
+                    continue;
+                }
+
                 if (arg == "-store")
                 {
                     if (_runStore)
@@ -511,6 +528,13 @@ namespace LibCheck
                     fullSpec = true;
                     fileDir = args[i + 1];
                     i++;
+                }
+                else if (arg.ToLower().StartsWith("-file"))
+                {
+                    fullSpec = false;
+                    _runStore = true;
+                    _assembly = args[++i];
+                    fileDir = Path.GetDirectoryName(_assembly);
                 }
                 else if (arg.ToLower().StartsWith("-gacload"))
                 {

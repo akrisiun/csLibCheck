@@ -18,7 +18,8 @@ namespace SigHelper {
 		public new static string ToString(ConstructorInfo ci) { return (new CsConstructorInfo(ci)).ToString(); }
 		public override string ToString() {
 			string temp;
-			string result = "//" + ToString(_methodkind) + ": \n";									// MemberType
+			string result = "   //" + ToString(_methodkind) + ": "                                  // MemberType
+                         + "\n   ";									    
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;		// Scope
 			result += (_methodkind == MethodKinds.Ctor) ? CsTypeInfo.ParseInterface(_declaringtype) : _name;				// Name
 			result += " " + ToString(_parameters, _varargs) + " {}";								// Parameters

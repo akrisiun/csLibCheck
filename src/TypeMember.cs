@@ -70,7 +70,7 @@ namespace LibCheck
         public GenMemberInfo MemberInfo { [DebuggerStepThrough] get; protected set; }
 
         //** Constructor
-        public TypeMember(MemberInfo member, Type type, bool perfSer, bool isEnum, bool addStruct, bool addStructMethod, StreamWriter obsoletewriter)
+        public TypeMember(MemberInfo member, Type type, bool perfSer, bool isEnum, bool addStruct, bool addStructMethod) //, StreamWriter obsoletewriter)
         {
             if (member == null) throw new ArgumentNullException("member");
 
@@ -123,8 +123,7 @@ namespace LibCheck
             if (mi.IsObsolete && (!ObsoleteHT.Contains(mi._declaringtype + "." + mi.Name)))
             {
                 ObsoleteHT.Add(mi._declaringtype + "." + mi.Name, null);
-                obsoletewriter.WriteLine(mi._declaringtype + "." + mi.Name);
-
+                // obsoletewriter.WriteLine(mi._declaringtype + "." + mi.Name);
             }
 
             if (perfSer)
@@ -329,7 +328,7 @@ namespace LibCheck
             }
 
             // P12 Added this if
-            if (_isenum == false)
+            if (!_isenum)
             {
                 // add information here as needed until next breaking field change comes along
                 _misc = null;
@@ -370,52 +369,6 @@ namespace LibCheck
                     }
                 }
 
-                //P11 ADDED
-                // NEW STUFF
-                /*
-                        else if (member.MemberType == MemberTypes.Field) {
-                            if (member.DeclaringType.IsEnum && 
-                                    previousEnum != member.DeclaringType.ToString()) {
-                                string tempMisc = "EnumWithValues=";
-
-                                Type thisType = member.DeclaringType;
-
-                                string[] names = Enum.GetNames(thisType);
-
-                                for (int i = 0;i<names.Length;i++) {
-                                    if (i>0)
-                                        tempMisc+=",";
-
-                                    tempMisc += names[i] + "=" + 
-                                        ((Enum)Enum.Parse(thisType,names[i])).ToString("d");
-                                }
-
-                                //add the entries into the misc field...
-
-                                if (tempMisc != "EnumWithValues=") {
-                                    if (_misc != null && _misc != "")
-                                        _misc += ";";
-                                    else
-                                        _misc = "";
-
-                                        _misc += tempMisc;
-                                }
-
-                                previousEnum = member.DeclaringType.ToString();
-                                _isenum = true;
-                            }
-                            else if (member.DeclaringType.IsEnum && 
-                                    previousEnum == member.DeclaringType.ToString()) {
-                                if (_misc != null && _misc != "")
-                                    _misc += ";";
-                                else
-                                    _misc = "";
-
-                                _misc += "ignorethiselement";
-                            }
-                        }
-                */
-
                 //SAVING THE PARAMETER NAMES!
                 if (member.MemberType == MemberTypes.Method)
                 {
@@ -445,19 +398,6 @@ namespace LibCheck
 
                     if (tempName.EndsWith("params=") == false)
                         _misc += tempName;
-                    /*
-                                    //add the parameter sigs!
-                                    for (int i=0;i < pi.Length;i++) {
-
-                                        string[] items = (pi[i]).ToString().Split(' ');
-
-                                        if (i>0)
-                                            tempName+=",";
-
-                                        tempName+=items[1];
-	
-                                    }
-                    */
                 }
                 //P12 Added
             }

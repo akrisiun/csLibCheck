@@ -18,19 +18,32 @@ namespace SigHelper {
 		public new static string ToString(FieldInfo fi) { return (new CsFieldInfo(fi)).ToString(); }
 		public override string ToString() {
 			string temp = null;
-			string result = "// Field: \n";														
-                                                                                                    // MemberType
-			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;		// Scope
-			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;	// Modifiers
-			result += (_fieldkind == FieldKinds.Constant) ? "const " : "";							// const
-            
-            var nameType = CsTypeInfo.ParseInterface(_fieldtype);
-			result += SigHelper.CsParse(nameType, true) + " ";								// Type
-			result += _name;																		// Name
-            if (_value != null && _value.ToString() != "_._")											        // ? Value
-                result += " = " + _value.ToString();
+			string result = "    // Field: \n    ";
+            // MemberType
 
-            result += ";";
+            if (!_declaringtype.IsEnum)
+            {
+                result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;     // Scope
+                result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : String.Empty;  // Modifiers
+                result += (_fieldkind == FieldKinds.Constant) ? "const " : "";                          // const
+
+                var nameType = CsTypeInfo.ParseInterface(_fieldtype);
+                result += SigHelper.CsParse(nameType, true) + " ";                                  // Type
+            }
+
+			result += _name;																		// Name
+            if (_value != null && _value.ToString() != "_._")                                       // ? Value
+            {
+                if (_value is Int32)
+                    result += " = " + _value.ToString();
+                else if (this._fieldkind == FieldKinds.Constant)
+                    result += " = \"" + _value.ToString() + "\"";
+                else
+                {   // breakpoint
+                }
+            }
+
+            result += _declaringtype.IsEnum ? "," : ";";
             if (_fieldtype.IsGenericType)
             {
             }
