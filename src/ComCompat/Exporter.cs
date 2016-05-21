@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 
 // Creates a type library from an assembly
 namespace ComComparer 
@@ -17,9 +18,9 @@ namespace ComComparer
 			this.converter = new TypeLibConverter();
 		}
 
-		// Creates a type library with the given filename, library name,
-		// and help file from the assembly specified by assemblyFilename
-		public UCOMITypeLib Export(string assemblyFilename, string tlbFilename)
+        // Creates a type library with the given filename, library name,
+        // and help file from the assembly specified by assemblyFilename UCOMITypeLib 
+        public ITypeLib Export(string assemblyFilename, string tlbFilename)
 		{
 			Assembly assembly;
 
@@ -40,15 +41,15 @@ namespace ComComparer
 
 		// Creates a type library with the given filename, library name,
 		// and help file from the loaded input assembly
-		public UCOMITypeLib Export(Assembly assembly, string tlbFilename)
+		public ITypeLib Export(Assembly assembly, string tlbFilename)
 		{
-			UCOMITypeLib returnTypeLib;
+			ITypeLib returnTypeLib;
 
 			if (tlbFilename == null)
 				tlbFilename = assembly.GetName().Name + ".tlb";
 
 			// Create a type library from the assembly
-			returnTypeLib = (UCOMITypeLib)converter.ConvertAssemblyToTypeLib(
+			returnTypeLib = (ITypeLib)converter.ConvertAssemblyToTypeLib(
 				assembly,
 				tlbFilename,
 				0,

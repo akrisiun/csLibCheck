@@ -30,7 +30,7 @@ namespace SigHelper {
 	// To track classifications that can be made in a report.
 	[Serializable]
 	public enum TypeKinds : byte {
-		Unassigned = 0,
+		    Unassigned = 0,
 			Unknown = 0x80,
 			Class = 1,
 			Interface,
@@ -133,7 +133,8 @@ namespace SigHelper {
 		protected virtual string ClassBaseString {
 			get {
 				string result = String.Empty;
-				// add class-base declaration
+				
+                // add class-base declaration
 				bool firstone = true;
 				if (_basetype != null) {
 					result += " : " + _basetype.FullName;
@@ -246,6 +247,7 @@ namespace SigHelper {
 				return TypeKinds.Enum;
 			else if (type.IsValueType)
 				return TypeKinds.Struct;
+
 			// should these non-keyword "types" be lower cased?
 			else if (type.Equals(Type.GetType("System.Attribute")) || 
 						type.IsSubclassOf(Type.GetType("System.Attribute")))

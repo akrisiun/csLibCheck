@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 /// <summary>
 /// Checks that one assembly is compatible with another from COM's perspective.
@@ -9,7 +11,8 @@ namespace ComComparer
 {
 	public class AssemblyComparer
 	{
-		private UCOMITypeLib oldTlb, newTlb;
+        // InteropServices.UCOMITypeLib -> ITypeLib 
+        private ITypeLib oldTlb, newTlb;
 		private int oldTypeCount, newTypeCount;
 		private ArrayList compatErrors, compatWarnings, compatOtherDiffs;
 		private Hashtable newTypes;
@@ -35,7 +38,7 @@ namespace ComComparer
 
 			newTypes = new Hashtable(newTypeCount);
 
-			UCOMITypeInfo newTypeInfo = null;
+			ITypeInfo newTypeInfo = null;
 
 			for (int i = 0; i < newTypeCount; i++)
 			{
@@ -67,10 +70,10 @@ namespace ComComparer
 		/// </summary>
 		public void CheckCompatibility()
 		{
-			UCOMITypeInfo oldTypeInfo = null;
-			UCOMITypeInfo newTypeInfo = null;
-			TYPEATTR newAttr, oldAttr;
-			TYPELIBATTR newLibAttr, oldLibAttr;
+			ITypeInfo oldTypeInfo = null;
+			ITypeInfo newTypeInfo = null;
+            ComTypes.TYPEATTR newAttr, oldAttr;
+            ComTypes.TYPELIBATTR newLibAttr, oldLibAttr;
 			IntPtr newPtr = IntPtr.Zero;
 			IntPtr oldPtr = IntPtr.Zero;
 			string currentTypeKind;
@@ -85,11 +88,11 @@ namespace ComComparer
 			{
 				// Extract TYPEATTR from old TypeLib
 				oldTlb.GetLibAttr(out oldPtr);
-				oldLibAttr = (TYPELIBATTR)Marshal.PtrToStructure(oldPtr, typeof(TYPELIBATTR));
+				oldLibAttr = (ComTypes.TYPELIBATTR)Marshal.PtrToStructure(oldPtr, typeof(ComTypes.TYPELIBATTR));
 
 				// Extract TYPEATTR from new TypeLib
 				newTlb.GetLibAttr(out newPtr);
-				newLibAttr = (TYPELIBATTR)Marshal.PtrToStructure(newPtr, typeof(TYPELIBATTR));
+				newLibAttr = (ComTypes.TYPELIBATTR)Marshal.PtrToStructure(newPtr, typeof(ComTypes.TYPELIBATTR));
 
 				CompareTLibAttrs(oldLibAttr, newLibAttr);
 			}
@@ -112,21 +115,21 @@ namespace ComComparer
 
 					// Extract TYPEATTR from old TypeInfo
 					oldTypeInfo.GetTypeAttr(out oldPtr);
-					oldAttr = (TYPEATTR)Marshal.PtrToStructure(oldPtr, typeof(TYPEATTR));
+					oldAttr = (ComTypes.TYPEATTR)Marshal.PtrToStructure(oldPtr, typeof(ComTypes.TYPEATTR));
 
 					// Extract the old type name
 					currentTypeName = Marshal.GetTypeInfoName(oldTypeInfo);
 
 					switch (oldAttr.typekind)
 					{
-						case TYPEKIND.TKIND_ENUM: currentTypeKind = "an enum"; break;
-						case TYPEKIND.TKIND_RECORD: currentTypeKind = "a struct"; break;
-						case TYPEKIND.TKIND_UNION: currentTypeKind = "a union"; break;
-						case TYPEKIND.TKIND_ALIAS: currentTypeKind = "an alias"; break;
-						case TYPEKIND.TKIND_MODULE: currentTypeKind = "a module"; break;
-						case TYPEKIND.TKIND_INTERFACE: currentTypeKind = "an interface"; break;
-						case TYPEKIND.TKIND_DISPATCH: currentTypeKind = "an interface"; break;
-						case TYPEKIND.TKIND_COCLASS: currentTypeKind = "a coclass"; break;
+						case ComTypes.TYPEKIND.TKIND_ENUM: currentTypeKind = "an enum"; break;
+						case ComTypes.TYPEKIND.TKIND_RECORD: currentTypeKind = "a struct"; break;
+						case ComTypes.TYPEKIND.TKIND_UNION: currentTypeKind = "a union"; break;
+						case ComTypes.TYPEKIND.TKIND_ALIAS: currentTypeKind = "an alias"; break;
+						case ComTypes.TYPEKIND.TKIND_MODULE: currentTypeKind = "a module"; break;
+						case ComTypes.TYPEKIND.TKIND_INTERFACE: currentTypeKind = "an interface"; break;
+						case ComTypes.TYPEKIND.TKIND_DISPATCH: currentTypeKind = "an interface"; break;
+						case ComTypes.TYPEKIND.TKIND_COCLASS: currentTypeKind = "a coclass"; break;
 						default:
 							throw new ApplicationException("Unknown TYPEKIND encountered: " + oldAttr.typekind);
 					}
@@ -135,11 +138,11 @@ namespace ComComparer
 					if (newTypes.Contains(currentTypeName))
 					{
 						// Extract new TypeInfo from the hashtable
-						newTypeInfo = (UCOMITypeInfo)newTypes[currentTypeName];
+						newTypeInfo = (ITypeInfo)newTypes[currentTypeName];
 
 						// Extract TYPEATTR from new TypeInfo
 						newTypeInfo.GetTypeAttr(out newPtr);
-						newAttr = (TYPEATTR)Marshal.PtrToStructure(newPtr, typeof(TYPEATTR));
+						newAttr = (ComTypes.TYPEATTR)Marshal.PtrToStructure(newPtr, typeof(ComTypes.TYPEATTR));
 
 						// Comparison Step 1: Compare TYPEATTRs
 						if (CompareTypeAttrs(oldAttr, newAttr, oldTypeInfo, newTypeInfo))
@@ -150,23 +153,23 @@ namespace ComComparer
 							// Comparison Step 2: Check different things depending on the kind of type
 							switch (oldAttr.typekind)
 							{
-								case TYPEKIND.TKIND_ENUM:
-								case TYPEKIND.TKIND_RECORD:
-								case TYPEKIND.TKIND_UNION:
-								case TYPEKIND.TKIND_ALIAS:
+								case ComTypes.TYPEKIND.TKIND_ENUM:
+								case ComTypes.TYPEKIND.TKIND_RECORD:
+								case ComTypes.TYPEKIND.TKIND_UNION:
+								case ComTypes.TYPEKIND.TKIND_ALIAS:
 									CheckTypeDef(oldTypeInfo, newTypeInfo, oldAttr, newAttr);
 									break;
-								case TYPEKIND.TKIND_MODULE:
+								case ComTypes.TYPEKIND.TKIND_MODULE:
 									throw new ApplicationException("Tool error: Exported type libraries should not contain modules.");
-								case TYPEKIND.TKIND_INTERFACE:
+								case ComTypes.TYPEKIND.TKIND_INTERFACE:
 									// These are interfaces that don't derive from IDispatch
 									CheckInterface(oldTypeInfo, newTypeInfo, oldAttr, newAttr);
 									break;
-								case TYPEKIND.TKIND_DISPATCH:
+								case ComTypes.TYPEKIND.TKIND_DISPATCH:
 									// These are interfaces that derive from IDispatch or dispinterfaces
 									CheckInterface(oldTypeInfo, newTypeInfo, oldAttr, newAttr);
 									break;
-								case TYPEKIND.TKIND_COCLASS:
+								case ComTypes.TYPEKIND.TKIND_COCLASS:
 									CheckCoclass(oldTypeInfo, newTypeInfo, oldAttr, newAttr);
 									break;
 								default:
@@ -194,7 +197,7 @@ namespace ComComparer
 		/// <param name="oldAttr">The old TYPELIBATTR</param>
 		/// <param name="newAttr">The new TYPELIBATTR</param>
 		/// <returns></returns>
-		private void CompareTLibAttrs(TYPELIBATTR oldAttr, TYPELIBATTR newAttr)
+		private void CompareTLibAttrs(ComTypes.TYPELIBATTR oldAttr, ComTypes.TYPELIBATTR newAttr)
 		{
 			if (oldAttr.guid != newAttr.guid)
 				ReportCompatOtherDiff("The type libraries have different LIBIDs.", oldAttr.guid.ToString(), newAttr.guid.ToString());
@@ -232,7 +235,7 @@ namespace ComComparer
 		/// <param name="oldInfo">The old TypeInfo</param>
 		/// <param name="newInfo">The new TypeInfo</param>
 		/// <returns></returns>
-		private bool CompareTypeAttrs(TYPEATTR oldAttr, TYPEATTR newAttr, UCOMITypeInfo oldInfo, UCOMITypeInfo newInfo)
+		private bool CompareTypeAttrs(ComTypes.TYPEATTR oldAttr, ComTypes.TYPEATTR newAttr, ITypeInfo oldInfo, ITypeInfo newInfo)
 		{
 			// This comparison ignores cImplTypes because it's handled specially for coclasses.
 
@@ -246,7 +249,7 @@ namespace ComComparer
 			if (!oldAttr.guid.Equals(newAttr.guid))
 			{
 				// Report an error if the type is an interface
-				if (oldAttr.typekind == TYPEKIND.TKIND_INTERFACE || oldAttr.typekind == TYPEKIND.TKIND_DISPATCH)
+				if (oldAttr.typekind == ComTypes.TYPEKIND.TKIND_INTERFACE || oldAttr.typekind == ComTypes.TYPEKIND.TKIND_DISPATCH)
 				{
 					ReportCompatError("Interface '" + currentTypeName + "' has a different IID.", oldAttr.guid.ToString(), newAttr.guid.ToString());
 				}
@@ -290,7 +293,7 @@ namespace ComComparer
 			// and 1.0 for everything else (such as real interfaces).
 			if (oldAttr.wMajorVerNum != newAttr.wMajorVerNum || oldAttr.wMinorVerNum != newAttr.wMinorVerNum)
 			{
-				if (newAttr.typekind == TYPEKIND.TKIND_INTERFACE || newAttr.typekind == TYPEKIND.TKIND_DISPATCH)
+				if (newAttr.typekind == ComTypes.TYPEKIND.TKIND_INTERFACE || newAttr.typekind == ComTypes.TYPEKIND.TKIND_DISPATCH)
 					ReportCompatOtherDiff("The interface '" + currentTypeName + "' has a different version number, which should not break compatibility.  This simply indicates that it's a class interface in one type library, but a real interface in the other type library.", oldAttr.wMajorVerNum.ToString() + "." + oldAttr.wMinorVerNum.ToString(), newAttr.wMajorVerNum.ToString() + "." + newAttr.wMinorVerNum.ToString());
 				else
 					ReportCompatError("The type '" + currentTypeName + "' has a different version number.", oldAttr.wMajorVerNum.ToString() + "." + oldAttr.wMinorVerNum.ToString(), newAttr.wMajorVerNum.ToString() + "." + newAttr.wMinorVerNum.ToString());
@@ -301,8 +304,10 @@ namespace ComComparer
 			// which should still be compatible.
 			if (oldAttr.wTypeFlags != newAttr.wTypeFlags)
 			{
-				if ((newAttr.typekind == TYPEKIND.TKIND_INTERFACE || newAttr.typekind == TYPEKIND.TKIND_DISPATCH) &&
-					((oldAttr.wTypeFlags & TYPEFLAGS.TYPEFLAG_FHIDDEN & TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE) == (newAttr.wTypeFlags & TYPEFLAGS.TYPEFLAG_FHIDDEN & TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE)))
+				if ((newAttr.typekind == ComTypes.TYPEKIND.TKIND_INTERFACE || newAttr.typekind == ComTypes.TYPEKIND.TKIND_DISPATCH) &&
+					((oldAttr.wTypeFlags & ComTypes.TYPEFLAGS.TYPEFLAG_FHIDDEN 
+                        & ComTypes.TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE) == (newAttr.wTypeFlags 
+                                    & ComTypes.TYPEFLAGS.TYPEFLAG_FHIDDEN & ComTypes.TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE)))
 					ReportCompatOtherDiff("The interface '" + currentTypeName + "' has type flags that differ in a way that should not break compatibility.  This simply indicates that it's a class interface in one type library, but a real interface in the other type library.", oldAttr.wTypeFlags.ToString(), newAttr.wTypeFlags.ToString());
 				else
 					ReportCompatError("The type '" + currentTypeName + "' has different type flags.", oldAttr.wTypeFlags.ToString(), newAttr.wTypeFlags.ToString());
@@ -321,7 +326,7 @@ namespace ComComparer
 		/// <param name="memberName">The member name corresponding to the TYPEDESC, or an empty string</param>
 		/// <param name="paramName">The parameter name corresponding to the TYPEDESC, or an empty string</param>
 		/// <param name="currentMemberType">The type of the current member, if applicable.</param>
-		private void CompareTypeDescs(TYPEDESC oldDesc, TYPEDESC newDesc, UCOMITypeInfo oldInfo, UCOMITypeInfo newInfo, string memberName, string paramName, string currentMemberType)
+		private void CompareTypeDescs(ComTypes.TYPEDESC oldDesc, ComTypes.TYPEDESC newDesc, ITypeInfo oldInfo, ITypeInfo newInfo, string memberName, string paramName, string currentMemberType)
 		{
 			string messagePrefix = "";
 
@@ -345,8 +350,8 @@ namespace ComComparer
 			// When VT_USERDEFINED, lpValue is an HREFTYPE that can be used to get a TypeInfo for the UDT
 			if (oldDesc.vt == (short)VarEnum.VT_USERDEFINED)
 			{
-				UCOMITypeInfo oldUdtInfo = null;
-				UCOMITypeInfo newUdtInfo = null;
+				ITypeInfo oldUdtInfo = null;
+				ITypeInfo newUdtInfo = null;
 				string oldName = null;
 				string newName = null;
 			
@@ -372,8 +377,8 @@ namespace ComComparer
 			{
 				try
 				{
-					TYPEDESC tdescNew = (TYPEDESC)Marshal.PtrToStructure(newDesc.lpValue, typeof(TYPEDESC));
-					TYPEDESC tdescOld = (TYPEDESC)Marshal.PtrToStructure(oldDesc.lpValue, typeof(TYPEDESC));
+                    var tdescNew = Marshal.PtrToStructure<ComTypes.TYPEDESC>(newDesc.lpValue);
+					var tdescOld = Marshal.PtrToStructure<ComTypes.TYPEDESC>(oldDesc.lpValue);
 
 					if (tdescOld.vt != tdescNew.vt)
 						ReportCompatError(messagePrefix + "has a different pointer or element type.", ((VarEnum)tdescOld.vt).ToString(), ((VarEnum)tdescNew.vt).ToString());
@@ -412,7 +417,7 @@ namespace ComComparer
 		/// <param name="oldInfo">The old TypeInfo</param>
 		/// <param name="newInfo">The new TypeInfo</param>
 		/// <param name="fieldName">The name of the field corresponding to the VARDESC</param>
-		private void CompareVarDescs(VARDESC oldDesc, VARDESC newDesc, UCOMITypeInfo oldInfo, UCOMITypeInfo newInfo, string fieldName)
+		private void CompareVarDescs(VARDESC oldDesc, VARDESC newDesc, ITypeInfo oldInfo, ITypeInfo newInfo, string fieldName)
 		{
 			// Compare IDs
 			if (oldDesc.memid != newDesc.memid)
@@ -425,7 +430,8 @@ namespace ComComparer
 			// Compare flags
 			if (oldDesc.wVarFlags != newDesc.wVarFlags)
 			{
-				ReportCompatError("Field '" + fieldName + "' of '" + currentTypeName + "' has different flags.", ((VARFLAGS)oldDesc.wVarFlags).ToString(), ((VARFLAGS)newDesc.wVarFlags).ToString());
+				ReportCompatError("Field '" + fieldName + "' of '" + currentTypeName + "' has different flags.", 
+                    ((ComTypes.VARFLAGS)oldDesc.wVarFlags).ToString(), ((ComTypes.VARFLAGS)newDesc.wVarFlags).ToString());
 			}
 
 			// Compare VARKINDs
@@ -472,7 +478,7 @@ namespace ComComparer
 		/// <param name="memberName">The member name corresponding to the ELEMDESC, or an empty string</param>
 		/// <param name="paramName">The parameter name corresponding to the ELEMDESC, or an empty string</param>
 		/// <param name="currentMemberType">The type of the current member, if applicable.</param>
-		private void CompareElemDescs(ELEMDESC oldDesc, ELEMDESC newDesc, UCOMITypeInfo oldInfo, UCOMITypeInfo newInfo, string memberName, string paramName, string currentMemberType)
+		private void CompareElemDescs(ComTypes.ELEMDESC oldDesc, ComTypes.ELEMDESC newDesc, ITypeInfo oldInfo, ITypeInfo newInfo, string memberName, string paramName, string currentMemberType)
 		{
 			// This comparison ignores ELEMDESC.desc.paramdesc.wParamFlags because it's the same bits as ELEMDESC.desc.idldesc.wIDLFlags
 
@@ -486,7 +492,7 @@ namespace ComComparer
 
 			// If the PARAMFLAG_FHASDEFAULT flag is set, then the lpVarValue is valid,
 			// and points to a PARAMDESCEX structure
-			if ((oldDesc.desc.paramdesc.wParamFlags & PARAMFLAG.PARAMFLAG_FHASDEFAULT) > 0)
+			if ((oldDesc.desc.paramdesc.wParamFlags & ComTypes.PARAMFLAG.PARAMFLAG_FHASDEFAULT) > 0)
 			{
 				try
 				{
@@ -528,7 +534,7 @@ namespace ComComparer
 		/// <param name="oldInfo">The old TypeInfo</param>
 		/// <param name="newInfo">The new TypeInfo</param>
 		/// <param name="funcName">The name of the function corresponding to the FUNCDESC</param>
-		private void CompareFuncDescs(FUNCDESC oldDesc, FUNCDESC newDesc, UCOMITypeInfo oldInfo, UCOMITypeInfo newInfo, string funcName)
+		private void CompareFuncDescs(ComTypes.FUNCDESC oldDesc, ComTypes.FUNCDESC newDesc, ITypeInfo oldInfo, ITypeInfo newInfo, string funcName)
 		{
 			// This function ignores the lprgelemdescParam field, because it is examined
 			// when looking at the function's parameters in the CompareFunctions method.
@@ -573,7 +579,7 @@ namespace ComComparer
 		/// <param name="newTypeInfo">The TypeInfo for the new coclass</param>
 		/// <param name="oldAttr">TYPEATTR corrsponding to the old TypeInfo</param>
 		/// <param name="newAttr">TYPEATTR corrsponding to the new TypeInfo</param>
-		private void CheckCoclass(UCOMITypeInfo oldTypeInfo, UCOMITypeInfo newTypeInfo, TYPEATTR oldAttr, TYPEATTR newAttr)
+		private void CheckCoclass(ITypeInfo oldTypeInfo, ITypeInfo newTypeInfo, ComTypes.TYPEATTR oldAttr, ComTypes.TYPEATTR newAttr)
 		{
 			Hashtable newListedInterfaces = new Hashtable(6);
 
@@ -582,12 +588,12 @@ namespace ComComparer
 			{
 				// Get type information for the listed interface
 				int href = 0;
-				UCOMITypeInfo listedTypeInfo = null;
+				ITypeInfo listedTypeInfo = null;
 				newTypeInfo.GetRefTypeOfImplType(i, out href);
 				newTypeInfo.GetRefTypeInfo(href, out listedTypeInfo);
 
-				// Retrieve the implemented interface flags (source, default)
-				int flags;
+                // Retrieve the implemented interface flags (source, default)
+                ComTypes.IMPLTYPEFLAGS flags;
 				newTypeInfo.GetImplTypeFlags(i, out flags);
 
 				// Use its name as the hashtable key
@@ -599,7 +605,7 @@ namespace ComComparer
 			{
 				// Get type information for the listed interface
 				int href = 0;
-				UCOMITypeInfo listedTypeInfo = null;
+				ITypeInfo listedTypeInfo = null;
 				oldTypeInfo.GetRefTypeOfImplType(i, out href);
 				oldTypeInfo.GetRefTypeInfo(href, out listedTypeInfo);
 
@@ -610,14 +616,15 @@ namespace ComComparer
 				}
 				else
 				{
-					// Retrieve the implemented interface flags (source, default) and compare them
-					int flags;
+                    // Retrieve the implemented interface flags (source, default) and compare them
+                    ComTypes.IMPLTYPEFLAGS flags;
 					oldTypeInfo.GetImplTypeFlags(i, out flags);
 
-					if (flags != (int)newListedInterfaces[Marshal.GetTypeInfoName(listedTypeInfo)])
+                    if ((int)flags != (int)newListedInterfaces[Marshal.GetTypeInfoName(listedTypeInfo)])
 					{
 						ReportCompatError("The coclass '" + currentTypeName + "' lists the interface '" + Marshal.GetTypeInfoName(listedTypeInfo) + 
-							"' with different flags (such as [default] or [source]).", ((IMPLTYPEFLAGS)flags).ToString(), ((IMPLTYPEFLAGS)newListedInterfaces[Marshal.GetTypeInfoName(listedTypeInfo)]).ToString());
+							"' with different flags (such as [default] or [source]).", 
+                            ((ComTypes.IMPLTYPEFLAGS)flags).ToString(), ((ComTypes.IMPLTYPEFLAGS)newListedInterfaces[Marshal.GetTypeInfoName(listedTypeInfo)]).ToString());
 					}
 				}
 			}
@@ -631,7 +638,7 @@ namespace ComComparer
 		/// <param name="newTypeInfo">The TypeInfo for the new typedef</param>
 		/// <param name="oldAttr">TYPEATTR corrsponding to the old TypeInfo</param>
 		/// <param name="newAttr">TYPEATTR corrsponding to the new TypeInfo</param>
-		private void CheckTypeDef(UCOMITypeInfo oldTypeInfo, UCOMITypeInfo newTypeInfo, TYPEATTR oldAttr, TYPEATTR newAttr)
+		private void CheckTypeDef(ITypeInfo oldTypeInfo, ITypeInfo newTypeInfo, ComTypes.TYPEATTR oldAttr, ComTypes.TYPEATTR newAttr)
 		{
 			for (int i = 0; i < oldAttr.cVars; i++)
 			{
@@ -646,14 +653,14 @@ namespace ComComparer
 		/// <param name="newTypeInfo">The TypeInfo for the new interface</param>
 		/// <param name="oldAttr">TYPEATTR corrsponding to the old TypeInfo</param>
 		/// <param name="newAttr">TYPEATTR corrsponding to the new TypeInfo</param>
-		private void CheckInterface(UCOMITypeInfo oldTypeInfo, UCOMITypeInfo newTypeInfo, TYPEATTR oldAttr, TYPEATTR newAttr)
+		private void CheckInterface(ITypeInfo oldTypeInfo, ITypeInfo newTypeInfo, ComTypes.TYPEATTR oldAttr, ComTypes.TYPEATTR newAttr)
 		{
 			if (oldAttr.cImplTypes != 1)
 				throw new ApplicationException("Only expected cImplTypes==1 on interface '" + currentTypeName + "'.");
 
 			// Check that interface is derived from the same interface
-			UCOMITypeInfo typeInfo1 = null;
-			UCOMITypeInfo typeInfo2 = null;
+			ITypeInfo typeInfo1 = null;
+			ITypeInfo typeInfo2 = null;
 
 			int href = 0;
 			oldTypeInfo.GetRefTypeOfImplType(0, out href);
@@ -715,7 +722,7 @@ namespace ComComparer
 		/// <param name="oldAttr">TYPEATTR corrsponding to the old TypeInfo</param>
 		/// <param name="newAttr">TYPEATTR corrsponding to the new TypeInfo</param>
 		/// <param name="fieldNumber">The number of the current field</param>
-		private void CheckField(UCOMITypeInfo oldTypeInfo, UCOMITypeInfo newTypeInfo, TYPEATTR oldAttr, TYPEATTR newAttr, int fieldNumber)
+		private void CheckField(ITypeInfo oldTypeInfo, ITypeInfo newTypeInfo, ComTypes.TYPEATTR oldAttr, ComTypes.TYPEATTR newAttr, int fieldNumber)
 		{
 			IntPtr ptrOld = IntPtr.Zero;
 			IntPtr ptrNew = IntPtr.Zero;
@@ -759,12 +766,12 @@ namespace ComComparer
 		/// <param name="oldAttr">TYPEATTR corrsponding to the old TypeInfo</param>
 		/// <param name="newAttr">TYPEATTR corrsponding to the new TypeInfo</param>
 		/// <param name="funcNumber">The number of the current member</param>
-		private void CheckMember(UCOMITypeInfo oldTypeInfo, UCOMITypeInfo newTypeInfo, TYPEATTR oldAttr, TYPEATTR newAttr, int funcNumber)
+		private void CheckMember(ITypeInfo oldTypeInfo, ITypeInfo newTypeInfo, ComTypes.TYPEATTR oldAttr, ComTypes.TYPEATTR newAttr, int funcNumber)
 		{
 			IntPtr ptrOld = IntPtr.Zero;
 			IntPtr ptrNew = IntPtr.Zero;
-			FUNCDESC descOld, descNew;
-			ELEMDESC edescOld, edescNew;
+            ComTypes.FUNCDESC descOld, descNew;
+            ComTypes.ELEMDESC edescOld, edescNew;
 			int numNewNames, numOldNames;
 			string [] newNames = new String[MAX_NAMES];
 			string [] oldNames = new String[MAX_NAMES];
@@ -773,10 +780,10 @@ namespace ComComparer
 			try
 			{
 				oldTypeInfo.GetFuncDesc(funcNumber, out ptrOld);
-				descOld = (FUNCDESC)Marshal.PtrToStructure(ptrOld, typeof(FUNCDESC));
+				descOld = (ComTypes.FUNCDESC)Marshal.PtrToStructure(ptrOld, typeof(ComTypes.FUNCDESC));
 
 				newTypeInfo.GetFuncDesc(funcNumber, out ptrNew);
-				descNew = (FUNCDESC)Marshal.PtrToStructure(ptrNew, typeof(FUNCDESC));
+				descNew = (ComTypes.FUNCDESC)Marshal.PtrToStructure(ptrNew, typeof(ComTypes.FUNCDESC));
 
 				// Get the names of the members and their parameters
 				newTypeInfo.GetNames(descNew.memid, newNames, MAX_NAMES, out numNewNames);
@@ -789,15 +796,15 @@ namespace ComComparer
 				}
 
 				// Determine member type, just using the old one 
-				if ((descOld.invkind & INVOKEKIND.INVOKE_PROPERTYGET) > 0)
+				if ((descOld.invkind & ComTypes.INVOKEKIND.INVOKE_PROPERTYGET) > 0)
 				{
 					currentMemberType = "property get accessor";
 				}
-				else if ((descOld.invkind & INVOKEKIND.INVOKE_PROPERTYPUT) > 0)
+				else if ((descOld.invkind & ComTypes.INVOKEKIND.INVOKE_PROPERTYPUT) > 0)
 				{
 					currentMemberType = "property put accessor";
 				}
-				else if ((descOld.invkind & INVOKEKIND.INVOKE_PROPERTYPUTREF) > 0)
+				else if ((descOld.invkind & ComTypes.INVOKEKIND.INVOKE_PROPERTYPUTREF) > 0)
 				{
 					currentMemberType = "property putref accessor";
 				}
@@ -832,11 +839,11 @@ namespace ComComparer
 					if (descNew.lprgelemdescParam != IntPtr.Zero && descOld.lprgelemdescParam != IntPtr.Zero)
 					{
 						// Note: Casting IntPtr to int should only be done on 32-bit platforms
-						IntPtr elemPtrNew = new IntPtr((int)descNew.lprgelemdescParam + ((i-1) * Marshal.SizeOf(typeof(ELEMDESC))));
-						edescNew = (ELEMDESC)Marshal.PtrToStructure(elemPtrNew, typeof(ELEMDESC));
+						IntPtr elemPtrNew = new IntPtr((int)descNew.lprgelemdescParam + ((i-1) * Marshal.SizeOf(typeof(ComTypes.ELEMDESC))));
+						edescNew = (ComTypes.ELEMDESC)Marshal.PtrToStructure(elemPtrNew, typeof(ComTypes.ELEMDESC));
 
-						IntPtr elemPtrOld = new IntPtr((int)descOld.lprgelemdescParam + ((i-1) * Marshal.SizeOf(typeof(ELEMDESC))));
-						edescOld = (ELEMDESC)Marshal.PtrToStructure(elemPtrOld, typeof(ELEMDESC));
+						IntPtr elemPtrOld = new IntPtr((int)descOld.lprgelemdescParam + ((i-1) * Marshal.SizeOf(typeof(ComTypes.ELEMDESC))));
+						edescOld = (ComTypes.ELEMDESC)Marshal.PtrToStructure(elemPtrOld, typeof(ComTypes.ELEMDESC));
 
 						CompareElemDescs(edescOld, edescNew, oldTypeInfo, newTypeInfo, oldNames[0], oldNames[i], currentMemberType);
 					}

@@ -3,6 +3,7 @@ using ComComparer;
 using SigHelper;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
@@ -17,8 +18,10 @@ namespace LibCheck
         public const string StoreErr = ".Store.Err";
 
         // Create store file: LibCheck -Store (<assembly> | All]) <buildNumber>
-        static void MakeStoreFiles()
+        public static void MakeStoreFiles(string fileName = "all")
         {
+            _assembly = fileName;
+
             ArrayList ignoreFiles = OpenFileList("reffiles\\ignorefiles.txt");
 
             DateTime startTime = DateTime.Now;
@@ -49,14 +52,15 @@ namespace LibCheck
             if (_dbug != 0) errorWriter.WriteLine("_dbug = " + _dbug);
 #endif
 
-            string dllFullName = null;
-            string storeFile = null;
-            StringCollection splitStoreFiles = new StringCollection();
-
             if (everything)
             {
+                #region dll list
+
                 // process all dll's in the ComPlus directory.
                 ArrayList files = new ArrayList();
+                string dllFullName = null;
+                string storeFile = null;
+                StringCollection splitStoreFiles = new StringCollection();
 
                 foreach (string f in Directory.GetFiles(_codebase, "*.dll"))
                 {
@@ -164,7 +168,9 @@ namespace LibCheck
 
                     //NEW ADDITION
                     htNamespaces = new Hashtable();
+                    #endregion
                 }
+
                 #endregion
             }
             else
@@ -173,132 +179,8 @@ namespace LibCheck
                 if (!suppress)
                     Console.WriteLine();
 
-                #region OneAsm
+                OneAssembly(fileDir + @"\" + _assembly, fullSpec);
 
-                if (GoodAssemblyName(_assembly))
-                {
-                    Module[] ma = new Module[0];
-                    try
-                    {
-                        if (fullSpec)
-                        {
-                            if (GACload && htGACdlls.ContainsKey(_assembly.ToLower()))
-                            {
-                                ma = Assembly.Load(htGACdlls[_assembly.ToLower()].ToString()).GetModules();
-                            }
-                            else
-                            {
-                                ma = Assembly.LoadFrom(fileDir + "\\" + _assembly).GetModules();
-                            }
-                            dllFullName = fileDir + "\\" + _assembly;
-                        }
-                        else
-                        {
-                            if (GACload && htGACdlls.ContainsKey(_assembly.ToLower()))
-                            {
-                                ma = Assembly.Load(htGACdlls[_assembly.ToLower()].ToString()).GetModules();
-                            }
-                            else
-                            {
-                                ma = Assembly.Load(_assembly).GetModules();
-                            }
-                            dllFullName = "";
-                        }
-
-                        //(ma[0]).FullyQualifiedName
-
-                        foreach (Module m in ma)
-                        {
-                            string dllName = m.Name.ToLower();
-                            #region Modue parse
-
-                            if (ignoreFiles.Contains(dllName))
-                                continue;
-                            if (!suppress)
-                                Console.WriteLine();
-
-                            bool fileIsSplit = false;
-
-                            foreach (String s in alSplitF)
-                            {
-                                if (dllName.ToLower().IndexOf(s.ToLower()) >= 0)
-                                {
-                                    fileIsSplit = true;
-                                    break;
-                                }
-                            }
-
-
-                            if (dllFullName == "")
-                            {
-
-                                dllFullName = _codebase + Path.DirectorySeparatorChar + dllName;
-                            }
-
-                            //  THIS IS WHERE WE CHECK TO SEE FOR SPLIT
-                            if (fileIsSplit != true)
-                            {
-
-                                storeFile = _buildNumber +
-                                    Path.DirectorySeparatorChar +
-                                    Path.GetFileName(dllName) +
-                                    (storeSoap ? ".soap" : ".binary") + Store;
-                            }
-                            else
-                            {
-
-                                splitStoreFiles.Clear();
-
-                                for (int i = 1; i <= numSplits; i++)
-                                {
-                                    splitStoreFiles.Add(_buildNumber +
-                                        Path.DirectorySeparatorChar +
-                                        Path.GetFileName(dllName) +
-                                        "." + String.Format("{0:00}", i) + (storeSoap ? ".soap" : ".binary") + Store);
-                                }
-                            }
-                            #endregion
-
-                            // if (!suppress)
-                            // Console.WriteLine("Directory:" + m.FullyQualifiedName);
-                            //Console.WriteLine("Creating Store {0} from file {1}...",
-                            //    storeFile, dllName);
-
-                            try
-                            {
-                                if (fileIsSplit != true)
-                                    CreateStore(dllFullName, storeFile, 0);
-                                else
-                                {
-
-                                    for (int i = 1; i <= numSplits; i++)
-                                    {
-                                        htNamespaces = new Hashtable();
-
-                                        CreateStore(dllFullName, splitStoreFiles[i - 1], i);
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-
-                                Console.WriteLine(e.ToString());
-#if DOREPORTS
-                                errorWriter.WriteLine("\r\nException in: " + dllFullName);
-                                errorWriter.WriteLine(e.ToString());
-#endif
-                                continue;
-                            }
-                        }
-                    }
-                    catch (Exception eo)
-                    {
-                        Console.WriteLine(eo.ToString());
-                    }
-
-                    #endregion
-
-                }
             }
 
             TimeSpan delta = DateTime.Now - startTime;
@@ -312,6 +194,139 @@ namespace LibCheck
             reportWriter.Close();
 #endif
         } //end makestorefiles
+
+        public static void OneAssembly(string _assembly, bool fullSpec = true)
+        {
+            string dllFullName = Path.GetFullPath(_assembly);
+            string fileDir = Path.GetDirectoryName(dllFullName);
+            string storeFile = null;
+            StringCollection splitStoreFiles = new StringCollection();
+
+            _assembly = dllFullName;
+            if (!GoodAssemblyName(_assembly))
+                return;
+            _assembly = Path.GetFileName(dllFullName);
+
+            Module[] ma = new Module[0];
+            try
+            {
+                if (fullSpec)
+                {
+                    if (GACload && htGACdlls.ContainsKey(_assembly.ToLower()))
+                    {
+                        ma = Assembly.Load(htGACdlls[_assembly.ToLower()].ToString()).GetModules();
+                    }
+                    else
+                    {
+                        ma = Assembly.LoadFrom(fileDir + "\\" + _assembly).GetModules();
+                    }
+                    dllFullName = fileDir + "\\" + _assembly;
+                }
+                else
+                {
+                    if (GACload && htGACdlls.ContainsKey(_assembly.ToLower()))
+                    {
+                        ma = Assembly.Load(htGACdlls[_assembly.ToLower()].ToString()).GetModules();
+                    }
+                    else
+                    {
+                        ma = Assembly.Load(_assembly).GetModules();
+                    }
+                    dllFullName = "";
+                }
+
+                foreach (Module m in ma)
+                {
+                    string dllName = m.Name.ToLower();
+
+                    #region Modue parse
+
+                    //if (ignoreFiles.Contains(dllName))
+                    //    continue;
+                    if (!suppress)
+                        Console.WriteLine();
+
+                    bool fileIsSplit = false;
+
+                    foreach (String s in alSplitF)
+                    {
+                        if (dllName.ToLower().IndexOf(s.ToLower()) >= 0)
+                        {
+                            fileIsSplit = true;
+                            break;
+                        }
+                    }
+
+
+                    if (dllFullName == "")
+                    {
+
+                        dllFullName = _codebase + Path.DirectorySeparatorChar + dllName;
+                    }
+
+                    //  THIS IS WHERE WE CHECK TO SEE FOR SPLIT
+                    if (fileIsSplit != true)
+                    {
+
+                        storeFile = _buildNumber +
+                            Path.DirectorySeparatorChar +
+                            Path.GetFileName(dllName) +
+                            (storeSoap ? ".soap" : ".binary") + Store;
+                    }
+                    else
+                    {
+
+                        splitStoreFiles.Clear();
+
+                        for (int i = 1; i <= numSplits; i++)
+                        {
+                            splitStoreFiles.Add(_buildNumber +
+                                Path.DirectorySeparatorChar +
+                                Path.GetFileName(dllName) +
+                                "." + String.Format("{0:00}", i) + (storeSoap ? ".soap" : ".binary") + Store);
+                        }
+                    }
+                    #endregion
+
+                    // if (!suppress)
+                    // Console.WriteLine("Directory:" + m.FullyQualifiedName);
+                    //Console.WriteLine("Creating Store {0} from file {1}...",
+                    //    storeFile, dllName);
+
+                    try
+                    {
+                        if (fileIsSplit != true || splitStoreFiles.Count == 0)
+                            CreateStore(dllFullName, storeFile, 0);
+                        else
+                        {
+                            for (int i = 1; i <= numSplits; i++)
+                            {
+                                htNamespaces = new Hashtable();
+
+                                CreateStore(dllFullName, splitStoreFiles[i - 1], i);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+
+                        Console.WriteLine(e.ToString());
+#if DOREPORTS
+                                errorWriter.WriteLine("\r\nException in: " + dllFullName);
+                                errorWriter.WriteLine(e.ToString());
+#endif
+                        continue;
+                    }
+                }
+            }
+            catch (Exception eo)
+            {
+                Console.WriteLine(eo.ToString());
+            }
+
+        }
+
+        #region other methods
 
         // Create store file: LibCheck -Store (<assembly> | All]) <buildNumber>
         static void MakeCurrentStoreFiles(int num)
@@ -508,7 +523,10 @@ namespace LibCheck
                     }
                     else
                     {
-                        a = Assembly.LoadFrom(fileDir + "\\" + assembly);
+                        var dll = assembly;
+                        if (assembly[1] != ':')
+                            dll = (fileDir.Length == 0 ? "" : fileDir + "\\") + assembly;
+                        a = Assembly.LoadFrom(dll);
                     }
                 }
                 else
@@ -593,8 +611,7 @@ namespace LibCheck
                 a = Assembly.LoadFrom(inFile);
             }
 
-
-            Hashtable typememberList = new Hashtable(64);	// hashtable of all members found, by full type name
+            Hashtable typememberList = new Hashtable(64);   // hashtable of all members found, by full type name
 
             // gather members from list of modules
             if (!suppress)
@@ -662,42 +679,15 @@ namespace LibCheck
             //ok, we want one file for each namespace, and the file contains the names of the dlls that have
             //files stored in it!
             //LEAVE THIS CODE IN HERE THOUGH
-            /*
-            if (true) {
-                foreach (string sName in htNamespaces.Keys) {
-                    foreach (string sKey in ((Hashtable)htNamespaces[sName.ToLower()]).Keys) {
-                        string []names = sKey.Split(new char[] {' '});
-
-                        FileStream fs = new FileStream("splits" + "\\" + 
-                                names[0] + ".split.txt", FileMode.OpenOrCreate);
-                        fs.Position = 0;
-
-                        StreamReader sr = new StreamReader(fs);
-                        bool finish = false;
-
-                        while (sr.Peek() != -1) {
-                            string temp = sr.ReadLine();
-
-                            if (Path.GetFileName(inFile) == temp) 
-                                finish = true;
-                        }
-
-                        if (finish == false) {
-                            StreamWriter sw = new StreamWriter(fs);
-                            sw.WriteLine(Path.GetFileName(inFile));
-                            sw.Close();
-                        }
-                        sr.Close();
-                        fs.Close();
-                    }
-                }
-            }
-            */
+            //foreach (string sName in htNamespaces.Keys) {
+            //    foreach (string sKey in ((Hashtable)htNamespaces[sName.ToLower()]).Keys) {
 
             //NEW STUFF...
             //no need to write out the store if I was simply populating it...
             if (_runCurrentCompare > CurrentCompare.Specific)
                 return;
+
+            #region htNamespaces
 
             // write the hashtable of members out to the store file
             foreach (string sName in htNamespaces.Keys)
@@ -760,44 +750,46 @@ namespace LibCheck
                 //    //StoreToFile(htTemp, sFile, sName, _buildNumber);
                 //}
                 //else
-//                {
-//                    FileStream s = null;
+                //                {
+                //                    FileStream s = null;
 
-//                    try
-//                    {
-//                        s = new FileStream(sFile, FileMode.Create);
+                //                    try
+                //                    {
+                //                        s = new FileStream(sFile, FileMode.Create);
 
-//                        Console.Write("Serializing namespace '{0}'" +
-//                            " with the {1} formatter ... ", sName,
-//                            (storeSoap ? "soap" : "binary"));
+                //                        Console.Write("Serializing namespace '{0}'" +
+                //                            " with the {1} formatter ... ", sName,
+                //                            (storeSoap ? "soap" : "binary"));
 
-//                        //if (storeSoap)
-//                        //{
-//                        //    SoapFormatter sFormatter = new SoapFormatter();
-//                        //    sFormatter.Serialize(s, htTemp);
-//                        //}
-//                        //else
-//                        {
-//                            BinaryFormatter bFormatter = new BinaryFormatter();
-//                            bFormatter.Serialize(new BufferedStream(s), htTemp);
-//                        }
-//                    }
-//#if DOREPORTS
-//                    catch (Exception e)
-//                    {
-//                        Console.WriteLine(" *** serialization of memberList failed ***");
-//                        errorWriter.WriteLine("serialization to " + sName + " failed.");
-//                        errorWriter.WriteLine(e.ToString());
-//#else
-//                    catch (Exception)
-//                    {
-//                        Console.WriteLine(" *** serialization of memberList failed ***");
-//#endif
-//                    }
+                //                        //if (storeSoap)
+                //                        //{
+                //                        //    SoapFormatter sFormatter = new SoapFormatter();
+                //                        //    sFormatter.Serialize(s, htTemp);
+                //                        //}
+                //                        //else
+                //                        {
+                //                            BinaryFormatter bFormatter = new BinaryFormatter();
+                //                            bFormatter.Serialize(new BufferedStream(s), htTemp);
+                //                        }
+                //                    }
+                //#if DOREPORTS
+                //                    catch (Exception e)
+                //                    {
+                //                        Console.WriteLine(" *** serialization of memberList failed ***");
+                //                        errorWriter.WriteLine("serialization to " + sName + " failed.");
+                //                        errorWriter.WriteLine(e.ToString());
+                //#else
+                //                    catch (Exception)
+                //                    {
+                //                        Console.WriteLine(" *** serialization of memberList failed ***");
+                //#endif
+                //                    }
 
-//                    s.Close();
-//                }
+                //                    s.Close();
+                //                }
             }
+
+            #endregion
 
             if (!suppress)
                 Console.WriteLine("Complete.\r\n");
@@ -806,22 +798,66 @@ namespace LibCheck
 
         // Create list of members for the store. Weed out non-public information.
         public static void CreateMemberList(ref Hashtable typememberList, Assembly a,
-            out int errorCount, out int memberCount, int winformsFile)
+            out int errorCount, out int memberCount, int _winformsFile)
         {
-            #region Prepare
-            Hashtable problems = new Hashtable(1);	// List of problem members by full type name
-            //problems.Add("System.Runtime.Remoting.Channels.SMTP.ISMTPMessage", new ArrayList());
-            //((ArrayList)problems["System.Runtime.Remoting.Channels.SMTP.ISMTPMessage"]).AddRange(new string[] { "EnvelopeFields", "Fields", });
-
+            Hashtable problems = new Hashtable(1);  // List of problem members by full type name
+                                                    //problems.Add("System.Runtime.Remoting.Channels.SMTP.ISMTPMessage", new ArrayList());
+                                                    //((ArrayList)problems["System.Runtime.Remoting.Channels.SMTP.ISMTPMessage"]).AddRange(new string[] { "EnvelopeFields", "Fields", });
             errorCount = 0;
             memberCount = 0;
-            Type[] ta = null;
 
             string assemblyname = null;
             try { assemblyname = a.GetName().Name; }
             catch { assemblyname = "UnknownAssemblyName"; }
 
-            try { ta = a.GetTypes(); }	// Retrieve all types within this assembly
+            Type[] ta = GetTypes(a);
+            splitRanges = GetCorrectSplit(a);
+            winformsFile = _winformsFile;
+
+            IEnumerable<ClassInfo> list = EnumClassInfo(a, ta, problems, byDll);
+
+            ClassInfo.Reset();
+
+            foreach (ClassInfo typeData in list)
+            {
+                try
+                {
+
+                    typeData.OutputClass(_assembly, a.CodeBase, outputLoc);
+                }
+                catch (Exception ex) { Console.WriteLine("Error at " + typeData.ToString(), ex); }
+
+#if DOREPORTS
+                errorWriter.Flush();
+#endif
+
+                var t = typeData.Type;
+                var memberList = typeData.Members;
+                if (memberList.Count > 0)
+                {   // Add member to hashtable by type.
+                    memberCount += memberList.Count;
+                    typememberList.Add(t.Namespace + " " + t.Name, memberList);
+                }
+
+                //PART OF THE MOD
+                //we want to ADD these changes if the hashtable already existed...
+                Hashtable htTemp = new Hashtable();
+                if (namespaceExists)
+                    htTemp = (Hashtable)htNamespaces[nameComp];
+
+                htTemp.Add(t.Namespace + " " + t.Name, memberList);
+                htNamespaces[nameComp] = htTemp;
+
+            }
+
+        } // end CreateMemberList
+
+        public static Type[] GetTypes(Assembly a)
+        {
+            var assemblyname = a.CodeBase;
+            Type[] ta = null;
+
+            try { ta = a.GetTypes(); }  // Retrieve all types within this assembly
             catch (ReflectionTypeLoadException e)
             {
                 Exception[] ea = e.LoaderExceptions;
@@ -839,21 +875,39 @@ namespace LibCheck
                 string message = "Assembly.GetTypes() failed on " + assemblyname;
                 throw new ApplicationException(message, e);
             }
-            splitRanges = GetCorrectSplit(a);
-            #endregion
+            return ta;
+        }
+
+        static int errorCount = 0;
+        static bool namespaceExists = false;
+        static string nameComp = null;
+        static int winformsFile = 0;
+
+        public static IEnumerable<ClassInfo> EnumClassInfo(Assembly a, Type[] ta, Hashtable problems = null, bool byDll = false)
+        {
+            // reset
+            nameComp = null;
+            errorCount = 0;
+            namespaceExists = false;
+            nameComp = null;
+            if (problems == null)
+                problems = new Hashtable(1);
 
             foreach (Type t in ta)
-            {	// types loop
+            {   // types loop
+
+                // static
+                namespaceExists = false;
 
                 #region Class Data
 
                 #region Types cycle
 
                 bool isEnum = t.IsEnum;
-                bool namespaceExists = false;
+
                 bool spaceIsSplit = false;
                 int outputNumber = 0;
-                string nameComp = t.Namespace == null ? "generic" : t.Namespace.ToLower();
+                nameComp = t.Namespace == null ? "generic" : t.Namespace.ToLower();
 
                 //figure out if we need to change the name, in order to be split
                 if (byDll)
@@ -943,7 +997,7 @@ namespace LibCheck
                     }
                 }
 
-                if (namespaceExists == false)
+                if (!namespaceExists)
                     htNamespaces.Add(nameComp, new Hashtable());
 
                 // P1: works well, have a good set of namespaces at this point...
@@ -1031,10 +1085,13 @@ namespace LibCheck
 
                 MemberInfo[] ma = null;
                 var name = t.FullName;
+
+                // FileNotFoundException members black list
                 if (name == "Microsoft.DotNet.Tools.Restore.RestoreCommand"
                     || name.StartsWith("Microsoft.DotNet.Tools.Restore.")
                     || name.StartsWith("Microsoft.DotNet.Tools.Publish.") // PublishCommand
                     || name.StartsWith("Microsoft.DotNet.Tools.Compiler.PackageGenerator")
+                    || name.StartsWith("Microsoft.DotNet.ProjectModel.Resolution.PackageDependencyProvider")
                    )
                 {
                     continue;
@@ -1065,7 +1122,7 @@ namespace LibCheck
                 ArrayList memberList = new ArrayList(ma.Length);
 
                 foreach (MemberInfo mi in ma)
-                {	// members loop
+                {   // members loop
 
                     if (problems.ContainsKey(t.FullName) && ((ArrayList)problems[t.FullName]).Contains(mi.Name))
                     {
@@ -1092,7 +1149,7 @@ namespace LibCheck
                                 || mi.Name.StartsWith("set_")
                                 || mi.Name.StartsWith("add_")
                                 || mi.Name.StartsWith("remove_")
-                                || mi.Name.StartsWith("op_")	// TODO: Add operators back in once GenMemberInfo can compare operators.
+                                || mi.Name.StartsWith("op_")    // TODO: Add operators back in once GenMemberInfo can compare operators.
                                 ))
                                 continue;
                             if ((mi is ConstructorInfo) && (mi.Name == ".cctor"))
@@ -1123,6 +1180,7 @@ namespace LibCheck
                         // For inherited members, only report ones that are not otherwise hidden
                         if (mi.DeclaringType != mi.ReflectedType)
                         {
+                            #region othersMembers
 
                             MemberInfo[] others = t.GetMember(mi.Name, mi.MemberType,
                                 allBindingsLookup);
@@ -1176,13 +1234,15 @@ namespace LibCheck
 
                                                 break;
                                         }
-                                        if (!good) break;					// if member unwanted, exit Filter loop
+                                        if (!good) break;                   // if member unwanted, exit Filter loop
                                     }
                                 }
 
                                 // ignore "hidden" members, skip to next member info.
                                 if (!good) continue;
                             }
+
+                            #endregion
                         }
 
                         // ignore the value__ field on Enum's
@@ -1252,11 +1312,6 @@ namespace LibCheck
                 } // end members loop
 
                 memberList.TrimToSize();
-                if (memberList.Count > 0)
-                {	// Add member to hashtable by type.
-                    memberCount += memberList.Count;
-                    typememberList.Add(t.Namespace + " " + t.Name, memberList);
-                }
 
                 #endregion
 
@@ -1264,33 +1319,21 @@ namespace LibCheck
                 {
                     Name = t.Namespace + "." + t.Name,
                     Type = t,
-                    Members = memberList
+                    Members = memberList,
+                    TypeMemberList = null
                 };
-                OutputClass(typeData, a.CodeBase);
 
-#if DOREPORTS
-                errorWriter.Flush();
-#endif
-                //PART OF THE MOD
-                //we want to ADD these changes if the hashtable already existed...
-                Hashtable htTemp = new Hashtable();
-                if (namespaceExists)
-                    htTemp = (Hashtable)htNamespaces[nameComp];
-
-                htTemp.Add(t.Namespace + " " + t.Name, memberList);
-                htNamespaces[nameComp] = htTemp;
+                yield return typeData;
 
             } // end types loop
-
-        } // end CreateMemberList
-
+        }
 
         // Create list of members for the store. Weed out non-public information.
         public static void CreateMemberListByDll(ref Hashtable typememberList, Assembly a,
             out int errorCount, out int memberCount, int winformsFile)
         {
 
-            Hashtable problems = new Hashtable(1);	// List of problem members by full type name
+            Hashtable problems = new Hashtable(1);  // List of problem members by full type name
             problems.Add("System.Runtime.Remoting.Channels.SMTP.ISMTPMessage", new ArrayList());
             ((ArrayList)problems["System.Runtime.Remoting.Channels.SMTP.ISMTPMessage"]).AddRange(new string[] { "EnvelopeFields", "Fields", });
 
@@ -1306,7 +1349,7 @@ namespace LibCheck
             try { assemblyname = a.GetName().Name; }
             catch { assemblyname = "UnknownAssemblyName"; }
 
-            try { ta = a.GetTypes(); }	// Retrieve all types within this assembly
+            try { ta = a.GetTypes(); }  // Retrieve all types within this assembly
             catch (ReflectionTypeLoadException e)
             {
                 Exception[] ea = e.LoaderExceptions;
@@ -1326,8 +1369,10 @@ namespace LibCheck
             splitRanges = GetCorrectSplit(a);
             #endregion
 
+            ClassInfo.Reset();
+
             foreach (Type t in ta)
-            {	// types loop
+            {   // types loop
 
                 #region Types loop
 
@@ -1478,8 +1523,8 @@ namespace LibCheck
                     ArrayList memberList = new ArrayList(ma.Length);
 
                     foreach (MemberInfo mi in ma)
-                    {	// members loop
-
+                    {
+                        #region Members loop
 
                         if (problems.ContainsKey(t.FullName) && ((ArrayList)problems[t.FullName]).Contains(mi.Name))
                         {
@@ -1510,7 +1555,7 @@ namespace LibCheck
                                     || mi.Name.StartsWith("set_")
                                     || mi.Name.StartsWith("add_")
                                     || mi.Name.StartsWith("remove_")
-                                    || mi.Name.StartsWith("op_")	// TODO: Add operators back in once GenMemberInfo can compare operators.
+                                    || mi.Name.StartsWith("op_")    // TODO: Add operators back in once GenMemberInfo can compare operators.
                                     ))
                                     continue;
 
@@ -1581,7 +1626,7 @@ namespace LibCheck
                                 {
                                     bool good = true;
                                     foreach (MemberInfo other in others)
-                                    {		// Filter loop
+                                    {       // Filter loop
                                         if (mi.DeclaringType.IsAssignableFrom(other.DeclaringType) && other != mi)
                                         {
                                             switch (mi.MemberType)
@@ -1608,7 +1653,7 @@ namespace LibCheck
 
                                                     break;
                                             }
-                                            if (!good) break;					// if member unwanted, exit Filter loop
+                                            if (!good) break;                   // if member unwanted, exit Filter loop
                                         }
                                     }
 
@@ -1666,7 +1711,7 @@ namespace LibCheck
                                     stat = ":AllStatic=T";
                                 }
                             }
-                            tm.TypeKey += stat; 
+                            tm.TypeKey += stat;
 
                         }
                         catch (Exception e)
@@ -1682,6 +1727,8 @@ namespace LibCheck
                             errorCount++;
                             lastError = e;
                         }
+                        #endregion
+
                         if (lastError != null || tm == null)
                             continue;
 
@@ -1701,12 +1748,14 @@ namespace LibCheck
                     {
                         Name = t.Namespace + "." + t.Name,
                         Type = t,
-                        Members = memberList
+                        Members = memberList,
+                        TypeMemberList = typememberList
                     };
-                    OutputClass(typeData, asmFile);
+
+                    typeData.OutputClass(_assembly, asmFile, outputLoc);
 
                     if (memberList.Count > 0)
-                    {	// Add member to hashtable by type.
+                    {   // Add member to hashtable by type.
                         memberCount += memberList.Count;
                         //robvi try catch
                         try
@@ -1718,7 +1767,6 @@ namespace LibCheck
 #if DOREPORTS
                     errorWriter.Flush();
 #endif
-
 
                 } // end types loop
 
@@ -1735,123 +1783,12 @@ namespace LibCheck
 
                 htNamespaces = new Hashtable();
                 htNamespaces.Add(output, typememberList);
-                /*
                 //PART OF THE MOD
-                //we want to ADD these changes if the hashtable already existed...
-                            Hashtable htTemp = new Hashtable();
-
-                            if (namespaceExists)
-                                htTemp = (Hashtable)htNamespaces[nameComp.ToLower()];
-
-                            htTemp.Add(t.Namespace + " " + t.Name, memberList);
-                            htNamespaces[nameComp.ToLower()] = htTemp;
-
-                        } // end types loop
-                */
+                //we want to ADD these changes if the hashtable already existed... 
 
             } //end if (t!=null)
 
         } // end CreateMemberListByDll
-
-        struct ClassInfo
-        {
-            public string Name;
-            public Type Type;
-            // TypeMember
-            public ArrayList Members;
-        }
-
-        static StringCollection nsList = new StringCollection();
-        static string lastFile = "?";
-
-        static void OutputClass(ClassInfo typeData, string asmName)
-        {
-            var nsName = typeData.Type.Namespace;
-            if (_assembly.StartsWith("System.") && nsName.StartsWith("System.")
-                && _assembly.LastIndexOf(".") > 10
-                && nsName.StartsWith(_assembly.Substring(0, 10))
-               )
-            {
-                _assembly = nsName.Substring(7, nsName.Length - 7);
-            }
-            string subdir = Path.GetFullPath(
-                (outputLoc.Length == 0 ? String.Empty : outputLoc + @"\")
-                + _assembly.Replace(".dll", ""));
-
-            if (!Directory.Exists(subdir))
-                Directory.CreateDirectory(subdir);
-
-            var reportFile = Path.GetFullPath(subdir + @"\" + nsName + ".cs");
-
-            if (lastFile != reportFile)
-            {
-                var wr1 = new StreamWriter(reportFile, append: true);
-                wr1.WriteLine("}");
-                wr1.Close();
-            }
-            lastFile = reportFile;
-
-            StreamWriter wr = null;
-            if (!nsList.Contains(nsName))
-            {
-                nsList.Add(nsName);
-
-                wr = new StreamWriter(reportFile, append: false);
-
-                wr.WriteLine("\nnamespace " + nsName + "\n{  \n");
-            }
-            else
-            {
-                wr = new StreamWriter(reportFile, true);
-                wr.WriteLine("");
-            }
-
-            var asm = typeData.Type.Assembly;
-            var attr = asm.GetCustomAttribute<System.Reflection.AssemblyFileVersionAttribute>();
-            string file = "\r\n// Source:  " + asmName.Replace("file:///", "") + "  Build " + (attr != null ? attr.Version : "");
-            wr.WriteLine(file);
-
-            var info = new CsTypeInfo(typeData.Type);
-            var allForm = TypeFormats.IncludeBaseClass | TypeFormats.IncludeInheritFlag;
-
-            string temp = info.ToString(allForm);
-            if (temp.Contains(" : System.Object "))
-                 temp.Replace(" : System.Object ", "");
-            if (temp.Contains(" " + nsName + "."))
-                temp = temp.Replace(" " + nsName + ".", " ");
-
-            wr.WriteLine("[Guid(\"" + typeData.Type.GUID.ToString() + "\")]");
-            const string indent = "  ";
-            wr.WriteLine(indent + temp);
-
-            Console.WriteLine(temp);
-
-            wr.WriteLine("{");
-
-            foreach (TypeMember mem in typeData.Members)
-            {
-                if (mem == null || mem.MemberInfo == null)
-                    continue;
-
-                var temp2 = mem.MemberInfo.ToString();
-                if (temp2.Contains(" " + nsName + "."))
-                    temp2 = temp2.Replace(" " + nsName + ".", " ");
-                if (temp2.Contains(" override object Clone() {")
-                    )
-                    continue;
-
-                //if (temp2.Contains("`"))
-                //    { } // breakpoint
-
-                wr.WriteLine(temp2);
-            }
-
-            wr.WriteLine(indent + "}");
-
-            wr.Close();
-
-            GC.Collect();
-        }
 
         // Create difference reports: LibCheck -Compare <oldNumber> <newNumber>
         static void MakeReports()
@@ -1861,8 +1798,8 @@ namespace LibCheck
             int totBreaks = 0;
             int totRemoves = 0;
             int totTotal = 0;
-            int totTypeAdds = 0;
-            int totTypeRemoves = 0;
+            //int totTypeAdds = 0;
+            //int totTypeRemoves = 0;
             //int totSerTypeBreaks = 0;
 
 
@@ -1900,11 +1837,11 @@ namespace LibCheck
                 AddsFile.WriteLine("<center><h1>Summary Change Report, Adds Only</h1></center><hr>");
             }
 
-//            xmlReport = new XmlReport(outputLoc);
+            //            xmlReport = new XmlReport(outputLoc);
 
-//#if DOREPORTS
-//            xmlReport = new XmlReport(outputLoc);
-//#endif
+            //#if DOREPORTS
+            //            xmlReport = new XmlReport(outputLoc);
+            //#endif
 
             string oldDir = _oldBuild + Path.DirectorySeparatorChar;
             string newDir = _newBuild + Path.DirectorySeparatorChar;
@@ -2003,8 +1940,8 @@ namespace LibCheck
                     totTotal = 0;
                     totRemoves = 0;
                     totBreaks = 0;
-                    totTypeAdds = 0;
-                    totTypeRemoves = 0;
+                    //totTypeAdds = 0;
+                    //totTypeRemoves = 0;
                     //totSerTypeBreaks = 0;
 
 
@@ -2091,17 +2028,17 @@ namespace LibCheck
 
                     //only do this if this is either the first time for a split file,
                     //OR the file is not split...
-//                    if (fileIsSplit == false || fileAlreadyBegun == false)
-//                    {
-//                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
-//                            _oldBuild, _newBuild);
+                    //                    if (fileIsSplit == false || fileAlreadyBegun == false)
+                    //                    {
+                    //                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
+                    //                            _oldBuild, _newBuild);
 
 
-//#if DOREPORTS
-//                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
-//                          _oldBuild, _newBuild);
-//#endif
-//                    }
+                    //#if DOREPORTS
+                    //                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
+                    //                          _oldBuild, _newBuild);
+                    //#endif
+                    //                    }
 
                     Hashtable oldList = new Hashtable();
 
@@ -2347,10 +2284,10 @@ namespace LibCheck
                     if ((fileIsSplit == false) || lastFile)
                     {
 
-//                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
-//#if DOREPORTS
-//                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
-//#endif
+                        //                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
+                        //#if DOREPORTS
+                        //                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
+                        //#endif
 
                         if (unified != null)
                         {
@@ -2452,10 +2389,10 @@ namespace LibCheck
                 AddsFile.WriteLine("<center><h1>Summary Change Report, Adds Only</h1></center><hr>");
             }
 
-//            xmlReport = new XmlReport(outputLoc);
-//#if DOREPORTS
-//            xmlReport = new XmlReport(outputLoc);
-//#endif
+            //            xmlReport = new XmlReport(outputLoc);
+            //#if DOREPORTS
+            //            xmlReport = new XmlReport(outputLoc);
+            //#endif
 
             string newDir = _newBuild + Path.DirectorySeparatorChar;
             string oldDir = _oldBuild + Path.DirectorySeparatorChar;
@@ -2625,15 +2562,15 @@ namespace LibCheck
 
                     //only do this if this is either the first time for a split file,
                     //OR the file is not split...
-//                    if (fileIsSplit == false || fileAlreadyBegun == false)
-//                    {
-//                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
-//                            _oldBuild, _newBuild);
-//#if DOREPORTS
-//                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
-//                          _oldBuild, _newBuild);
-//#endif
-//                    }
+                    //                    if (fileIsSplit == false || fileAlreadyBegun == false)
+                    //                    {
+                    //                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
+                    //                            _oldBuild, _newBuild);
+                    //#if DOREPORTS
+                    //                        xmlReport.WriteStartAssembly(Path.GetFileName(assembly),
+                    //                          _oldBuild, _newBuild);
+                    //#endif
+                    //                    }
 
                     Hashtable oldList = new Hashtable();
 
@@ -2895,10 +2832,10 @@ namespace LibCheck
                     if ((fileIsSplit == false) || lastFile)
                     {
 
-//                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
-//#if DOREPORTS
-//                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
-//#endif
+                        //                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
+                        //#if DOREPORTS
+                        //                        xmlReport.WriteEndAssembly(oldVersion, newVersion);
+                        //#endif
 
                         if (unified != null)
                             if (allDetails == false)
@@ -3028,7 +2965,7 @@ namespace LibCheck
         }
 
         // returns the assembly given a file name of a certain format.
-        public static string Trim(string s)
+        static string Trim(string s)
         {
             int index = s.LastIndexOf(".");
             s = s.Remove(index, s.Length - index);
@@ -3038,7 +2975,8 @@ namespace LibCheck
             return s;
         }
 
+        #endregion
+
     }
 
 }
-

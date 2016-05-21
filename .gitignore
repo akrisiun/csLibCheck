@@ -26,3 +26,5 @@ reffiles/
 net*/
 *.v12.suo
 *.suo
+sample/dotnet/
+sample/System.Data/

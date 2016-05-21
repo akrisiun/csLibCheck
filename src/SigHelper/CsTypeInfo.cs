@@ -35,8 +35,19 @@ namespace SigHelper {
 			result += ((temp = ToString(_modifiers)) != String.Empty) ? temp + " " : "";
 			result += ToString(_typekind) + " ";
 			result += (!NamespaceSeparate(format) && _namespace != String.Empty) ? _namespace + "." : "";
+
+            if (_reflectedtype != null && _reflectedtype.IsSealed)
+            {
+            }
+
 			result += _name;
-			result += (IncludeBaseClass(format) && (temp = ToString(_basetype, _primaryinterfaces)) != String.Empty) ? " : " + temp : String.Empty;
+
+            if (_basetype != typeof(Object))
+                temp = ToString(_basetype, _primaryinterfaces);
+            else
+                temp = ToString(null, _primaryinterfaces);
+
+            result += (IncludeBaseClass(format) && temp != String.Empty) ? " : " + temp : String.Empty;
 			return result;
 		}
 
@@ -133,7 +144,7 @@ namespace SigHelper {
 		public static string ToString(Type basetype, Type[] primary) {
 			string result = String.Empty;
 			
-			if (basetype != null)
+			if (basetype != null && basetype != typeof(Object))
                 result += ParseInterface(basetype); // .FullName;
 
 			if (basetype != null && primary.Length > 0)

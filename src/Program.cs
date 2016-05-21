@@ -2,23 +2,14 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters.Soap;
-using System.Runtime.InteropServices;
 using System.Text;
-using SigHelper;
 using ChurnReports;
-using ComComparer;
-using System.Data;
 using System.Threading;
 using System.Globalization;
 
 //we need this because some namespaces did not exist in each version
 //for example, StringCOllection moved from System.Collections to System.Collections.Specialized
 
-using System.Data.SqlClient;
 using System.Collections.Specialized;
 
 namespace LibCheck
@@ -38,14 +29,15 @@ namespace LibCheck
 
         static string en = Environment.NewLine; //included SOLELY to make the usage statement more readable
 
-        static string usage =
-            en + "LibCheck <option>" +
-            en +
-            en + "OPTIONS:" +
+        static string usageOptions = "OPTIONS:" +
             en + "     -store [<assembly> | All | Full] <buildNumber>" +
             en + "     -compare [<oldNumber> | current]  [<newNumber> | current ]" +
             en + "     [-split 4 | 10 | 15]   [-out <path>]" +
-            en + "     [-full <path>]         <options>" +
+            en + "     [-full <path>]         <options>";
+        static string usage =
+            en + "LibCheck <option>" +
+            en +
+            en + usageOptions +
             en +
             en + "-----------------------------------------------------------------------" +
             en + "     -store    Indicates that a set of store files should be created." +
@@ -186,13 +178,13 @@ namespace LibCheck
 
         static int numSplits = 0;
 
-        static String outputLoc = "";
+        public static String outputLoc = "";
 
         static Hashtable htGACdlls = null;
         static ArrayList alSplitF = null;
         static ArrayList alSplitNamespaces = null;
-        static ArrayList alIntfcAdds = null;
-        static ArrayList comDlls = null;
+        //static ArrayList alIntfcAdds = null;
+        //static ArrayList comDlls = null;
         static Hashtable htRanges = null;
         static StreamWriter AddsFile = null;
 
@@ -219,7 +211,7 @@ namespace LibCheck
         static bool storeDB = false;
         static bool storeSoap = false;
         static bool incHeader = true; // false;
-        static bool storeAsFile = false; //DEFAULT
+        //static bool storeAsFile = false; //DEFAULT
         static bool makeComReport = true;
         static bool comOnly = false;
         static bool GACload = false;
@@ -244,7 +236,7 @@ namespace LibCheck
         // ** Methods
         public static void Main(String[] args)
         {
-
+            IsPrepared = false;
             Console.WriteLine("start time = " + DateTime.Now);
 
 
@@ -278,19 +270,29 @@ namespace LibCheck
             catch (ArgumentException e)
             {
                 err = e;
-                if (!suppress)
+                // if (!suppress)
+
                 {
+                    foreach (string item in Environment.GetCommandLineArgs())
+                        Console.Write(item + " ");
+                    Console.Write(Environment.NewLine);
+
                     Console.WriteLine(en + e.Message);
-                    Console.WriteLine(usage);
+                    Console.WriteLine(usageOptions);
                 }
             }
             catch (Exception e)
             {
                 err = e;
-                if (!suppress)
+
+                foreach (string item in Environment.GetCommandLineArgs())
+                    Console.Write(item + " ");
+                Console.Write(Environment.NewLine);
+
+                // if (!suppress)
                 {
                     Console.WriteLine(en + e.ToString());
-                    Console.WriteLine(usage);
+                    Console.WriteLine(usageOptions);
                 }
             }
 
@@ -300,15 +302,7 @@ namespace LibCheck
             //find out WHICH files are to be split up
             //first thing is to check if this is a split file
 
-            alSplitF = OpenFileList("reffiles\\splitfiles.txt");
-            alSplitNamespaces = OpenFileList("reffiles\\splitNamespaces.txt");
-            htGACdlls = OpenGACList("reffiles\\gacload.txt");
-            GetSplitRanges();
-            //GetIntfcAdds();
-
-            //only make a new connection if we are working with the DB...
-            //if (storeDB)
-            //    rf = new ReflectorDO();
+            Prepare();
 
             if (_runStore)
             {
@@ -317,15 +311,18 @@ namespace LibCheck
 
                 if (_assembly.ToLower() == "full")
                 {
-
+                    var ignFile = Path.GetFullPath("reffiles\\ignorefiles.txt");
+                    ArrayList ignoreFiles = OpenFileList(ignFile);
                     DirectoryInfo di = new DirectoryInfo(fileDir);
 
                     foreach (FileInfo f in di.GetFiles("*.dll"))
                     {
-                        _assembly = f.Name;
                         Console.WriteLine(Path.Combine(fileDir, f.Name));
 
-                        MakeStoreFiles();
+                        if (ignoreFiles.Contains(f.Name))
+                            continue;
+
+                        MakeStoreFiles(f.Name);
                     }
                 }
                 else
@@ -334,7 +331,7 @@ namespace LibCheck
                 }
             }
 
-            // Finalize();
+            // PostProcess();
 
             if (!suppress)
                 obsoletewriter.Close();
@@ -352,7 +349,19 @@ namespace LibCheck
             Console.ReadKey();
         }
 
-        static void Finalize()
+        public static void Prepare()
+        { 
+            alSplitF = OpenFileList("reffiles\\splitfiles.txt");
+            alSplitNamespaces = OpenFileList("reffiles\\splitNamespaces.txt");
+            htGACdlls = OpenGACList("reffiles\\gacload.txt");
+            GetSplitRanges();
+
+            IsPrepared = true;
+        }
+
+        public static bool IsPrepared { get; set; }
+
+        static void PostProcess()
         {
             if (_runCompare)
             {
@@ -418,11 +427,13 @@ namespace LibCheck
 
             return true;
         }
+        
         // Parse the argument array
         static bool ParseArgs(string[] args)
         {
             _runStore = false;
             _runCompare = false;
+            outputLoc = Path.GetFullPath(Environment.CurrentDirectory);
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -536,10 +547,10 @@ namespace LibCheck
                 //    storeSoap = true;
                 //    storeAsFile = false;
                 //}
-                else if (arg.ToLower().StartsWith("-file"))
-                {
-                    storeAsFile = true;
-                }
+                //else if (arg.ToLower().StartsWith("-file"))
+                //{
+                //    storeAsFile = true;
+                //}
                 else if (arg.ToLower().StartsWith("-supp"))
                 {
                     suppress = false; // true;
