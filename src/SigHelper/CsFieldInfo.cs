@@ -18,7 +18,7 @@ namespace SigHelper {
 		public new static string ToString(FieldInfo fi) { return (new CsFieldInfo(fi)).ToString(); }
 		public override string ToString() {
 			string temp = null;
-			string result = "    // Field: \n    ";
+			string result = "    // Field: \n       ";
             // MemberType
 
             if (!_declaringtype.IsEnum)

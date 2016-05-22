@@ -13,17 +13,36 @@ namespace UnitTestProject1
     public class UnitDnx1
     {
         [TestMethod]
-        public void TestDnx1_SystemRuntime()
+        public void Test_Dotnet1_IO()
         {
             UnitTest1.Prepare();
-            var args = new[] { // "libcheck.exe", "-debug", 
-                    "-file",
-                    Path.GetFullPath(@"..\dnx\") + "System.*",
-                    "-out", @"sample\src\System\" };
+            var args = new[] 
+             { // "-debug", 
+                "-file",
+              (@"c:\Program Files (x86)\dotnet\bin\") + "System.IO.*.dll",
+                "-out", @"..\sample\src\dotnet\" 
+             };
+
+            LibChk.Main(args);
+
+            var lastError = LibChk.LastError;
+            var list = LibChk.ClassList;
+            var listAsm = LibChk.AsmList;
+        }
+
+        // ..\dnx\
+        [TestMethod]
+        public void Test_Dnx()
+        {
+            UnitTest1.Prepare();
+            var args = new[] 
+             { // "-debug", 
+                "-file",
+                Path.GetFullPath(@"..\dnx\") + "System.*",
+                "-out", @"sample\src\System\" 
+             };
 
             //args[1] = "C:" + Environment.GetEnvironmentVariable("HOMEPATH") + @"\"
-            //        + @".nuget\packages\System.Runtime\4.1.0-rc2-24103\lib\net462\System.Runtime.dll";
-            // .nuget\packages\System.Runtime\4.1.0-rc2-24008\ref\netstandard1.5\System.Runtime.dll - reference
             // .nuget\packages\System.Runtime\4.1.0-rc2-24103\lib\net462\System.Runtime.dll
 
             LibChk.Main(args);
@@ -31,8 +50,7 @@ namespace UnitTestProject1
             var lastError = LibChk.LastError;
             var list = LibChk.ClassList;
             var listAsm = LibChk.AsmList;
-            
-            
+
             var args1 = "C:" + Environment.GetEnvironmentVariable("HOMEPATH") + @"\"
                 + @".nuget\packages\System.Runtime\4.1.0-rc2-24008\ref\netstandard1.3\System.Runtime.dll";
             Assembly a = null;

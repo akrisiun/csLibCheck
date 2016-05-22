@@ -604,8 +604,6 @@ namespace LibCheck
 
         public static void CreateStore(string inFile, string storeName, int winformsFileNum)
         {
-            //if (inFile.IndexOf("custommarshalers.dll") != -1) return;
-
             Assembly a = null;
 
             //robvi
@@ -817,8 +815,8 @@ namespace LibCheck
             out int errorCount, out int memberCount, int _winformsFile)
         {
             Hashtable problems = new Hashtable(1);  // List of problem members by full type name
-                                                    //problems.Add("System.Runtime.Remoting.Channels.SMTP.ISMTPMessage", new ArrayList());
-                                                    //((ArrayList)problems["System.Runtime.Remoting.Channels.SMTP.ISMTPMessage"]).AddRange(new string[] { "EnvelopeFields", "Fields", });
+            //problems.Add("System.Runtime.Remoting.Channels.SMTP.ISMTPMessage", new ArrayList());
+            //((ArrayList)problems["System.Runtime.Remoting.Channels.SMTP.ISMTPMessage"]).AddRange(new string[] { "EnvelopeFields", "Fields", });
             errorCount = 0;
             memberCount = 0;
 
@@ -840,10 +838,12 @@ namespace LibCheck
             {
                 try
                 {
-
                     typeData.OutputClass(_assembly, a.CodeBase, outputLoc);
                 }
-                catch (Exception ex) { Console.WriteLine("Error at " + typeData.ToString(), ex); }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error at " + typeData.ToString(), ex);
+                }
 
 #if DOREPORTS
                 errorWriter.Flush();
@@ -1161,7 +1161,7 @@ namespace LibCheck
             ArrayList memberList = new ArrayList(ma.Length);
 
             int miIndex = -1;
-            for(miIndex = 0; miIndex < ma.Length; miIndex++)
+            for (miIndex = 0; miIndex < ma.Length; miIndex++)
             {   // members loop
 
                 MemberInfo mi = ma[miIndex];
@@ -1557,7 +1557,7 @@ namespace LibCheck
                         continue;
                     }
 
-                    #endregion
+                #endregion
 
 
                     // Header
@@ -2933,7 +2933,7 @@ namespace LibCheck
             _assembly = space + ".dll";
 
             MakeCurrentStoreFiles(num);
-            
+
             //Console.WriteLine("p2");
             //Console.ReadLine();
             fullSpec = prevSpec;

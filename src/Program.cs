@@ -335,6 +335,12 @@ namespace LibCheck
 
                     ClassInfo.Reset();
 
+                    if (!Directory.Exists(fileDir))
+                    { 
+                        Console.WriteLine("No directory " + fileDir);
+                        return;
+                    }
+
                     DirectoryInfo di = new DirectoryInfo(fileDir);
 
                     foreach (FileInfo f in di.GetFiles(filter))

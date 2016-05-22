@@ -127,7 +127,7 @@ namespace SigHelper {
 		}
 		protected new static string ToHtml(MethodModifiers [] modifiers) { return ToString(modifiers); }
 
-		protected new static string ToString(GenParameterInfo [] parameters, bool varargs, GenMethodInfo methInfo = null) {
+		protected static string ToString(GenParameterInfo [] parameters, bool varargs, GenMethodInfo methInfo = null) {
 			string result = "(";
             Type itemType = methInfo == null ? null : methInfo.DeclaringType;
             bool isExtension = false;

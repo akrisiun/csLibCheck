@@ -53,7 +53,7 @@ namespace LibCheck
             }
             string subdir = Path.GetFullPath(
                 (outputLoc.Length == 0 ? Directory.GetCurrentDirectory() : outputLoc.TrimEnd(new char[] { '\\', '/' }) + @"\")
-                + nsName); // .Replace(".dll", ""));
+                + nsName);
 
             if (!Directory.Exists(subdir))
                 Directory.CreateDirectory(subdir);
@@ -94,7 +94,8 @@ namespace LibCheck
             if (isNewFile)
             {
                 var attr = asm.GetCustomAttribute<System.Reflection.AssemblyFileVersionAttribute>();
-                string file = "\r\n// Source:  " + asmName.Replace("file:///", "") + "  Build " + (attr != null ? attr.Version : "");
+                string file = "\r\n// Source:  \\" + asmName.Replace("file:///", "").Substring(2)
+                          + "  Build " + (attr != null ? attr.Version : "");
                 wr.WriteLine(file);
 
                 wr.WriteLine("using System;");
@@ -185,6 +186,7 @@ namespace LibCheck
                     if (isIgnore)
                         continue;
 
+                    // Hardcode source code formating fixes TODO
                     if (temp2.Contains("delegate") || temp2.Contains("event"))
                     {
                         var split = temp2.Split(new[] { '\n' });
@@ -195,7 +197,15 @@ namespace LibCheck
                     else if (temp2.Contains("`"))
                     { } // breakpoint
                     else if (temp2.Contains("//"))
-                    { }
+                    { } // ctor or field
+                     else if(Type.IsInterface && temp2.Contains(" public "))
+                    {
+                        temp2 = temp2.Replace(" public ", "  ");
+                    } 
+                    else if (temp2.Contains("get;") && !temp2.Contains("set;"))
+                    {
+                        temp2 = temp2.Replace(" get;", " get { throw new NotImplementedException(); }");
+                    }
 
                     wr.WriteLine(indent + temp2);
                 }
