@@ -11,6 +11,7 @@ using System.Globalization;
 //for example, StringCOllection moved from System.Collections to System.Collections.Specialized
 
 using System.Collections.Specialized;
+using System.Collections.Generic;
 
 namespace LibCheck
 {
@@ -31,9 +32,9 @@ namespace LibCheck
 
         static string usageOptions = "OPTIONS:" +
             en + "     -store [<assembly> | All | Full] <buildNumber>" +
-            en + "     -compare [<oldNumber> | current]  [<newNumber> | current ]" +
-            en + "     [-split 4 | 10 | 15]   [-out <path>]" +
-            en + "     [-full <path>]         <options>";
+            en + "     -file <folder>\\*.dll | -compare [<oldNumber> | current]  [<newNumber> | current ]" +
+            en + "     [-split 4 | 10 | 15]   [-out <path>] [-nopause]" +
+            en + "     [-full <path>] <options>";
         static string usage =
             en + "LibCheck <option>" +
             en +
@@ -171,6 +172,7 @@ namespace LibCheck
 
         static string _codebase = null;
         static int _dbug = 0;
+        public static bool nopause = false;
 
         // THIS IS THE STORE FOR NAMESPACES!
         static Hashtable htNamespaces = new Hashtable();
@@ -198,11 +200,9 @@ namespace LibCheck
         static bool sumAll = true; //DEFAULT
         static bool allDetails = true; // false;
         static bool noLink = false;
-        static bool addsOnly = false;
-        //static bool noColor = false;
+        static bool addsOnly = false; 
         static bool sumColor = false;
-        static bool suppress = true;
-        //static bool showOwners = false;
+        static bool suppress = true; 
         static bool byDll = false;   // true; //DEFAULT
         static bool fullSpec = true; // false;
 
@@ -210,8 +210,7 @@ namespace LibCheck
         static bool addSer = false;
         static bool storeDB = false;
         static bool storeSoap = false;
-        static bool incHeader = true; // false;
-        //static bool storeAsFile = false; //DEFAULT
+        static bool incHeader = true; // false; 
         static bool makeComReport = true;
         static bool comOnly = false;
         static bool GACload = false;
@@ -220,12 +219,8 @@ namespace LibCheck
         //robvi
         static Hashtable ht = new Hashtable();
         static bool addStruct = false;
-        static bool addStructMethod = false;
-        //	static int totalEnumCount = 0;
-        public static StreamWriter obsoletewriter;
-
-        // ** DB Item
-        //static ReflectorDO rf;
+        static bool addStructMethod = false; 
+        public static StreamWriter obsoletewriter; 
 
         // ** Properties
         public static string OldVer { get { return _oldBuild; } }
@@ -233,14 +228,22 @@ namespace LibCheck
 
         #endregion
 
+        public static List<ClassInfo> ClassList;
+        public static List<Assembly> AsmList;
+        public static Exception LastError { get; set; }
         // ** Methods
         public static void Main(String[] args)
         {
+            #region Parse args
+
             IsPrepared = false;
             Console.WriteLine("start time = " + DateTime.Now);
 
-            if (args.Length >= 1 && args[0] != "-debug")
-                obsoletewriter = File.CreateText("obsolete.txt");
+            try
+            {
+                if (args.Length >= 1 && args[0] != "-debug")
+                    obsoletewriter = File.CreateText("obsolete.txt");
+            } catch (Exception ex) { LastError = ex; }
             long startTicks = DateTime.Now.Ticks;
 
             //ALWAYS FORCE THE CULTURE TO en-US
@@ -269,6 +272,7 @@ namespace LibCheck
             }
             catch (ArgumentException e)
             {
+                LastError = e;
                 err = e;
                 // if (!suppress)
 
@@ -283,6 +287,7 @@ namespace LibCheck
             }
             catch (Exception e)
             {
+                LastError = e;
                 err = e;
 
                 foreach (string item in Environment.GetCommandLineArgs())
@@ -295,13 +300,13 @@ namespace LibCheck
                     Console.WriteLine(usageOptions);
                 }
             }
-
+            
+            #endregion
             if (!goodToGo)
                 return;
 
             //find out WHICH files are to be split up
             //first thing is to check if this is a split file
-
             Prepare();
 
             if (_runStore)
@@ -322,6 +327,14 @@ namespace LibCheck
                         _assembly = "full";
                     }
 
+                    ClassInfo.Reset();
+
+                    if (!Directory.Exists(fileDir))
+                    { 
+                        Console.WriteLine("No directory " + fileDir);
+                        return;
+                    }
+
                     DirectoryInfo di = new DirectoryInfo(fileDir);
 
                     foreach (FileInfo f in di.GetFiles(filter))
@@ -336,10 +349,12 @@ namespace LibCheck
                 }
                 else
                 {
+                    ClassInfo.Reset();
                     MakeStoreFiles(_assembly);
                 }
             }
 
+            ClassInfo.Reset();
             // PostProcess();
 
             if (!suppress && obsoletewriter != null)
@@ -355,8 +370,11 @@ namespace LibCheck
             //if (rf != null)
             //    rf.Close();
 
-            Console.ReadLine();
+            if (!nopause)
+                 Console.ReadLine();
         }
+
+        #region Prepare methods
 
         public static void Prepare()
         { 
@@ -364,6 +382,9 @@ namespace LibCheck
             alSplitNamespaces = OpenFileList("reffiles\\splitNamespaces.txt");
             htGACdlls = OpenGACList("reffiles\\gacload.txt");
             GetSplitRanges();
+
+            ClassList = new List<ClassInfo>();
+            AsmList = new List<Assembly>();
 
             IsPrepared = true;
         }
@@ -467,6 +488,10 @@ namespace LibCheck
                     _assembly = args[++i];
                     _buildNumber = args[++i];
                 }
+                else if (arg == "-nopause")
+                {
+                    nopause = true;
+                }
                 else if (arg == "-compare")
                 {
                     if (_runCompare)
@@ -508,7 +533,9 @@ namespace LibCheck
                 }
                 else if (arg.ToLower().StartsWith("-out"))
                 {
-                    outputLoc = args[i + 1] + "/";
+                    outputLoc = args[i + 1];
+                    if (!outputLoc.EndsWith(@"\"))
+                        outputLoc += @"\";
                     i++;
                 }
                 //else if (arg.ToLower().StartsWith("-owners"))
@@ -794,6 +821,8 @@ namespace LibCheck
             else
                 return (StringCollection)htRanges["all"];
         }
+
+        #endregion
 
     } // end LibChk
 }

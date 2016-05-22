@@ -23,9 +23,7 @@ namespace LibCheck
             _assembly = fileName;
 
             ArrayList ignoreFiles = OpenFileList("reffiles\\ignorefiles.txt");
-
             DateTime startTime = DateTime.Now;
-
             bool everything = (_assembly.ToLower() == "all");
 
 #if DOREPORTS
@@ -303,7 +301,11 @@ namespace LibCheck
                     try
                     {
                         if (fileIsSplit != true || splitStoreFiles.Count == 0)
+                        {
+                            // Store dll module classes --------------------------------------------
+
                             CreateStore(dllFullName, storeFile, 0);
+                        }
                         else
                         {
                             for (int i = 1; i <= numSplits; i++)
@@ -518,10 +520,9 @@ namespace LibCheck
         // Test to see if reflection is going to work against the assembly name
         static bool GoodAssemblyName(string assembly)
         {
-
+            Assembly a = null;
             try
             {
-                Assembly a = null;
                 if (fullSpec)
                 {
                     if (GACload && htGACdlls.ContainsKey(assembly.ToLower()))
@@ -568,6 +569,7 @@ namespace LibCheck
             }
             catch (ReflectionTypeLoadException e)
             {
+                LastError = e;
                 Console.WriteLine("\r\nCould not retrieve some types from {0}", assembly);
                 foreach (Exception er in e.LoaderExceptions)
                 {
@@ -580,6 +582,7 @@ namespace LibCheck
             }
             catch (Exception e)
             {
+                LastError = e;
                 if (e.ToString().IndexOf("was not found") >= 0)
                 {
                     //assume that this is OK...
@@ -592,7 +595,8 @@ namespace LibCheck
                 errorWriter.WriteLine("GoodAssemblyName: unexpected exception!");
                 errorWriter.WriteLine(e.ToString());
 #endif
-                return false;
+                if (a == null)
+                    return false;
             }
             return true;
         }
@@ -600,8 +604,6 @@ namespace LibCheck
 
         public static void CreateStore(string inFile, string storeName, int winformsFileNum)
         {
-            //if (inFile.IndexOf("custommarshalers.dll") != -1) return;
-
             Assembly a = null;
 
             //robvi
@@ -617,6 +619,11 @@ namespace LibCheck
             {
                 a = Assembly.LoadFrom(inFile);
             }
+
+            if (a == null)
+                return;
+            if (!AsmList.Contains(a))
+                AsmList.Add(a);
 
             Hashtable typememberList = new Hashtable(64);   // hashtable of all members found, by full type name
 
@@ -808,8 +815,8 @@ namespace LibCheck
             out int errorCount, out int memberCount, int _winformsFile)
         {
             Hashtable problems = new Hashtable(1);  // List of problem members by full type name
-                                                    //problems.Add("System.Runtime.Remoting.Channels.SMTP.ISMTPMessage", new ArrayList());
-                                                    //((ArrayList)problems["System.Runtime.Remoting.Channels.SMTP.ISMTPMessage"]).AddRange(new string[] { "EnvelopeFields", "Fields", });
+            //problems.Add("System.Runtime.Remoting.Channels.SMTP.ISMTPMessage", new ArrayList());
+            //((ArrayList)problems["System.Runtime.Remoting.Channels.SMTP.ISMTPMessage"]).AddRange(new string[] { "EnvelopeFields", "Fields", });
             errorCount = 0;
             memberCount = 0;
 
@@ -823,16 +830,20 @@ namespace LibCheck
 
             IEnumerable<ClassInfo> list = EnumClassInfo(a, ta, problems, byDll);
 
-            ClassInfo.Reset();
+            // ClassInfo.Reset();
+
+            LibChk.ClassList.AddRange(list);
 
             foreach (ClassInfo typeData in list)
             {
                 try
                 {
-
                     typeData.OutputClass(_assembly, a.CodeBase, outputLoc);
                 }
-                catch (Exception ex) { Console.WriteLine("Error at " + typeData.ToString(), ex); }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error at " + typeData.ToString(), ex);
+                }
 
 #if DOREPORTS
                 errorWriter.Flush();
@@ -1072,11 +1083,11 @@ namespace LibCheck
                 }
                 else
                 {
-                    if (String.Compare(t.Name.ToLower().Substring(0,
-                        compareStart), startPoint) < 0 ||
-                        String.Compare(t.Name.ToLower().Substring(0,
-                        compareEnd), endPoint) > 0)
-                        return null; // continue;
+                    //if (String.Compare(t.Name.ToLower().Substring(0,
+                    //    compareStart), startPoint) < 0 ||
+                    //    String.Compare(t.Name.ToLower().Substring(0,
+                    //    compareEnd), endPoint) > 0)
+                    //    return null; // continue;
                 }
 
             }
@@ -1150,7 +1161,7 @@ namespace LibCheck
             ArrayList memberList = new ArrayList(ma.Length);
 
             int miIndex = -1;
-            for(miIndex = 0; miIndex < ma.Length; miIndex++)
+            for (miIndex = 0; miIndex < ma.Length; miIndex++)
             {   // members loop
 
                 MemberInfo mi = ma[miIndex];
@@ -1546,7 +1557,7 @@ namespace LibCheck
                         continue;
                     }
 
-                    #endregion
+                #endregion
 
 
                     // Header
@@ -1852,7 +1863,7 @@ namespace LibCheck
             //first thing is to define the compare file output location...
             //only set it to this default value if the user has not specified a location...
             if (outputLoc == "")
-                outputLoc = _oldBuild + "to" + _newBuild + "/";
+                outputLoc = _oldBuild + "to" + _newBuild + @"\";
 
             try
             {
@@ -2922,7 +2933,7 @@ namespace LibCheck
             _assembly = space + ".dll";
 
             MakeCurrentStoreFiles(num);
-            
+
             //Console.WriteLine("p2");
             //Console.ReadLine();
             fullSpec = prevSpec;

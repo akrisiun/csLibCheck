@@ -1,5 +1,5 @@
 
-// Source:  D:/webstack/WPF/LibCheck/dnx/System.Runtime.InteropServices.dll  Build 4.6.24027.00
+// Source:  /webstack/WPF/LibCheck/dnx/System.Runtime.InteropServices.dll  Build 4.6.24027.00
 using System;
 using System.Runtime.InteropServices;
 

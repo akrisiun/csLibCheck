@@ -19,7 +19,7 @@ namespace SigHelper {
 		public override string ToString() {
 			string temp;
 			string result = "   //" + ToString(_methodkind) + ": "                                  // MemberType
-                         + "\n   ";									    
+                      + "\n      ";									    
 			result += ((temp = ToString(_access)) != String.Empty) ? temp + " " : String.Empty;		// Scope
 			result += (_methodkind == MethodKinds.Ctor) ? CsTypeInfo.ParseInterface(_declaringtype) : _name;				// Name
 			result += " " + ToString(_parameters, _varargs) + " {}";								// Parameters

@@ -86,12 +86,6 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap">
-      <Name>System.Runtime.Serialization.Formatters.Soap</Name>
-    </Reference>
     <Reference Include="System.Web.Services">
       <Name>System.Web.Services</Name>
     </Reference>
@@ -105,13 +99,11 @@
     <Compile Include="ChurnReports\Report.cs" />
     <Compile Include="ChurnReports\SplitReport.cs" />
     <Compile Include="ChurnReports\UnifiedReport.cs" />
+    <Compile Include="ClassInfo.cs" />
     <Compile Include="ComCompat\AssemblyComparer.cs" />
     <Compile Include="ComCompat\ComCompat.cs" />
     <Compile Include="ComCompat\Exporter.cs" />
     <Compile Include="ComCompat\NativeMethods.cs" />
-    <Compile Include="DataObject.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Program.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -140,7 +132,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup> 
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="RefFiles\breakIntfcAdds.txt" />
+    <Content Include="RefFiles\gacload.txt" />
+    <Content Include="RefFiles\header.txt" />
+    <Content Include="RefFiles\ignorefiles.txt" />
+    <Content Include="RefFiles\splitfiles.txt" />
+    <Content Include="RefFiles\splitNamespaces.txt" />
+    <Content Include="RefFiles\splitranges.txt" />
+    <Content Include="RefFiles\translations.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent />

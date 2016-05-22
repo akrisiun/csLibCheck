@@ -3,6 +3,7 @@ obj/
 
 *.exe.config
 *.dll.config
+.vscode/
 .arch/
 lib/
 srcweb/
@@ -29,3 +30,5 @@ net*/
 sample/dotnet/
 sample/System.Data/
 sample/src/
+*.csproj.user
+*.bak

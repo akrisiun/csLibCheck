@@ -15,7 +15,9 @@ namespace SigHelper {
 		public override string Sig { get { return ToHtml(); } }
 
 		//** Methods
-		public new static string ToString(MethodInfo method) { return (new CsMethodInfo(method)).ToString(); }
+		public new static string ToString(MethodInfo method)
+        { return (new CsMethodInfo(method)).ToString(); }
+
 		public override string ToString() {
 			string temp;
 			string result = "    ";
@@ -33,8 +35,9 @@ namespace SigHelper {
                 result += SigHelper.CsParse(intName) + " ";                                         // Type
             }
 			result += _name;																		// Name
-            //" " +
-            result += ToString(_parameters, _varargs);  										    // Parameters
+
+            result += ToString(_parameters, _varargs, this);  						
+                                                                                                    // Parameters
             if (this._reflectedtype.IsInterface || !this._reflectedtype.IsClass)
                 result += ";";
             else 
@@ -124,12 +127,61 @@ namespace SigHelper {
 		}
 		protected new static string ToHtml(MethodModifiers [] modifiers) { return ToString(modifiers); }
 
-		protected new static string ToString(GenParameterInfo [] parameters, bool varargs) {
+		protected static string ToString(GenParameterInfo [] parameters, bool varargs, GenMethodInfo methInfo = null) {
 			string result = "(";
+            Type itemType = methInfo == null ? null : methInfo.DeclaringType;
+            bool isExtension = false;
+            if (itemType != null && itemType.IsAbstract)
+            {
+                var hasExtension = itemType.GetCustomAttribute<System.Runtime.CompilerServices.ExtensionAttribute>();
+                isExtension = hasExtension != null;
+            }
+
             for (int i = 0; i < parameters.Length; i++)
             {
                 var info = new CsParameterInfo(parameters[i]);
-                result += ((i > 0) ? ", " : String.Empty) + info.ToString();
+                var infoStr = info.ToString();
+                if (infoStr.IndexOf('`') >= 0)
+                {
+                    var type = parameters[i].Type;
+                    if (type.HasElementType) // && type.ContainsGenericParameters)
+                    {
+                        var inf2 = type as System.Reflection.TypeInfo;
+                        var args = inf2.GenericTypeArguments;  // type.GenericParameterAttributes;
+                        if (args.Length > 0)
+                        {
+                            //var isGen = inf2.IsGenericParameter;
+                            //var isGen2 = inf2.IsGenericType;
+                            //var isGen3 = inf2.IsGenericTypeDefinition;
+
+                            var info2 = CsTypeInfo.ParseInterface(type);
+                            infoStr = info2.ToString();
+                        }
+                        
+                    }
+                    if (infoStr.Contains("`1"))
+                    {
+                        var fullT = type.FullName;
+                        if (fullT.Contains("1[[System.String"))
+                            infoStr = infoStr.Replace("`1", "<string>");  // hardcoded :-)
+                        else 
+                            infoStr = infoStr.Replace("`1", "<object>");  // TODO
+                    }
+                    else if (infoStr.Contains("`2"))
+                    {
+                        infoStr = infoStr.Replace("`2", "<object,object>");  // TODO
+                    }
+                    else if (infoStr.Contains("`3"))
+                    {
+                        infoStr = infoStr.Replace("`3", "<object,object,object>");  // TODO
+                    }
+                }
+
+                if (isExtension && i == 0)
+                    result += "this ";
+
+                result += ((i > 0) ? ", " : String.Empty) + infoStr;
+                
             }
 			if (varargs)
 				result += ", __arglist";

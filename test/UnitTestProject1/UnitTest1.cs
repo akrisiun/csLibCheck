@@ -10,6 +10,58 @@ using System.Linq;
 namespace UnitTestProject1
 {
     [TestClass]
+    public class UnitDnx1
+    {
+        [TestMethod]
+        public void Test_Dotnet1_IO()
+        {
+            UnitTest1.Prepare();
+            var args = new[] 
+             { // "-debug", 
+                "-file",
+              (@"c:\Program Files (x86)\dotnet\bin\") + "System.IO.*.dll",
+                "-out", @"..\sample\src\dotnet\" 
+             };
+
+            LibChk.Main(args);
+
+            var lastError = LibChk.LastError;
+            var list = LibChk.ClassList;
+            var listAsm = LibChk.AsmList;
+        }
+
+        // ..\dnx\
+        [TestMethod]
+        public void Test_Dnx()
+        {
+            UnitTest1.Prepare();
+            var args = new[] 
+             { // "-debug", 
+                "-file",
+                Path.GetFullPath(@"..\dnx\") + "System.*",
+                "-out", @"sample\src\System\" 
+             };
+
+            //args[1] = "C:" + Environment.GetEnvironmentVariable("HOMEPATH") + @"\"
+            // .nuget\packages\System.Runtime\4.1.0-rc2-24103\lib\net462\System.Runtime.dll
+
+            LibChk.Main(args);
+
+            var lastError = LibChk.LastError;
+            var list = LibChk.ClassList;
+            var listAsm = LibChk.AsmList;
+
+            var args1 = "C:" + Environment.GetEnvironmentVariable("HOMEPATH") + @"\"
+                + @".nuget\packages\System.Runtime\4.1.0-rc2-24008\ref\netstandard1.3\System.Runtime.dll";
+            Assembly a = null;
+            try { a = Assembly.LoadFrom(args1); }
+            catch { }
+            var t1 = a.GetTypes();
+            var t2 = a.GetExportedTypes();
+        }
+    }
+
+    [TestClass]
     public class UnitTest1
     {
         [TestMethod]
@@ -24,6 +76,7 @@ namespace UnitTestProject1
             LibChk.Main(args);
         }
 
+
         public string dllData
         {
             [DebuggerStepThrough]
@@ -35,7 +88,7 @@ namespace UnitTestProject1
             }
         }
 
-        public void Prepare()
+        public static void Prepare()
         {
             var dir = AppDomain.CurrentDomain.BaseDirectory;
             var newDir = Path.GetFullPath(dir + @"\..\..\..\..\bin");
@@ -67,8 +120,12 @@ namespace UnitTestProject1
             IEnumerable<ClassInfo> list = LibChk.EnumClassInfo(a, ta, null, false);
             var first = list.Where(i => i.Name.StartsWith("System.Data.IDbConnection", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
 
+            LibChk.ClassList.Add(first);
             ClassInfo.Reset();
-            first.OutputClass(dllData, first.Name, "");
+
+            first.OutputClass(dllData, first.Name, @"\");
+            ClassInfo.Reset();
+
         }
 
         [TestMethod]

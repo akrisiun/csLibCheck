@@ -52,8 +52,8 @@ namespace LibCheck
                 dll = nsName.Substring(7, nsName.Length - 7);
             }
             string subdir = Path.GetFullPath(
-                (outputLoc.Length == 0 ? Directory.GetCurrentDirectory() : outputLoc + @"\")
-                + nsName); // .Replace(".dll", ""));
+                (outputLoc.Length == 0 ? Directory.GetCurrentDirectory() : outputLoc.TrimEnd(new char[] { '\\', '/' }) + @"\")
+                + nsName);
 
             if (!Directory.Exists(subdir))
                 Directory.CreateDirectory(subdir);
@@ -85,13 +85,17 @@ namespace LibCheck
                 isNewFile = !File.Exists(reportFile);
 
             if (!typesList.Contains(Type.FullName))
+            {
+                isNewFile = true;
                 typesList.Add(Type.FullName);
+            }
 
             var wr = new StreamWriter(reportFile, append: false);
             if (isNewFile)
             {
                 var attr = asm.GetCustomAttribute<System.Reflection.AssemblyFileVersionAttribute>();
-                string file = "\r\n// Source:  " + asmName.Replace("file:///", "") + "  Build " + (attr != null ? attr.Version : "");
+                string file = "\r\n// Source:  " + asmName.Replace("file:///", "").Substring(2)
+                          + "  Build " + (attr != null ? attr.Version : "");
                 wr.WriteLine(file);
 
                 wr.WriteLine("using System;");
@@ -126,13 +130,33 @@ namespace LibCheck
                 info = new CsTypeInfo(this.Type);
 
                 string temp = info.ToString(allForm);
-                //if (temp.Contains(" : System.Object "))
-                //    temp.Replace(" : System.Object ", "");
+
                 if (temp.Contains(" " + nsName + "."))
                     temp = temp.Replace(" " + nsName + ".", " ");
                 if (Type.IsEnum)
                 {
-                    temp = temp.Replace(": System.Enum", "");
+                    temp = temp.Replace(": System.Enum", "")
+                               .Replace(": Enum", "")
+                               .Replace("sealed enum", "enum");
+                }
+                else if (Type.IsValueType)
+                {
+                    temp = temp.Replace("sealed struct", "struct")
+                           .Replace(": System.ValueType", ":")
+                           .Replace(": ValueType", ":")
+                           .TrimEnd(new[] { ':' });
+
+                    if (Type is TypeInfo)
+                    {
+                        var tGeneric = (Type as TypeInfo).GenericTypeParameters;
+                        if (tGeneric.Length == 1)
+                            temp = temp.Replace("`1", "<" + tGeneric[0].Name + ">")
+                                  .Replace(Type.Namespace + ".", "");
+                    }
+
+                    if (temp.Contains("`"))
+                    { } // breakpoint
+
                 }
                 else if (Type.IsAbstract && Type.IsSealed)
                 {
@@ -156,13 +180,32 @@ namespace LibCheck
                         temp2 = temp2.Replace(" " + nsName + ".", " ");
 
                     bool isIgnore = false;
+                    var tempTrim = temp2.TrimStart();
                     foreach (string ign in ignoreStarting)
-                        if (temp2.StartsWith(ign)) { isIgnore = true; break; }
+                        if (tempTrim.StartsWith(ign)) { isIgnore = true; break; }
                     if (isIgnore)
                         continue;
 
-                    if (temp2.Contains("`"))
-                        { } // breakpoint
+                    // Hardcode source code formating fixes TODO
+                    if (temp2.Contains("delegate") || temp2.Contains("event"))
+                    {
+                        var split = temp2.Split(new[] { '\n' });
+                        temp2 = indent + "// " + split[0].Replace("//", "").TrimStart();
+                        if (split.Length >= 2)
+                            temp2 += Environment.NewLine + indent + "// " + split[1].TrimStart();
+                    }
+                    else if (temp2.Contains("`"))
+                    { } // breakpoint
+                    else if (temp2.Contains("//"))
+                    { } // ctor or field
+                     else if(Type.IsInterface && temp2.Contains(" public "))
+                    {
+                        temp2 = temp2.Replace(" public ", "  ");
+                    } 
+                    else if (temp2.Contains("get;") && !temp2.Contains("set;"))
+                    {
+                        temp2 = temp2.Replace(" get;", " get { throw new NotImplementedException(); }");
+                    }
 
                     wr.WriteLine(indent + temp2);
                 }

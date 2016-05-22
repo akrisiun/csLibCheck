@@ -1,294 +1,301 @@
 
+// Source:  /webstack/WPF/LibCheck/dnx/System.Console.dll  Build 4.6.24027.00
+using System;
+using System.Runtime.InteropServices;
+
+namespace System
+{  
+
    [Guid("a3b0af7d-d234-306c-aeec-e6483bf4b98b")]
-   public sealed enum ConsoleKey : Enum
+   public enum ConsoleKey 
    {
        // Field: 
-    Backspace = 8,
+       Backspace = 8,
        // Field: 
-    Tab = 9,
+       Tab = 9,
        // Field: 
-    Clear = 12,
+       Clear = 12,
        // Field: 
-    Enter = 13,
+       Enter = 13,
        // Field: 
-    Pause = 19,
+       Pause = 19,
        // Field: 
-    Escape = 27,
+       Escape = 27,
        // Field: 
-    Spacebar = 32,
+       Spacebar = 32,
        // Field: 
-    PageUp = 33,
+       PageUp = 33,
        // Field: 
-    PageDown = 34,
+       PageDown = 34,
        // Field: 
-    End = 35,
+       End = 35,
        // Field: 
-    Home = 36,
+       Home = 36,
        // Field: 
-    LeftArrow = 37,
+       LeftArrow = 37,
        // Field: 
-    UpArrow = 38,
+       UpArrow = 38,
        // Field: 
-    RightArrow = 39,
+       RightArrow = 39,
        // Field: 
-    DownArrow = 40,
+       DownArrow = 40,
        // Field: 
-    Select = 41,
+       Select = 41,
        // Field: 
-    Print = 42,
+       Print = 42,
        // Field: 
-    Execute = 43,
+       Execute = 43,
        // Field: 
-    PrintScreen = 44,
+       PrintScreen = 44,
        // Field: 
-    Insert = 45,
+       Insert = 45,
        // Field: 
-    Delete = 46,
+       Delete = 46,
        // Field: 
-    Help = 47,
+       Help = 47,
        // Field: 
-    D0 = 48,
+       D0 = 48,
        // Field: 
-    D1 = 49,
+       D1 = 49,
        // Field: 
-    D2 = 50,
+       D2 = 50,
        // Field: 
-    D3 = 51,
+       D3 = 51,
        // Field: 
-    D4 = 52,
+       D4 = 52,
        // Field: 
-    D5 = 53,
+       D5 = 53,
        // Field: 
-    D6 = 54,
+       D6 = 54,
        // Field: 
-    D7 = 55,
+       D7 = 55,
        // Field: 
-    D8 = 56,
+       D8 = 56,
        // Field: 
-    D9 = 57,
+       D9 = 57,
        // Field: 
-    A = 65,
+       A = 65,
        // Field: 
-    B = 66,
+       B = 66,
        // Field: 
-    C = 67,
+       C = 67,
        // Field: 
-    D = 68,
+       D = 68,
        // Field: 
-    E = 69,
+       E = 69,
        // Field: 
-    F = 70,
+       F = 70,
        // Field: 
-    G = 71,
+       G = 71,
        // Field: 
-    H = 72,
+       H = 72,
        // Field: 
-    I = 73,
+       I = 73,
        // Field: 
-    J = 74,
+       J = 74,
        // Field: 
-    K = 75,
+       K = 75,
        // Field: 
-    L = 76,
+       L = 76,
        // Field: 
-    M = 77,
+       M = 77,
        // Field: 
-    N = 78,
+       N = 78,
        // Field: 
-    O = 79,
+       O = 79,
        // Field: 
-    P = 80,
+       P = 80,
        // Field: 
-    Q = 81,
+       Q = 81,
        // Field: 
-    R = 82,
+       R = 82,
        // Field: 
-    S = 83,
+       S = 83,
        // Field: 
-    T = 84,
+       T = 84,
        // Field: 
-    U = 85,
+       U = 85,
        // Field: 
-    V = 86,
+       V = 86,
        // Field: 
-    W = 87,
+       W = 87,
        // Field: 
-    X = 88,
+       X = 88,
        // Field: 
-    Y = 89,
+       Y = 89,
        // Field: 
-    Z = 90,
+       Z = 90,
        // Field: 
-    LeftWindows = 91,
+       LeftWindows = 91,
        // Field: 
-    RightWindows = 92,
+       RightWindows = 92,
        // Field: 
-    Applications = 93,
+       Applications = 93,
        // Field: 
-    Sleep = 95,
+       Sleep = 95,
        // Field: 
-    NumPad0 = 96,
+       NumPad0 = 96,
        // Field: 
-    NumPad1 = 97,
+       NumPad1 = 97,
        // Field: 
-    NumPad2 = 98,
+       NumPad2 = 98,
        // Field: 
-    NumPad3 = 99,
+       NumPad3 = 99,
        // Field: 
-    NumPad4 = 100,
+       NumPad4 = 100,
        // Field: 
-    NumPad5 = 101,
+       NumPad5 = 101,
        // Field: 
-    NumPad6 = 102,
+       NumPad6 = 102,
        // Field: 
-    NumPad7 = 103,
+       NumPad7 = 103,
        // Field: 
-    NumPad8 = 104,
+       NumPad8 = 104,
        // Field: 
-    NumPad9 = 105,
+       NumPad9 = 105,
        // Field: 
-    Multiply = 106,
+       Multiply = 106,
        // Field: 
-    Add = 107,
+       Add = 107,
        // Field: 
-    Separator = 108,
+       Separator = 108,
        // Field: 
-    Subtract = 109,
+       Subtract = 109,
        // Field: 
-    Decimal = 110,
+       Decimal = 110,
        // Field: 
-    Divide = 111,
+       Divide = 111,
        // Field: 
-    F1 = 112,
+       F1 = 112,
        // Field: 
-    F2 = 113,
+       F2 = 113,
        // Field: 
-    F3 = 114,
+       F3 = 114,
        // Field: 
-    F4 = 115,
+       F4 = 115,
        // Field: 
-    F5 = 116,
+       F5 = 116,
        // Field: 
-    F6 = 117,
+       F6 = 117,
        // Field: 
-    F7 = 118,
+       F7 = 118,
        // Field: 
-    F8 = 119,
+       F8 = 119,
        // Field: 
-    F9 = 120,
+       F9 = 120,
        // Field: 
-    F10 = 121,
+       F10 = 121,
        // Field: 
-    F11 = 122,
+       F11 = 122,
        // Field: 
-    F12 = 123,
+       F12 = 123,
        // Field: 
-    F13 = 124,
+       F13 = 124,
        // Field: 
-    F14 = 125,
+       F14 = 125,
        // Field: 
-    F15 = 126,
+       F15 = 126,
        // Field: 
-    F16 = 127,
+       F16 = 127,
        // Field: 
-    F17 = 128,
+       F17 = 128,
        // Field: 
-    F18 = 129,
+       F18 = 129,
        // Field: 
-    F19 = 130,
+       F19 = 130,
        // Field: 
-    F20 = 131,
+       F20 = 131,
        // Field: 
-    F21 = 132,
+       F21 = 132,
        // Field: 
-    F22 = 133,
+       F22 = 133,
        // Field: 
-    F23 = 134,
+       F23 = 134,
        // Field: 
-    F24 = 135,
+       F24 = 135,
        // Field: 
-    BrowserBack = 166,
+       BrowserBack = 166,
        // Field: 
-    BrowserForward = 167,
+       BrowserForward = 167,
        // Field: 
-    BrowserRefresh = 168,
+       BrowserRefresh = 168,
        // Field: 
-    BrowserStop = 169,
+       BrowserStop = 169,
        // Field: 
-    BrowserSearch = 170,
+       BrowserSearch = 170,
        // Field: 
-    BrowserFavorites = 171,
+       BrowserFavorites = 171,
        // Field: 
-    BrowserHome = 172,
+       BrowserHome = 172,
        // Field: 
-    VolumeMute = 173,
+       VolumeMute = 173,
        // Field: 
-    VolumeDown = 174,
+       VolumeDown = 174,
        // Field: 
-    VolumeUp = 175,
+       VolumeUp = 175,
        // Field: 
-    MediaNext = 176,
+       MediaNext = 176,
        // Field: 
-    MediaPrevious = 177,
+       MediaPrevious = 177,
        // Field: 
-    MediaStop = 178,
+       MediaStop = 178,
        // Field: 
-    MediaPlay = 179,
+       MediaPlay = 179,
        // Field: 
-    LaunchMail = 180,
+       LaunchMail = 180,
        // Field: 
-    LaunchMediaSelect = 181,
+       LaunchMediaSelect = 181,
        // Field: 
-    LaunchApp1 = 182,
+       LaunchApp1 = 182,
        // Field: 
-    LaunchApp2 = 183,
+       LaunchApp2 = 183,
        // Field: 
-    Oem1 = 186,
+       Oem1 = 186,
        // Field: 
-    OemPlus = 187,
+       OemPlus = 187,
        // Field: 
-    OemComma = 188,
+       OemComma = 188,
        // Field: 
-    OemMinus = 189,
+       OemMinus = 189,
        // Field: 
-    OemPeriod = 190,
+       OemPeriod = 190,
        // Field: 
-    Oem2 = 191,
+       Oem2 = 191,
        // Field: 
-    Oem3 = 192,
+       Oem3 = 192,
        // Field: 
-    Oem4 = 219,
+       Oem4 = 219,
        // Field: 
-    Oem5 = 220,
+       Oem5 = 220,
        // Field: 
-    Oem6 = 221,
+       Oem6 = 221,
        // Field: 
-    Oem7 = 222,
+       Oem7 = 222,
        // Field: 
-    Oem8 = 223,
+       Oem8 = 223,
        // Field: 
-    Oem102 = 226,
+       Oem102 = 226,
        // Field: 
-    Process = 229,
+       Process = 229,
        // Field: 
-    Packet = 231,
+       Packet = 231,
        // Field: 
-    Attention = 246,
+       Attention = 246,
        // Field: 
-    CrSel = 247,
+       CrSel = 247,
        // Field: 
-    ExSel = 248,
+       ExSel = 248,
        // Field: 
-    EraseEndOfFile = 249,
+       EraseEndOfFile = 249,
        // Field: 
-    Play = 250,
+       Play = 250,
        // Field: 
-    Zoom = 251,
+       Zoom = 251,
        // Field: 
-    NoName = 252,
+       NoName = 252,
        // Field: 
-    Pa1 = 253,
+       Pa1 = 253,
        // Field: 
-    OemClear = 254,
+       OemClear = 254,
    }
 }

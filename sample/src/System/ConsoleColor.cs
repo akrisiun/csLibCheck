@@ -1,38 +1,45 @@
 
+// Source:  /webstack/WPF/LibCheck/dnx/System.Console.dll  Build 4.6.24027.00
+using System;
+using System.Runtime.InteropServices;
+
+namespace System
+{  
+
    [Guid("5946f667-6faa-3b49-abe8-5be28ad20638")]
-   public sealed enum ConsoleColor : Enum
+   public enum ConsoleColor 
    {
        // Field: 
-    Black = 0,
+       Black = 0,
        // Field: 
-    DarkBlue = 1,
+       DarkBlue = 1,
        // Field: 
-    DarkGreen = 2,
+       DarkGreen = 2,
        // Field: 
-    DarkCyan = 3,
+       DarkCyan = 3,
        // Field: 
-    DarkRed = 4,
+       DarkRed = 4,
        // Field: 
-    DarkMagenta = 5,
+       DarkMagenta = 5,
        // Field: 
-    DarkYellow = 6,
+       DarkYellow = 6,
        // Field: 
-    Gray = 7,
+       Gray = 7,
        // Field: 
-    DarkGray = 8,
+       DarkGray = 8,
        // Field: 
-    Blue = 9,
+       Blue = 9,
        // Field: 
-    Green = 10,
+       Green = 10,
        // Field: 
-    Cyan = 11,
+       Cyan = 11,
        // Field: 
-    Red = 12,
+       Red = 12,
        // Field: 
-    Magenta = 13,
+       Magenta = 13,
        // Field: 
-    Yellow = 14,
+       Yellow = 14,
        // Field: 
-    White = 15,
+       White = 15,
    }
 }

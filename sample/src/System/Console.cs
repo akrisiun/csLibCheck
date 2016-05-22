@@ -1,5 +1,5 @@
 
-// Source:  D:/webstack/WPF/LibCheck/dnx/System.Console.dll  Build 4.6.24027.00
+// Source:  /webstack/WPF/LibCheck/dnx/System.Console.dll  Build 4.6.24027.00
 using System;
 using System.Runtime.InteropServices;
 
@@ -18,8 +18,7 @@ namespace System
        public static void Beep() {}
        public static void Beep(int frequency, int duration) {}
        public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop) {}
-       public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop,
-           char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor) {}
+       public static void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor) {}
        public static void Clear() {}
        public static void SetCursorPosition(int left, int top) {}
        public static IO.Stream OpenStandardInput() { throw new NotImplementedException(); }
@@ -65,27 +64,18 @@ namespace System
        public static void Write(ulong value) {}
        public static void Write(object value) {}
        public static void Write(string value) {}
-       //public virtual override string ToString() { throw new NotImplementedException(); }
-       //public virtual override bool Equals(object obj) { throw new NotImplementedException(); }
-       //public static override bool Equals(object objA, object objB) { throw new NotImplementedException(); }
-       //public static override bool ReferenceEquals(object objA, object objB) { throw new NotImplementedException(); }
-       //public virtual override int GetHashCode() { throw new NotImplementedException(); }
-       //public override Type GetType() { throw new NotImplementedException(); }
-       //protected virtual override void Finalize() {}
-       //protected override object MemberwiseClone() { throw new NotImplementedException(); }
-
-      public static IO.TextReader In { get; }
+      public static IO.TextReader In { get { throw new NotImplementedException(); } }
       public static Text.Encoding InputEncoding { get; set; }
       public static Text.Encoding OutputEncoding { get; set; }
-      public static bool KeyAvailable { get; }
-      public static IO.TextWriter Out { get; }
-      public static IO.TextWriter Error { get; }
-      public static bool IsInputRedirected { get; }
-      public static bool IsOutputRedirected { get; }
-      public static bool IsErrorRedirected { get; }
+      public static bool KeyAvailable { get { throw new NotImplementedException(); } }
+      public static IO.TextWriter Out { get { throw new NotImplementedException(); } }
+      public static IO.TextWriter Error { get { throw new NotImplementedException(); } }
+      public static bool IsInputRedirected { get { throw new NotImplementedException(); } }
+      public static bool IsOutputRedirected { get { throw new NotImplementedException(); } }
+      public static bool IsErrorRedirected { get { throw new NotImplementedException(); } }
       public static int CursorSize { get; set; }
-      public static bool NumberLock { get; }
-      public static bool CapsLock { get; }
+      public static bool NumberLock { get { throw new NotImplementedException(); } }
+      public static bool CapsLock { get { throw new NotImplementedException(); } }
       public static ConsoleColor BackgroundColor { get; set; }
       public static ConsoleColor ForegroundColor { get; set; }
       public static int BufferWidth { get; set; }
@@ -94,15 +84,14 @@ namespace System
       public static int WindowTop { get; set; }
       public static int WindowWidth { get; set; }
       public static int WindowHeight { get; set; }
-      public static int LargestWindowWidth { get; }
-      public static int LargestWindowHeight { get; }
+      public static int LargestWindowWidth { get { throw new NotImplementedException(); } }
+      public static int LargestWindowHeight { get { throw new NotImplementedException(); } }
       public static bool CursorVisible { get; set; }
       public static int CursorLeft { get; set; }
       public static int CursorTop { get; set; }
       public static string Title { get; set; }
       public static bool TreatControlCAsInput { get; set; }
-   
-        //Event: 
-        //public event ConsoleCancelEventHandler CancelKeyPress;
+      // Event: 
+   // public event ConsoleCancelEventHandler CancelKeyPress;
    }
 }

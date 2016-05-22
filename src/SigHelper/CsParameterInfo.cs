@@ -17,7 +17,12 @@ namespace SigHelper {
 			string result = (temp != String.Empty) ? temp + " " : String.Empty;                             // Modifiers
 
             var intName = CsTypeInfo.ParseInterface(_type);
+            if (intName.Contains("`"))
+            {
+                var info = CsTypeInfo.ParseInterface(_type);
+            }
             result += SigHelper.CsParse(intName, true);													// Type
+
 			result += (_name != String.Empty) ? " " + _name : "";											// Name
 //			result += (_defaultvalue != null && (temp = _defaultvalue.ToString()) != String.Empty) ? " = " + temp : "";	// Default value TODO: fix.
 			return result;
