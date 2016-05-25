@@ -216,6 +216,7 @@ namespace LibCheck
             {
                 LastError = ex;
             }
+			if (LastError != null) {}
 
             wr.Close();
             GC.Collect();

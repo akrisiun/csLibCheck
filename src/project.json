@@ -12,18 +12,34 @@
     "dependencies": {
     },
     "frameworks": {
-        ".NETPlatform,Version=v4.6": {
-  "compilationOptions": {
-        "define": [ "DEBUG" ]
-      },
+         ".NETPlatform,Version=v4.6": {
+            "compilationOptions": {
+                    "define": [ "DEBUG" ]
+            },
             "frameworkAssemblies": {
+                "System.Xml": "4.0.0.0",
+                "System.Xml.Linq": "4.0.0.0",
+                "Microsoft.CSharp": "4.0.0.0"
+            }
+        },
+         ".NETPlatform,Version=v4.5.1": {
+            "compilationOptions": {
+                    "define": [ "DEBUG" ]
+            },
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
                 "System.Xml": "4.0.0.0",
                 "System.Xml.Linq": "4.0.0.0",
                 "Microsoft.CSharp": "4.0.0.0"
             }
         }
     },
+  "targets": {
+    ".NETPlatform,Version=v4.6/win": {},
+    ".NETPlatform,Version=v4.5.1/osx": {}
+  },
   "runtimes": {
-	"win": {}
+	"win": {},
+    "osx": {}
   }
 }

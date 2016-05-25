@@ -271,7 +271,6 @@ namespace LibCheck
             _codebase = codebase.Replace("/", Path.DirectorySeparatorChar.ToString()).ToString();
 
             bool goodToGo = false;
-            Exception err = null;
             try
             {
                 goodToGo = ParseArgs(args);
@@ -279,33 +278,27 @@ namespace LibCheck
             catch (ArgumentException e)
             {
                 LastError = e;
-                err = e;
                 // if (!suppress)
+                foreach (string item in Environment.GetCommandLineArgs())
+                    Console.Write(item + " ");
+                Console.Write(Environment.NewLine);
 
-                {
-                    foreach (string item in Environment.GetCommandLineArgs())
-                        Console.Write(item + " ");
-                    Console.Write(Environment.NewLine);
-
-                    Console.WriteLine(en + e.Message);
-                    Console.WriteLine(usageOptions);
-                }
+                Console.WriteLine(en + e.Message);
+                Console.WriteLine(usageOptions);
             }
             catch (Exception e)
             {
                 LastError = e;
-                err = e;
 
                 foreach (string item in Environment.GetCommandLineArgs())
                     Console.Write(item + " ");
                 Console.Write(Environment.NewLine);
 
-                // if (!suppress)
-                {
-                    Console.WriteLine(en + e.ToString());
-                    Console.WriteLine(usageOptions);
-                }
+                Console.WriteLine(en + e.ToString());
+                Console.WriteLine(usageOptions);
             }
+			if (LastError != null) 
+				{}  // breakpoint
             
             #endregion
             if (!goodToGo)

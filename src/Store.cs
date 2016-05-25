@@ -187,10 +187,10 @@ namespace LibCheck
 
             }
 
-            TimeSpan delta = DateTime.Now - startTime;
 #if DOREPORTS
+			TimeSpan delta = DateTime.Now - startTime;
             errorWriter.WriteLine(String.Format("Store files created, elapsed time: {0:00}:{1:00}:{2:00}.",
-          delta.Hours, delta.Minutes, delta.Seconds));
+          		delta.Hours, delta.Minutes, delta.Seconds));
             errorWriter.Flush();
             errorWriter.Close();
 
@@ -1065,8 +1065,8 @@ namespace LibCheck
 
                 int compareStart = t.Name.Length < startPoint.Length ?
                     t.Name.Length : startPoint.Length;
-                int compareEnd = t.Name.Length < endPoint.Length ?
-                    t.Name.Length : endPoint.Length;
+                //int compareEnd = t.Name.Length < endPoint.Length ?
+                //    t.Name.Length : endPoint.Length;
 
                 //these are the different comparisons for the different ranges...
                 if (winformsFile == 1)
@@ -2313,7 +2313,7 @@ namespace LibCheck
                                     totBreaks, allDetails, sumAll, useHTM);
                             }
                         }
-                        int change = totAdds + totRemoves;
+                        //int change = totAdds + totRemoves;
                         int asm1Count = oldList.Count;
                         int asm2Count = newList.Count;
                         //	xmlReport.WriteAssemblySummary(totTypeAdds.ToString(), totTypeRemoves.ToString(),asm1Count.ToString(), asm2Count.ToString());
@@ -2359,8 +2359,8 @@ namespace LibCheck
                 }
             }
 
-            TimeSpan delta = DateTime.Now - startTime;
 #if DOREPORTS
+			TimeSpan delta = DateTime.Now - startTime;
             errorWriter.WriteLine(String.Format("Report completed, total elapsed time: {0:00}:{1:00}:{2:00}.",
             delta.Hours, delta.Minutes, delta.Seconds));
 
@@ -2453,11 +2453,11 @@ namespace LibCheck
 
             // initialize the error report
             DateTime startTime = DateTime.Now;
-            string errFile = String.Format(outputLoc +
-                "LibCheck.{0:00}{1:00}.{2:00}{3:00}.error",
-                new object[] { startTime.Month, startTime.Day, startTime.Hour,
-                                 startTime.Minute });
 #if DOREPORTS
+			string errFile = String.Format(outputLoc +
+				"LibCheck.{0:00}{1:00}.{2:00}{3:00}.error",
+				new object[] { startTime.Month, startTime.Day, startTime.Hour,
+				startTime.Minute });
             errorWriter = new StreamWriter(errFile);
             if (_dbug != 0) errorWriter.WriteLine("_dbug = " + _dbug);
 #endif

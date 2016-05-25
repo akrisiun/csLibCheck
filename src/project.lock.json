@@ -2,18 +2,22 @@
   "locked": false,
   "version": 2,
   "targets": {
-    ".NETPlatform,Version=v4.6": {},
-    ".NETPlatform,Version=v4.6/win": {}
+    ".NETPlatform,Version=v4.5.1": {},
+    ".NETPlatform,Version=v4.6": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
     "": [],
+    ".NETPlatform,Version=v4.5.1": [
+      "Microsoft.CSharp >= 4.0.0",
+      "System >= 4.0.0",
+      "System.Xml >= 4.0.0",
+      "System.Xml.Linq >= 4.0.0"
+    ],
     ".NETPlatform,Version=v4.6": [
       "Microsoft.CSharp >= 4.0.0",
       "System.Xml >= 4.0.0",
       "System.Xml.Linq >= 4.0.0"
     ]
-  },
-  "tools": {},
-  "projectFileToolGroups": {}
+  }
 }
