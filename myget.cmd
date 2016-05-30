@@ -11,5 +11,3 @@ type myget.cmd
 )
 
 "%MsBuildExe%" /p:Configuration="%cfg%" /v:m /m src\libcheck.csproj
-
-@PAUSE
