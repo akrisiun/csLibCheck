@@ -377,8 +377,8 @@ namespace ComComparer
 			{
 				try
 				{
-                    var tdescNew = Marshal.PtrToStructure<ComTypes.TYPEDESC>(newDesc.lpValue);
-					var tdescOld = Marshal.PtrToStructure<ComTypes.TYPEDESC>(oldDesc.lpValue);
+                    var tdescNew = (ComTypes.TYPEDESC)Marshal.PtrToStructure(newDesc.lpValue, typeof(ComTypes.TYPEDESC));
+                    var tdescOld = (ComTypes.TYPEDESC)Marshal.PtrToStructure(oldDesc.lpValue, typeof(ComTypes.TYPEDESC));
 
 					if (tdescOld.vt != tdescNew.vt)
 						ReportCompatError(messagePrefix + "has a different pointer or element type.", ((VarEnum)tdescOld.vt).ToString(), ((VarEnum)tdescNew.vt).ToString());
