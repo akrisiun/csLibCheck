@@ -32,3 +32,4 @@ sample/System.Data/
 sample/src/
 *.csproj.user
 *.bak
+*.lock.json

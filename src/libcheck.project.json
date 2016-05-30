@@ -10,20 +10,21 @@
         }
     },
     "dependencies": {
+        "NETStandard.Library": "1.0.0-rc2-23910"
     },
     "frameworks": {
-        ".NETPlatform,Version=v4.6": {
-            "compilationOptions": {
-                "define": [ "DEBUG" ]
+        "net46": {
+            "buildOptions": {
+                "define": [ "DEBUG", "DONTDBUGTM", "DONTDOREPORTS" ]
             },
             "frameworkAssemblies": {
-                "System.Xml": "4.0.0.0",
-                "System.Xml.Linq": "4.0.0.0",
-                "Microsoft.CSharp": "4.0.0.0"
+                "System.Xml": "",
+                "System.Xml.Linq": "",
+                "Microsoft.CSharp": ""
             }
         }
     },
     "runtimes": {
-        "win": {}
+        "win": { }
     }
 }
