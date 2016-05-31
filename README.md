@@ -1,7 +1,7 @@
 # LibCheck
 
 Original source: 
-https://www.microsoft.com/en-us/download/details.aspx?id=11287
+https://www.microsoft.com/en-us/download/details.aspx?id=11287  
 Version: 1.0 File Name: LibCheck.exe Date Published: 3/21/2005 :-)  
 
 This tool allows you to compare two versions of an assembly, and determine the differences. 
