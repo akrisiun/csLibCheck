@@ -811,10 +811,10 @@ namespace LibCheck
                             //if the new hashtables doesn't have this type, it's been removed
                             if (!newSerFields.ContainsKey(fName) && fName != "")
                             {
-                                string type, name;
+                                string type;
                                 int eqindex = fName.IndexOf("=");
                                 type = fName.Substring(0, eqindex);
-                                name = fName.Substring(eqindex + 1);
+                                // name = fName.Substring(eqindex + 1);
 
                                 //add this to the unified report
                                 breakingremove = true;
@@ -827,10 +827,10 @@ namespace LibCheck
                             if (!oldSerFields.ContainsKey(fName) && fName != "" && newSerFields[fName].ToString() != "T")
                             {
                                 int eqindex = 0;
-                                string type, name;
+                                string type;
                                 eqindex = fName.IndexOf("=");
                                 type = fName.Substring(0, eqindex);
-                                name = fName.Substring(eqindex + 1);
+                                //name = fName.Substring(eqindex + 1);
 
                                 //add this to the unified report
                                 breakingadd = true;
@@ -854,7 +854,8 @@ namespace LibCheck
                 //more string parsing first...
 
                 string oserializeable, osealed, ocontrolledSer;
-                string nserializeable, nsealed, ncontrolledSer;
+				// nsealed, 
+                string nserializeable, ncontrolledSer;
                 istart = oldtm.Misc.ToLower().IndexOf("serializeable=");
                 iend = oldtm.Misc.ToLower().IndexOf(";", istart + 1);
 
@@ -880,13 +881,12 @@ namespace LibCheck
 
                 string ntypeser = newtm.Misc.Substring(istart, iend - istart);
 
-
                 istart = ntypeser.IndexOf("serializeable");
                 iend = ntypeser.IndexOf(",", istart + 1);
                 nserializeable = ntypeser.Substring(istart, iend - istart);
                 istart = ntypeser.IndexOf("sealed");
                 iend = ntypeser.IndexOf(",", istart + 1);
-                nsealed = ntypeser.Substring(istart, iend - istart);
+                // nsealed = ntypeser.Substring(istart, iend - istart);
                 istart = ntypeser.IndexOf("controlledSer");
                 ncontrolledSer = ntypeser.Substring(istart);
 
@@ -1638,8 +1638,7 @@ namespace LibCheck
                     foreach (FieldInfo fi in fiAll)
                     {
                         bool optionalfield = false;
-                        object[] attributelist = fi.GetCustomAttributes(false);
-
+                        // object[] attributelist = fi.GetCustomAttributes(false);
                         //Following Code is Whidbey only:  We don't want to store fields
                         //that have the [OptionalField] attribute
                         //					foreach(object attr in attributelist)
