@@ -33,3 +33,7 @@ sample/src/
 *.csproj.user
 *.bak
 *.lock.json
+*.cs~
+*.csproj~
+*.userprefs
+.DS_Store

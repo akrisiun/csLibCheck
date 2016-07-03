@@ -10,21 +10,36 @@
         }
     },
     "dependencies": {
-        "NETStandard.Library": "1.0.0-rc2-23910"
     },
     "frameworks": {
-        "net46": {
-            "buildOptions": {
-                "define": [ "DEBUG", "DONTDBUGTM", "DONTDOREPORTS" ]
+         ".NETPlatform,Version=v4.6": {
+            "compilationOptions": {
+                    "define": [ "DEBUG" ]
             },
             "frameworkAssemblies": {
-                "System.Xml": "",
-                "System.Xml.Linq": "",
-                "Microsoft.CSharp": ""
+                "System.Xml": "4.0.0.0",
+                "System.Xml.Linq": "4.0.0.0",
+                "Microsoft.CSharp": "4.0.0.0"
+            }
+        },
+         ".NETPlatform,Version=v4.5.1": {
+            "compilationOptions": {
+                    "define": [ "DEBUG" ]
+            },
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Xml": "4.0.0.0",
+                "System.Xml.Linq": "4.0.0.0",
+                "Microsoft.CSharp": "4.0.0.0"
             }
         }
     },
-    "runtimes": {
-        "win": { }
-    }
+  "targets": {
+    ".NETPlatform,Version=v4.6/win": {},
+    ".NETPlatform,Version=v4.5.1/osx": {}
+  },
+  "runtimes": {
+	"win": {},
+    "osx": {}
+  }
 }

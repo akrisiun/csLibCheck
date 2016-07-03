@@ -52,7 +52,7 @@ namespace SigHelper {
             if (temp.Contains("`") && _reflectedtype != null)
             {
                 // <T> type
-                var ctor2 = _reflectedtype.GetConstructors();
+                // var ctor2 = _reflectedtype.GetConstructors();
             }
 
             result += temp + " ";

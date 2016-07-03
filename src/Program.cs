@@ -231,6 +231,7 @@ namespace LibCheck
         public static List<ClassInfo> ClassList;
         public static List<Assembly> AsmList;
         public static Exception LastError { get; set; }
+		public static string reffiles = "reffiles" + Path.DirectorySeparatorChar;
         // ** Methods
         public static void Main(String[] args)
         {
@@ -316,7 +317,7 @@ namespace LibCheck
 
                 if (_assembly.ToLower() == "full" || _assembly.Contains("*"))
                 {
-                    var ignFile = Path.GetFullPath("reffiles\\ignorefiles.txt");
+					var ignFile = Path.GetFullPath(reffiles + "ignorefiles.txt");
                     ArrayList ignoreFiles = OpenFileList(ignFile);
 
                     _assembly = Path.GetFileNameWithoutExtension(_assembly);
@@ -378,9 +379,9 @@ namespace LibCheck
 
         public static void Prepare()
         { 
-            alSplitF = OpenFileList("reffiles\\splitfiles.txt");
-            alSplitNamespaces = OpenFileList("reffiles\\splitNamespaces.txt");
-            htGACdlls = OpenGACList("reffiles\\gacload.txt");
+			alSplitF = OpenFileList(reffiles + "splitfiles.txt");
+			alSplitNamespaces = OpenFileList(reffiles + "splitNamespaces.txt");
+			htGACdlls = OpenGACList(reffiles + "gacload.txt");
             GetSplitRanges();
 
             ClassList = new List<ClassInfo>();
@@ -762,7 +763,7 @@ namespace LibCheck
             int found = -1;
             string tempEntry = "";
 
-            StreamReader sr = new StreamReader("reffiles\\splitRanges.txt");
+			StreamReader sr = new StreamReader(reffiles + "splitRanges.txt");
 
             htRanges = new Hashtable();
 

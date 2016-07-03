@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using LibCheck;
 
 namespace ChurnReports {
 
@@ -132,7 +133,7 @@ namespace ChurnReports {
 			WriteLine("</font>");
 			WriteLine(@"<font face=""Arial"" size=""2"">");
 			if (incHeader) {
-				StreamReader sr = File.OpenText("reffiles\\header.txt");
+				StreamReader sr = File.OpenText(LibChk.reffiles  + "header.txt");
 
 				while (sr.Peek() > -1) {
 					totHeader += sr.ReadLine();
@@ -183,7 +184,7 @@ namespace ChurnReports {
 			WriteLine("</font>");
 			WriteLine(@"<font face=""Arial"" size=""2"">");
 			if (incHeader) {
-				StreamReader sr = File.OpenText("reffiles\\header.txt");
+				StreamReader sr = File.OpenText(LibChk.reffiles + "header.txt");
 
 				while (sr.Peek() > -1) {
 					totHeader += sr.ReadLine();
@@ -230,7 +231,7 @@ namespace ChurnReports {
 			WriteLine("</font>");
 			WriteLine(@"<font face=""Arial"" size=""2"">");
 			if (incHeader) {
-				StreamReader sr = File.OpenText("reffiles\\header.txt");
+				StreamReader sr = File.OpenText(LibChk.reffiles + "header.txt");
 
 				while (sr.Peek() > -1) {
 					totHeader += sr.ReadLine();

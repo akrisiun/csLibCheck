@@ -94,7 +94,7 @@ namespace LibCheck
             if (isNewFile)
             {
                 var attr = asm.GetCustomAttribute<System.Reflection.AssemblyFileVersionAttribute>();
-                string file = "\r\n// Source:  " + asmName.Replace("file:///", "").Substring(2)
+                string file = "\r\n// Source:  \\" + asmName.Replace("file:///", "").Substring(2)
                           + "  Build " + (attr != null ? attr.Version : "");
                 wr.WriteLine(file);
 
@@ -216,6 +216,7 @@ namespace LibCheck
             {
                 LastError = ex;
             }
+			if (LastError != null) {}
 
             wr.Close();
             GC.Collect();

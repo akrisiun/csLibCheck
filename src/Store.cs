@@ -22,7 +22,7 @@ namespace LibCheck
         {
             _assembly = fileName;
 
-            ArrayList ignoreFiles = OpenFileList("reffiles\\ignorefiles.txt");
+			ArrayList ignoreFiles = OpenFileList(reffiles + "ignorefiles.txt");
             DateTime startTime = DateTime.Now;
             bool everything = (_assembly.ToLower() == "all");
 
@@ -187,10 +187,10 @@ namespace LibCheck
 
             }
 
-            TimeSpan delta = DateTime.Now - startTime;
 #if DOREPORTS
+			TimeSpan delta = DateTime.Now - startTime;
             errorWriter.WriteLine(String.Format("Store files created, elapsed time: {0:00}:{1:00}:{2:00}.",
-          delta.Hours, delta.Minutes, delta.Seconds));
+                 delta.Hours, delta.Minutes, delta.Seconds));
             errorWriter.Flush();
             errorWriter.Close();
 
@@ -341,7 +341,7 @@ namespace LibCheck
         static void MakeCurrentStoreFiles(int num)
         {
 
-            ArrayList ignoreFiles = OpenFileList("reffiles\\ignorefiles.txt");
+			ArrayList ignoreFiles = OpenFileList(reffiles + "ignorefiles.txt");
             DateTime startTime = DateTime.Now;
 
 #if DOREPORTS
@@ -714,7 +714,7 @@ namespace LibCheck
                 }
 
                 Hashtable htTemp = new Hashtable();
-                string sFile = _buildNumber + "\\" +
+				string sFile = _buildNumber + Path.DirectorySeparatorChar +
                     sName + (storeSoap ? ".soap" : ".binary") + Store;
 
                 /*
@@ -2359,8 +2359,8 @@ namespace LibCheck
                 }
             }
 
-            TimeSpan delta = DateTime.Now - startTime;
 #if DOREPORTS
+			TimeSpan delta = DateTime.Now - startTime;
             errorWriter.WriteLine(String.Format("Report completed, total elapsed time: {0:00}:{1:00}:{2:00}.",
             delta.Hours, delta.Minutes, delta.Seconds));
 
