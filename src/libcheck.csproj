@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="RefFiles\breakIntfcAdds.txt" />
