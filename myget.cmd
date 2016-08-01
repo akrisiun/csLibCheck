@@ -18,6 +18,6 @@ type myget.cmd
 
 @echo "%MsBuildExe%"
 
-nuget restore libcheck.sln
+nuget.exe restore libcheck.sln
 
 "%MsBuildExe%" /p:Configuration="%cfg%" /v:m /m  libcheck.sln
