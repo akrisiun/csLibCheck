@@ -8,11 +8,11 @@ type myget.cmd
 
 @REM myget.org build server
 
-@set msbuild="%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe"
-@if not exist %msbuild% @set msbuild="%ProgramFiles%\MSBuild\14.0\Bin\MSBuild.exe"
-@if not exist %msbuild% @set msbuild="%ProgramFiles(x86)%\MSBuild\12.0\Bin\MSBuild.exe"
-@if not exist %msbuild% @set msbuild="%ProgramFiles%\MSBuild\12.0\Bin\MSBuild.exe"
+@set MsBuildExe=%ProgramFiles(x86)%\MsBuild\14.0\Bin\MSBuild.exe
+@if not exist "%MsBuildExe%" @set MsBuildExe=%ProgramFiles%\MSBuild\14.0\Bin\MSBuild.exe
+@if not exist "%MsBuildExe%" @set MsBuildExe=%ProgramFiles(x86)%\MSBuild\12.0\Bin\MSBuild.exe
+@if not exist "%MsBuildExe%" @set MsBuildExe=%ProgramFiles%\MSBuild\12.0\Bin\MSBuild.exe
 
 nuget restore libcheck.sln
 
-%msbuild% /p:Configuration="%cfg%" /v:m /m  libcheck.sln
+"%MsBuildExe%" /p:Configuration="%cfg%" /v:m /m  libcheck.sln
