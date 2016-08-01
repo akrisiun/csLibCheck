@@ -7,8 +7,17 @@ type myget.cmd
 @echo -------------------------------------------------------------------
 
 @REM myget.org build server
-@if "%MsBuildExe%"=="" (
-  @set MsBuildExe=%ProgramFiles%\MSBuild\14.0\Bin\MSBuild.exe
-)
 
-"%MsBuildExe%" /p:Configuration="%cfg%" /v:m /m src\libcheck.csproj
+@set msbuild="%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe"
+@if not exist %msbuild% @set msbuild="%ProgramFiles%\MSBuild\14.0\Bin\MSBuild.exe"
+@if not exist %msbuild% @set msbuild="%ProgramFiles(x86)%\MSBuild\12.0\Bin\MSBuild.exe"
+@if not exist %msbuild% @set msbuild="%ProgramFiles%\MSBuild\12.0\Bin\MSBuild.exe"
+
+nuget restore libcheck.sln
+
+%msbuild% /p:Configuration="%cfg%" /v:m /m  libcheck.sln
+
+cd src
+dotnet restore
+dotnet build
+dotnet pack
