@@ -16,8 +16,3 @@ type myget.cmd
 nuget restore libcheck.sln
 
 %msbuild% /p:Configuration="%cfg%" /v:m /m  libcheck.sln
-
-cd src
-dotnet restore
-dotnet build
-dotnet pack
