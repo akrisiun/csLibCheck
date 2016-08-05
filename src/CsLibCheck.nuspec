@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>CsLibCheck</id>
+    <summary>dotnet .dll assembly parser</summary>
+    <description>
+      cs# metadata from binaries extractor.
+    </description>
+    <dependencies>
+    </dependencies>
+    <language>en-US</language>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <version>$version$</version>
+    <authors>Microsoft, Andrius K</authors>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/akrisiun/CsLibCheck</projectUrl>
+    <releaseNotes></releaseNotes>
+    <tags>cs metadata</tags>
+  </metadata>
+  <files>
+    <file src="*.exe" target="tools" />
+    <file src="*.exe.config" target="tools" />
+    <file src="*.dll" target="tools" />
+    <file src="RefFiles\*.*" target="tools\RefFiles" />
+  </files>
+</package>

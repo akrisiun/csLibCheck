@@ -33,3 +33,5 @@ sample/src/
 *.csproj.user
 *.bak
 *.lock.json
+*.nupkg
+*.csproj.nuget.targets

@@ -1,5 +1,6 @@
 set dir=%~dp0
 @set cfg=Debug
+set build=1.0.3
 
 @echo -------------------------------------------------------------------
 cd "%dir%"
@@ -21,3 +22,5 @@ type myget.cmd
 nuget.exe restore libcheck.sln
 
 "%MsBuildExe%" /p:Configuration="%cfg%" /v:m /m  libcheck.sln
+
+NuGet.exe pack src\CsLibCheck.nuspec -Version %build%
