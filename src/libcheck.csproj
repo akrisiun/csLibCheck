@@ -15,7 +15,7 @@
     <RootNamespace>libcheck</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <FileUpgradeFlags />
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <UpgradeBackupLocation />
     <OldToolsVersion>0.0</OldToolsVersion>
     <TargetFrameworkProfile />
@@ -134,7 +134,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent />
-    <PostBuildEvent>echo "Starting-Post Build Commands"
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT'">
+echo "Starting-Post Build Commands"
 xcopy "$(ProjectDir)RefFiles"  "$(TargetDir)RefFiles"  /I /E /Y
 echo "Finished-Post Build Commands"
 </PostBuildEvent>
