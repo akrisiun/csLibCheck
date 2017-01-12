@@ -37,5 +37,6 @@ sample/src/
 *.csproj~
 *.userprefs
 .DS_Store
+*.nupkg
 
 src/*.lock.json
