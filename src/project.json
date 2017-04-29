@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0-*",
-  "title": "CsLibCheck",
+  "version": "1.0.1",
+  "name": "CsLibCheck",
   "description": ".NET clr .dll managed types definition extractor, upgraded from https://www.microsoft.com/en-in/download/details.aspx?id=11287",
   "language": "en-US",
   "authors": [ "msft, 2005", "Andrius K" ],
@@ -10,19 +10,9 @@
     }
   },
   "dependencies": {
-    "NETStandard.Library": "1.0.0-rc2-23910"
+    "NETStandard.Library": "1.0.0"
   },
   "frameworks": {
-    "net46": {
-      "buildOptions": {
-        "define": [ "DEBUG", "DONTDBUGTM", "DONTDOREPORTS" ]
-      },
-      "frameworkAssemblies": {
-        "System.Xml": "",
-        "System.Xml.Linq": "",
-        "Microsoft.CSharp": ""
-      }
-    },
     "net451": {
       "buildOptions": {
         "define": [ "DEBUG", "DONTDBUGTM", "DONTDOREPORTS" ]

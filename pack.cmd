@@ -1,0 +1,1 @@
+NuGet.exe pack src\CsLibCheck.nuspec -Version 1.0.2

@@ -147,7 +147,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent />
-    <PostBuildEvent>echo "Starting-Post Build Commands"
+    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">echo "Starting-Post Build Commands"
 xcopy "$(ProjectDir)RefFiles"  "$(TargetDir)RefFiles"  /I /E /Y
 echo "Finished-Post Build Commands"
 </PostBuildEvent>

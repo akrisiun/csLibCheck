@@ -1,9 +1,0 @@
-﻿{
-  "supports": {},
-  "dependencies": {
-    "NETStandard.Library": "4.0.0-rc2-24008"
-  },
-  "frameworks": {
-    "netstandard1.5": {}
-  }
-}

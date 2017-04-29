@@ -22,6 +22,9 @@ slnx.sqlite
 *.Report
 *.Err
 
+packages/*.xml
+Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
+
 websrc*/
 reffiles/
 net*/
@@ -33,3 +36,7 @@ sample/src/
 *.csproj.user
 *.bak
 *.lock.json
+*.nupkg
+*.csproj.nuget.targets
+
+*.nuspec
