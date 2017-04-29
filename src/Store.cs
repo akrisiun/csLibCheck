@@ -950,12 +950,11 @@ namespace LibCheck
                 int outputNumber = 0;
 
                 //if this is a split file, figure out which split file this type belongs to...
-                if (spaceIsSplit)
+                if (spaceIsSplit && splitRanges != null)
                 {
 
                     for (int i = 0; i < splitRanges.Count; i++)
-                    {//(string tempString in splitRanges){
-
+                    {
                         string tempString = splitRanges[i];
                         string startPoint = "";
                         string endPoint = "";

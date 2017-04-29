@@ -203,7 +203,7 @@ namespace LibCheck
         static bool addsOnly = false; 
         static bool sumColor = false;
         static bool suppress = true; 
-        static bool byDll = false;   // true; //DEFAULT
+        public static bool byDll = false;   // true; //DEFAULT
         static bool fullSpec = true; // false;
 
         static bool showChurn = true; //DEFAULT

@@ -52,7 +52,7 @@ namespace LibCheck
                 dll = nsName.Substring(7, nsName.Length - 7);
             }
             string subdir = Path.GetFullPath(
-                (outputLoc.Length == 0 ? Directory.GetCurrentDirectory() : outputLoc.TrimEnd(new char[] { '\\', '/' }) + @"\")
+                (outputLoc.Length == 0 ? Directory.GetCurrentDirectory() + "\\" : outputLoc.TrimEnd(new char[] { '\\', '/' }) + @"\")
                 + nsName);
 
             if (!Directory.Exists(subdir))
